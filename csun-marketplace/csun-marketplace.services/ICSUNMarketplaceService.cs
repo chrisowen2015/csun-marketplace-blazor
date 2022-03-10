@@ -1,5 +1,4 @@
-﻿using csun_marketplace.data;
-
+using csun_marketplace.data;
 
 namespace csun_marketplace.services
 {
@@ -11,6 +10,5 @@ namespace csun_marketplace.services
         int UpdateProduct(Product pvm);
         UserInformation GetUserInformation(int userId);
         int UpdateUserInformation(UserInformation uvm);
-
     }
 }

@@ -1,8 +1,8 @@
-﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.1.32210.238
 MinimumVisualStudioVersion = 10.0.40219.1
+
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "csun-marketplace", "csun-marketplace\csun-marketplace.csproj", "{29BB4569-AB02-482E-A71D-00278A80CBB2}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "csun-marketplace.data", "csun-marketplace.data\csun-marketplace.data.csproj", "{31C2B191-5178-4940-9E92-6E1D3EC35272}"
@@ -10,6 +10,7 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "csun-marketplace.dbo", "csun-marketplace.dbo\csun-marketplace.dbo.csproj", "{E1A21C81-05C7-4677-81A4-B42C567225B0}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "csun-marketplace.services", "csun-marketplace.services\csun-marketplace.services.csproj", "{CE35DD8C-E1D5-40B1-B1C0-21FC0714E8B3}"
+
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -1,4 +1,4 @@
-﻿using csun_marketplace.dbo;
+using csun_marketplace.dbo;
 using csun_marketplace.data;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -39,7 +39,6 @@ namespace csun_marketplace.services
 
             // If we have any complex structures stored on the Product class like a list of Users or something, we will grab them below here
 
-
             return pvm;
         }
 
@@ -59,6 +58,7 @@ namespace csun_marketplace.services
                 Title = p.Title,
                 ImageUrl = p.ImageUrl,
                 Description = p.Description,
+
                 Price = p.Price,
                 Available = p.Available,
 
@@ -93,6 +93,7 @@ namespace csun_marketplace.services
                 var CSUNMarketplaceEvaluatorDB = _context.CreateDbContext();
 
                 if (pvm.ProductId == 0)
+
                 {
                     Product p = new Product
                     {
