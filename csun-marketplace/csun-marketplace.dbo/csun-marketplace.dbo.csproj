@@ -16,4 +16,8 @@
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="6.0.3" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\csun-marketplace.data\csun-marketplace.data.csproj" />
+  </ItemGroup>
+
 </Project>

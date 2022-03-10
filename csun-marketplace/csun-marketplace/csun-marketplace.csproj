@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
@@ -19,6 +19,12 @@
 
   <ItemGroup>
     <Folder Include="Data\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\csun-marketplace.data\csun-marketplace.data.csproj" />
+    <ProjectReference Include="..\csun-marketplace.dbo\csun-marketplace.dbo.csproj" />
+    <ProjectReference Include="..\csun-marketplace.services\csun-marketplace.services.csproj" />
   </ItemGroup>
 
 </Project>
