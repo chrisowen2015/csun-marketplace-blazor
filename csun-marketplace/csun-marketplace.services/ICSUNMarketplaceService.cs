@@ -1,4 +1,4 @@
-﻿using csun_marketplace.data;
+using csun_marketplace.data;
 
 namespace csun_marketplace.services
 {

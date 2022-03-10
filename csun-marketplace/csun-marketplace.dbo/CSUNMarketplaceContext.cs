@@ -1,8 +1,8 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
+using csun_marketplace.data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
-using csun_marketplace.data;
 
 namespace csun_marketplace.dbo
 {
@@ -11,7 +11,6 @@ namespace csun_marketplace.dbo
         public CSUNMarketplaceContext()
         {
         }
-
         public CSUNMarketplaceContext(DbContextOptions<CSUNMarketplaceContext> options)
             : base(options)
         {
@@ -34,21 +33,34 @@ namespace csun_marketplace.dbo
             modelBuilder.Entity<Product>(entity =>
             {
                 entity.ToTable("Product");
+                entity.Property(e => e.ProductId).ValueGeneratedNever();
 
                 entity.Property(e => e.Category)
                     .HasMaxLength(50)
                     .IsUnicode(false);
+                entity.Property(e => e.DateCreated)
+                    .HasColumnType("datetime")
+                    .HasDefaultValueSql("(getdate())");
 
+                entity.Property(e => e.Description).IsUnicode(false);
+
+                entity.Property(e => e.ImageUrl)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
                 entity.Property(e => e.DateCreated).HasColumnType("datetime");
 
                 entity.Property(e => e.Description).IsUnicode(false);
 
                 entity.Property(e => e.ImageUrl).IsUnicode(false);
 
+
                 entity.Property(e => e.Price).HasColumnType("decimal(18, 0)");
 
                 entity.Property(e => e.Tags).IsUnicode(false);
 
+                entity.Property(e => e.Title)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
                 entity.Property(e => e.Title).IsUnicode(false);
             });
 

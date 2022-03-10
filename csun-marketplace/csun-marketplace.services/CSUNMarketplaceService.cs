@@ -1,4 +1,4 @@
-﻿using csun_marketplace.dbo;
+using csun_marketplace.dbo;
 using csun_marketplace.data;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -17,7 +17,7 @@ namespace csun_marketplace.services
         {
             _context = context;
         }
-        
+
         public Product GetProduct(int productId)
         {
             var CSUNMarketplaceEvaluatorDB = _context.CreateDbContext();
@@ -38,7 +38,6 @@ namespace csun_marketplace.services
             }).Single();
 
             // If we have any complex structures stored on the Product class like a list of Users or something, we will grab them below here
-            
 
             return pvm;
         }
@@ -47,18 +46,19 @@ namespace csun_marketplace.services
          * A function to get all products, can be easily rewritten to pull only available products by setting p.Available == true (or == 1)
          * Also note this function doesn't need to fill all fields, just the ones needed for how we display all products, then we can just call getProduct() for the rest
          */
-        
+
         public List<Product> GetProductList()
         {
             var CSUNMarketplaceEvaluatorDB = _context.CreateDbContext();
 
-            List<Product> productList = CSUNMarketplaceEvaluatorDB.Products.Select(p => new Product 
-            { 
-                ProductId = p.ProductId, 
+            List<Product> productList = CSUNMarketplaceEvaluatorDB.Products.Select(p => new Product
+            {
+                ProductId = p.ProductId,
                 OwnerId = p.OwnerId,
                 Title = p.Title,
-                ImageUrl= p.ImageUrl,
-                Description= p.Description,
+                ImageUrl = p.ImageUrl,
+                Description = p.Description,
+
                 Price = p.Price,
                 Available = p.Available,
 
@@ -92,7 +92,8 @@ namespace csun_marketplace.services
             {
                 var CSUNMarketplaceEvaluatorDB = _context.CreateDbContext();
 
-                if(pvm.ProductId == 0)
+                if (pvm.ProductId == 0)
+
                 {
                     Product p = new Product
                     {
@@ -110,7 +111,8 @@ namespace csun_marketplace.services
                     CSUNMarketplaceEvaluatorDB.Products.Add(p);
                     CSUNMarketplaceEvaluatorDB.SaveChanges();
                     return p.ProductId;
-                } else
+                }
+                else
                 {
                     Product p = CSUNMarketplaceEvaluatorDB.Products.Where(p => p.ProductId == pvm.ProductId).Single();
 
@@ -125,7 +127,8 @@ namespace csun_marketplace.services
                     CSUNMarketplaceEvaluatorDB.SaveChanges();
                     return p.ProductId;
                 }
-            } catch (Exception ex)
+            }
+            catch (Exception ex)
             {
                 return -1;
             }
@@ -159,26 +162,27 @@ namespace csun_marketplace.services
             {
                 var CSUNMarketplaceEvaluatorDB = _context.CreateDbContext();
 
-                if(uvm.UserId == 0)
+                if (uvm.UserId == 0)
                 {
                     UserInformation user = new UserInformation
                     {
                         UserId = uvm.UserId,
-                        Email=uvm.Email,
-                        FirstName=uvm.FirstName,
-                        LastName=uvm.LastName,
-                        Bio=uvm.Bio,
-                        JoinDate=uvm.JoinDate,
-                        Rating=uvm.Rating,
-                        Major=uvm.Major,
-                        Gender=uvm.Gender
+                        Email = uvm.Email,
+                        FirstName = uvm.FirstName,
+                        LastName = uvm.LastName,
+                        Bio = uvm.Bio,
+                        JoinDate = uvm.JoinDate,
+                        Rating = uvm.Rating,
+                        Major = uvm.Major,
+                        Gender = uvm.Gender
                     };
 
                     CSUNMarketplaceEvaluatorDB.UserInformations.Add(user);
                     CSUNMarketplaceEvaluatorDB.SaveChanges();
                     return user.UserId;
 
-                } else
+                }
+                else
                 {
                     UserInformation user = CSUNMarketplaceEvaluatorDB.UserInformations.Where(p => p.UserId == uvm.UserId).Single();
 
@@ -193,7 +197,8 @@ namespace csun_marketplace.services
                     CSUNMarketplaceEvaluatorDB.SaveChanges();
                     return user.UserId;
                 }
-            } catch (Exception ex)
+            }
+            catch (Exception ex)
             {
                 return -1;
             }
