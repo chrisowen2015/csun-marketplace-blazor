@@ -19,6 +19,7 @@
 
   <ItemGroup>
     <Folder Include="Data\" />
+    <Folder Include="Pages\Store\StoreStyles\" />
   </ItemGroup>
 
   <ItemGroup>

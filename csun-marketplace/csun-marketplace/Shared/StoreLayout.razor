@@ -1,0 +1,96 @@
+﻿@inherits LayoutComponentBase
+@layout MainLayout
+@inject NavigationManager _navMan
+
+<MudLayout Class="layout-content">
+
+    @*Top Bar for Search, logo*@
+    <MudAppBar Class="top-app-bar-container">
+        <MudIconButton Class="left-top-button" Icon="@Icons.Material.Rounded.Menu" />
+        <div class="search-bar-container">
+            <SearchBar />
+        </div>
+        <MudIconButton Class="right-top-button" Icon="@Icons.Material.Rounded.Build" />
+    </MudAppBar>
+
+    @*Second Top Bar for Categories, shortcuts? Will have hamburger icon for side panel menu on the left*@
+    <div>
+    </div>
+
+    <div class="main-content">
+        <MudMainContent>
+            @Body
+        </MudMainContent>
+    </div>
+
+    @*Bottom Tab Navigation*@
+
+    <MudTabs Position="Position.Bottom" Class="bottom-tab-bar" Elevation="2" Rounded="false" ApplyEffectsToContainer="true">
+        <MudTabPanel Class="tab" Icon="@Icons.Material.Filled.Home" />
+        <MudTabPanel Class="tab" Icon="@Icons.Material.Rounded.Person" />
+        <MudTabPanel Class="tab" Icon="@Icons.Material.Rounded.ShoppingCart" />
+    </MudTabs>
+
+</MudLayout>
+
+
+@code {
+    public string? searchTerm { get; set; }
+    public void myFunction()
+    {
+
+    }
+
+}
+<style>
+    .main-content {
+        padding: 1em;
+        //width: 100%;
+    }
+
+    .top-app-bar-container {
+        display: flex;
+        flex: auto;
+        justify-content: right;
+        justify-items: right;
+        justify-items: flex-end;
+        align-content: flex-end;
+        position:fixed;
+        //width: 75%;
+    }
+
+    .site-container {
+        margin: 0em;
+    }
+
+    .tab-container {
+    }
+
+    .tab {
+        width: 33%;
+    }
+
+    .bottom-tab-bar {
+        width: 100% !important;
+        position: fixed;
+        bottom: 1px;
+    }
+
+    .layout-content {
+        width: 500px;
+        min-height: 900px;
+    }
+
+    .left-top-button {
+        position: absolute;
+        left: 10px;
+    }
+
+    .right-top-button {
+        position: absolute;
+        right: 10px;
+    }
+
+    search-bar-container {
+    }
+</style>

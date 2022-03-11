@@ -1,0 +1,22 @@
+﻿<div>
+    <MudTextField AdornmentIcon="@Icons.Material.Filled.Search" Adornment="Adornment.End" Class="search-bar" Label="Search CSUN Marketplace" Variant="Variant.Filled"  @bind-Value="searchTerm">
+        <MudIconButton Class="search-icon" Icon="@Icons.Material.Filled.Search"/>
+    </MudTextField>
+</div>
+
+@code {
+    [Parameter]
+    public string? searchTerm { get; set; }
+}
+<style>
+    .search-bar {
+        position: fixed;
+        top:-10px !important;
+        left:65px;
+        width:370px;
+        height:50px;
+    }
+    .search-icon {
+
+    }
+</style>

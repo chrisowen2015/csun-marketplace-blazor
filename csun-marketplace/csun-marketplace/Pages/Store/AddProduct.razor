@@ -15,13 +15,13 @@
         {
             <h1>uwu wats this? DB failed?</h1>
         }
-        <MudTextField T="string" @bind-Value=p.Title/>
-        <MudTextField T="string" @bind-Value=p.ImageUrl/>
-        <MudTextField T="string" @bind-Value=p.Description/>
-        <MudTextField T="decimal?" @bind-Value=p.Price/>
-        <MudTextField T="DateTime" @bind-Value=p.DateCreated/>
-        <MudTextField T="string" @bind-Value=p.Category/>
-        <MudTextField T="string" @bind-Value=p.Tags/>
+        <MudTextField Label="Product Title" T="string" @bind-Value=p.Title/>
+        <MudTextField Label="Image URL" T="string" @bind-Value=p.ImageUrl/>
+        <MudTextField Label="Description" T="string" @bind-Value=p.Description/>
+        <MudTextField Label="Price" T="decimal?" @bind-Value=p.Price/>
+        <MudTextField Label="Date Created" T="DateTime" @bind-Value=p.DateCreated/>
+        <MudTextField Label="Category" T="string" @bind-Value=p.Category/>
+        <MudTextField Label="Tags" T="string" @bind-Value=p.Tags/>
         <MudButton Variant="Variant.Outlined" OnClick=UpdateProduct Color="Color.Secondary">Submit</MudButton>
     </div>
 </div>
@@ -30,6 +30,11 @@
     public Product p = new Product();
 
     int success = -2;
+
+    protected override async Task OnInitializedAsync()
+    {
+        p.DateCreated = System.DateTime.Now;
+    }
 
     public void UpdateProduct()
     {
@@ -48,8 +53,4 @@
 }
 
 <style>
-    .page{
-        width:50%;
-        margin: 2em;
-    }
 </style>
