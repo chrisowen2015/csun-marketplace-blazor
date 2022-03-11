@@ -3,19 +3,21 @@
 @inject NavigationManager _navMan
 
 <MudLayout Class="layout-content">
-
-    @*Top Bar for Search, logo*@
-    <MudAppBar Class="top-app-bar-container">
-        <MudIconButton Class="left-top-button" Icon="@Icons.Material.Rounded.Menu" />
-        <div class="search-bar-container">
+    <MudLayout>
+        @*Top Bar for Search, logo*@
+        <MudAppBar Fixed="true">
+            <MudImage Height="40" Src="https://cdn.discordapp.com/attachments/911058579073675284/951718035683672084/csun_logo.png" />
             <SearchBar />
-        </div>
-        <MudIconButton Class="right-top-button" Icon="@Icons.Material.Rounded.Build" />
-    </MudAppBar>
-
-    @*Second Top Bar for Categories, shortcuts? Will have hamburger icon for side panel menu on the left*@
-    <div>
-    </div>
+            <MudIconButton Class="right-top-button" Icon="@Icons.Material.Rounded.Build" />
+        </MudAppBar>
+        <MudSpacer/>
+        @*Second Top Bar for Categories, shortcuts? Will have hamburger icon for side panel menu on the left*@
+        <MudAppBar Class="second-bar">
+            <MudIconButton Class="left-top-button" Icon="@Icons.Material.Rounded.Menu" />
+        </MudAppBar>
+            
+        
+    </MudLayout>
 
     <div class="main-content">
         <MudMainContent>
@@ -36,61 +38,17 @@
 
 @code {
     public string? searchTerm { get; set; }
+    
     public void myFunction()
     {
 
     }
-
 }
 <style>
-    .main-content {
-        padding: 1em;
-        //width: 100%;
-    }
+.second-bar {
+    margin-top: 64px;
+    height: 50px;
+}
 
-    .top-app-bar-container {
-        display: flex;
-        flex: auto;
-        justify-content: right;
-        justify-items: right;
-        justify-items: flex-end;
-        align-content: flex-end;
-        position:fixed;
-        //width: 75%;
-    }
 
-    .site-container {
-        margin: 0em;
-    }
-
-    .tab-container {
-    }
-
-    .tab {
-        width: 33%;
-    }
-
-    .bottom-tab-bar {
-        width: 100% !important;
-        position: fixed;
-        bottom: 1px;
-    }
-
-    .layout-content {
-        width: 500px;
-        min-height: 900px;
-    }
-
-    .left-top-button {
-        position: absolute;
-        left: 10px;
-    }
-
-    .right-top-button {
-        position: absolute;
-        right: 10px;
-    }
-
-    search-bar-container {
-    }
 </style>
