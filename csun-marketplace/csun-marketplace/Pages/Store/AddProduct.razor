@@ -1,33 +1,55 @@
 ﻿@page "/product-form"
 @using csun_marketplace.data;
 @using csun_marketplace.services;
+@using System;
 
 @inject ICSUNMarketplaceService _csunMarketplaceService
+@inject IWebHostEnvironment env
 
 <h3>Product Form</h3>
 
 <div class="page">
     <div>
-        @if(success > -1)
+
+        @if (success > -1)
         {
             <h1>uwu wats this? DB success?</h1>
-        } else if (success > - 2)
+        }
+        else if (success > -2)
         {
             <h1>uwu wats this? DB failed?</h1>
         }
-        <MudTextField Label="Product Title" T="string" @bind-Value=p.Title/>
-        <MudTextField Label="Image URL" T="string" @bind-Value=p.ImageUrl/>
-        <MudTextField Label="Description" T="string" @bind-Value=p.Description/>
-        <MudTextField Label="Price" T="decimal?" @bind-Value=p.Price/>
-        <MudTextField Label="Date Created" T="DateTime" @bind-Value=p.DateCreated/>
-        <MudTextField Label="Category" T="string" @bind-Value=p.Category/>
-        <MudTextField Label="Tags" T="string" @bind-Value=p.Tags/>
+
+        <MudTextField Label="Product Title" T="string" @bind-Value=p.Title />
+        <MudTextField Label="Image URL" T="string" @bind-Value=p.ImageUrl />
+
+        <form @onsubmit="@OnSubmit">
+            <InputFile OnChange="OnInputFileChange" />
+            <button type="submit">Upload Selected File</button>
+        </form>
+
+        <MudTextField Label="Description" T="string" @bind-Value=p.Description />
+        <MudTextField Label="Price" T="decimal?" @bind-Value=p.Price />
+        <MudTextField Label="Date Created" T="DateTime" @bind-Value=p.DateCreated />
+        <MudTextField Label="Category" T="string" @bind-Value=p.Category />
+        <MudTextField Label="Tags" T="string" @bind-Value=p.Tags />
         <MudButton Variant="Variant.Outlined" OnClick=UpdateProduct Color="Color.Secondary">Submit</MudButton>
+
+        @if (selectedFile != null)
+        {
+            @if (!String.IsNullOrWhiteSpace(selectedFile.Name))
+            {
+                <h1>@filePath</h1>
+                <MudImage Src="@filePath" />
+            }
+        }
     </div>
 </div>
 
 @code {
     public Product p = new Product();
+
+    public string? filePath { get; set; }
 
     int success = -2;
 
@@ -36,16 +58,49 @@
         p.DateCreated = System.DateTime.Now;
     }
 
+    string Message = "No file(s) selected";
+    IBrowserFile selectedFile;
+
+    private void OnInputFileChange(InputFileChangeEventArgs e)
+    {
+        selectedFile = e.File;
+        Message = $"1 file selected";
+        this.StateHasChanged();
+    }
+
+    private async void OnSubmit()
+    {
+        try
+        {
+            Stream stream = selectedFile.OpenReadStream();
+            var path = $"{env.WebRootPath}\\Images\\{selectedFile.Name}";
+            filePath = "Images/" + selectedFile.Name;
+            FileStream fs = File.Create(path);
+            await stream.CopyToAsync(fs);
+            stream.Close();
+            fs.Close();
+
+            Message = $"1 file uploaded on server";
+            this.StateHasChanged();
+        } catch (Exception e)
+        {   
+            Console.WriteLine(e.ToString());
+            // Write Error message to user here, user has uploaded an image that is too large
+        }
+        
+    }
+
     public void UpdateProduct()
     {
         p.OwnerId = 1;
         p.Available = true;
 
         success = _csunMarketplaceService.UpdateProduct(p);
-        if(success != -1)
+        if (success != -1)
         {
             p.ProductId = success;
-        } else
+        }
+        else
         {
             // Error pop up, DB error
         }

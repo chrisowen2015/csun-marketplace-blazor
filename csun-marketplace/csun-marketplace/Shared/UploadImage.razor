@@ -1,0 +1,43 @@
+﻿@using System
+
+@inject IWebHostEnvironment env
+
+
+<h3>UploadImage</h3>
+
+<form @onsubmit="@OnSubmit">
+    <InputFile OnChange="OnInputFileChange" />
+    <button type="submit">Upload Selected File</button>
+</form>
+
+
+@code {
+    [Parameter]
+    public string? filePath { get; set; }
+
+    string Message = "No file(s) selected";
+    IBrowserFile selectedFile;
+
+    private void OnInputFileChange(InputFileChangeEventArgs e)
+    {
+        selectedFile = e.File;
+        Message = $"1 file selected";
+        this.StateHasChanged();
+    }
+
+    private async void OnSubmit()
+    {
+        Stream stream = selectedFile.OpenReadStream();
+        var path = $"{env.WebRootPath}\\{selectedFile.Name}";
+        filePath = path;
+        FileStream fs = File.Create(path);
+        await stream.CopyToAsync(fs);
+        stream.Close();
+        fs.Close();
+
+        Message = $"1 file uploaded on server";
+        this.StateHasChanged();
+    }
+}
+
+
