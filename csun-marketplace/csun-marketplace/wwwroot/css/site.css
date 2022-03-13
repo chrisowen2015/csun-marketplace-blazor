@@ -64,3 +64,41 @@ a, .btn-link {
     }
 
 
+.page-container {
+    width: 50%;
+    min-height: 100% !important;
+    margin: auto;
+    display: block;
+    border: 1px solid dimgray;
+    border-radius: 8px;
+    box-shadow: 4px 2px 2px dimgray;
+    margin-bottom: 2em;
+    margin-top: 1.5em;
+    overflow:auto;
+}
+
+.page-content {
+    min-height: 100% !important;
+    padding-left: 3em;
+    padding-right: 3em;
+    align-self: center;
+}
+
+.upload-image-label {
+    padding: .5em;
+    padding-left: 0;
+}
+
+.form-header {
+    font-size: 30px;
+    font-weight: 500;
+}
+
+.page-header-container {
+    padding: 1em;
+    padding-top: 2em;
+}
+
+.form-row {
+    padding: 1em;
+}

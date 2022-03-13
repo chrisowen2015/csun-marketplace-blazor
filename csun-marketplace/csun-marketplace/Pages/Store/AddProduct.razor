@@ -5,40 +5,69 @@
 
 @inject ICSUNMarketplaceService _csunMarketplaceService
 @inject IWebHostEnvironment env
+@inject ISnackbar Snackbar
 
-<h3>Product Form</h3>
+<div class="page-container">
+    <div class="page-content">
 
-<div class="main-content">
+        <div class="page-header-container">
+            <MudText Class="form-header" Color="Color.Default">
+                Create New Listing
+            </MudText>
+        </div>
 
-    @if (success > -1)
-    {
-        <h1>uwu wats this? DB success?</h1>
-    }
-    else if (success > -2)
-    {
-        <h1>uwu wats this? DB failed?</h1>
-    }
+        <div class="form-row">
+            <MudTextField Label="Product Title" T="string" @bind-Value=p.Title />
+        </div>
+        <div class="form-row">
+            @if (imgSaved)
+            {
+                <MudImage Src="@filePath" />
+            }
+            <MudText Color="Color.Surface" Class="upload-image-label">
+                Upload Image
+            </MudText>
+            <form @onsubmit="@OnImageSubmit">
+                <InputFile OnChange="OnInputFileChange" />
+                <MudButton ButtonType="ButtonType.Submit" Color="Color.Default" Variant="Variant.Filled" Size="Size.Small">
+                    Upload
+                </MudButton>
+            </form>
+        </div>
 
-    <MudTextField Label="Product Title" T="string" @bind-Value=p.Title />
-    <MudTextField Label="Image URL" T="string" @bind-Value=p.ImageUrl />
+        <div class="form-row">
+            <MudTextField Label="Description" T="string" @bind-Value=p.Description />
+        </div>
 
-    <UploadImage filePath="@filePath" imgSaved="@imgSaved"/>
+        <div class="form-row">
+            <MudTextField Label="Price" T="decimal?" @bind-Value=p.Price />
+        </div>
 
-    <MudTextField Label="Description" T="string" @bind-Value=p.Description />
-    <MudTextField Label="Price" T="decimal?" @bind-Value=p.Price />
-    <MudTextField Label="Date Created" T="DateTime" @bind-Value=p.DateCreated />
-    <MudTextField Label="Category" T="string" @bind-Value=p.Category />
-    <MudTextField Label="Tags" T="string" @bind-Value=p.Tags />
-    <MudButton Variant="Variant.Outlined" OnClick=UpdateProduct Color="Color.Secondary">Submit</MudButton>
+        <div class="form-row">
+            <MudTextField Label="Date Created" T="DateTime" ReadOnly="true" @bind-Value=p.DateCreated />
+        </div>
 
-    @if (imgSaved)
-    {
-        this.StateHasChanged();
-        <h1>@filePath</h1>
-        <MudImage Src="@filePath" />
-        <img src="@filePath" />
-    }
+        <div class="form-row">
+            <MudSelect T="string" @bind-Value=p.Category>
+                <MudSelectItem T="string" Value="@("Textbooks")" />
+                <MudSelectItem T="string" Value="@("Electronics")" />
+                <MudSelectItem T="string" Value="@("School Supplies")" />
+            </MudSelect>
+            @*<MudTextField Label="Category" T="string" @bind-Value=p.Category />*@
+        </div>
+
+        <div class="form-row">
+            <MudTextField Label="Tags" T="string" @bind-Value=p.Tags />
+        </div>
+
+        <div class="form-row">
+            <MudButton Variant="Variant.Filled" OnClick=@(()=> UpdateProduct()) Color="Color.Secondary">Submit</MudButton>
+        </div>
+
+
+    </div>
 </div>
+
 
 @code {
     public Product p = new Product();
@@ -51,24 +80,60 @@
     {
         p.DateCreated = System.DateTime.Now;
     }
+    IBrowserFile? selectedFile;
 
-    public void UpdateProduct()
+    private void OnInputFileChange(InputFileChangeEventArgs e)
+    {
+        selectedFile = e.File;
+        this.StateHasChanged();
+    }
+
+    private async void OnImageSubmit()
+    {
+        try
+        {
+            Stream stream = selectedFile.OpenReadStream();
+
+            /*
+            * This could be easily modified to create a folder that is specific for this user, or folders based on ID, etc. to avoid clutter of the wwwroot folder.
+            * Look into rewriting later and providing a path that incorporates userId or productId to create appropriate folders
+            */
+
+            var path = $"{env.WebRootPath}\\images\\{selectedFile.Name}";
+            filePath = "/images/" + selectedFile.Name;
+            FileStream fs = File.Create(path);
+            await stream.CopyToAsync(fs);
+            stream.Close();
+            fs.Close();
+            imgSaved = true;
+            this.StateHasChanged();
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e.ToString());
+            // Write Error message to user here, user has uploaded an image that is too large
+        }
+
+    }
+
+    async Task UpdateProduct()
     {
         p.OwnerId = 1;
         p.Available = true;
-
+        p.ImageUrl = filePath;
         success = _csunMarketplaceService.UpdateProduct(p);
         if (success != -1)
         {
             p.ProductId = success;
+            Snackbar.Add("Product Listing successfully saved to the database!.", Severity.Success);
         }
         else
         {
             // Error pop up, DB error
+            Snackbar.Add("Error, Product not saved to database.", Severity.Error);
         }
     }
 }
 
 <style>
-    
 </style>

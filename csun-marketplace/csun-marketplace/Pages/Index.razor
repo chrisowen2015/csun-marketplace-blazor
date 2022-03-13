@@ -1,8 +1,13 @@
 ﻿@page "/"
 @layout StoreLayout
 
-<PageTitle>Index</PageTitle>
-<MudTextField T="string" Label="What does Karim say?" Variant="Variant.Filled"/>
-<h1>Hello, world!</h1>
-
-Welcome to your new app.
+<div class="page-container">
+    <div class="page-content">
+        <PageTitle>Index</PageTitle>
+        
+        <MudText GutterBottom="true"  Color="Color.Dark">
+            Welcome to CSUN Marketplace
+        </MudText>
+        @*This is where we should use an [Authorize] view or something to force a user to log in before they are able to continue*@
+    </div>
+</div>

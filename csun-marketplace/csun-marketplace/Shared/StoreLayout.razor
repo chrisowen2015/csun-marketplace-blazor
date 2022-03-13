@@ -27,6 +27,20 @@
             <MudIconButton Class="right-top-button" Icon="@Icons.Material.Rounded.Settings" />
         </MudAppBar>
         <MudTabs Centered="true" Rounded="true">
+            @*
+                Tabs at this point seem best suited to providing a filter hierarchy or something of the sort in their main content. The tab content doesn't seem to take up the whole page, 
+                and so it doesn't seem ideal for displaying different pages internally.
+            *@
+            <MudTabPanel Text="All Listings">
+                @*
+                    Bring back to store home
+                *@
+            </MudTabPanel>
+            <MudTabPanel Text="New Listing" OnClick="@(() => _navMan.NavigateTo('/' + "product-form"))">
+                @*
+                    Bring back to store home
+                *@
+            </MudTabPanel>
             <MudTabPanel Text="Popular Items">
                 @*
                     Bring back to store home
@@ -59,6 +73,9 @@
                 </MudButton>
             </MudDrawerHeader>
             <MudNavMenu>
+                <MudNavLink>
+                    All Products
+                </MudNavLink>
                 <MudNavLink>
                     Popular Items
                 </MudNavLink>

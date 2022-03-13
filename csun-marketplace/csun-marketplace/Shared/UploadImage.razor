@@ -2,12 +2,11 @@
 
 @inject IWebHostEnvironment env
 
-
-<h3>UploadImage</h3>
-
 <form @onsubmit="@OnSubmit">
     <InputFile OnChange="OnInputFileChange" />
-    <button type="submit">Upload Selected File</button>
+    <MudButton ButtonType="ButtonType.Submit" Color="Color.Default" Variant="Variant.Filled" Size="Size.Small" >
+        Upload   
+    </MudButton>
 </form>
 
 
