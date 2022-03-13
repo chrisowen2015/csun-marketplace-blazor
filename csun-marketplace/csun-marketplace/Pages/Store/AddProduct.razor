@@ -8,86 +8,48 @@
 
 <h3>Product Form</h3>
 
-<div class="page">
-    <div>
+<div class="main-content">
 
-        @if (success > -1)
-        {
-            <h1>uwu wats this? DB success?</h1>
-        }
-        else if (success > -2)
-        {
-            <h1>uwu wats this? DB failed?</h1>
-        }
+    @if (success > -1)
+    {
+        <h1>uwu wats this? DB success?</h1>
+    }
+    else if (success > -2)
+    {
+        <h1>uwu wats this? DB failed?</h1>
+    }
 
-        <MudTextField Label="Product Title" T="string" @bind-Value=p.Title />
-        <MudTextField Label="Image URL" T="string" @bind-Value=p.ImageUrl />
+    <MudTextField Label="Product Title" T="string" @bind-Value=p.Title />
+    <MudTextField Label="Image URL" T="string" @bind-Value=p.ImageUrl />
 
-        <form @onsubmit="@OnSubmit">
-            <InputFile OnChange="OnInputFileChange" />
-            <button type="submit">Upload Selected File</button>
-        </form>
+    <UploadImage filePath="@filePath" imgSaved="@imgSaved"/>
 
-        <MudTextField Label="Description" T="string" @bind-Value=p.Description />
-        <MudTextField Label="Price" T="decimal?" @bind-Value=p.Price />
-        <MudTextField Label="Date Created" T="DateTime" @bind-Value=p.DateCreated />
-        <MudTextField Label="Category" T="string" @bind-Value=p.Category />
-        <MudTextField Label="Tags" T="string" @bind-Value=p.Tags />
-        <MudButton Variant="Variant.Outlined" OnClick=UpdateProduct Color="Color.Secondary">Submit</MudButton>
+    <MudTextField Label="Description" T="string" @bind-Value=p.Description />
+    <MudTextField Label="Price" T="decimal?" @bind-Value=p.Price />
+    <MudTextField Label="Date Created" T="DateTime" @bind-Value=p.DateCreated />
+    <MudTextField Label="Category" T="string" @bind-Value=p.Category />
+    <MudTextField Label="Tags" T="string" @bind-Value=p.Tags />
+    <MudButton Variant="Variant.Outlined" OnClick=UpdateProduct Color="Color.Secondary">Submit</MudButton>
 
-        @if (selectedFile != null)
-        {
-            @if (!String.IsNullOrWhiteSpace(selectedFile.Name))
-            {
-                <h1>@filePath</h1>
-                <MudImage Src="@filePath" />
-            }
-        }
-    </div>
+    @if (imgSaved)
+    {
+        this.StateHasChanged();
+        <h1>@filePath</h1>
+        <MudImage Src="@filePath" />
+        <img src="@filePath" />
+    }
 </div>
 
 @code {
     public Product p = new Product();
 
     public string? filePath { get; set; }
-
+    public bool imgSaved { get; set; } = false;
     int success = -2;
 
     protected override async Task OnInitializedAsync()
     {
         p.DateCreated = System.DateTime.Now;
-    }
-
-    string Message = "No file(s) selected";
-    IBrowserFile selectedFile;
-
-    private void OnInputFileChange(InputFileChangeEventArgs e)
-    {
-        selectedFile = e.File;
-        Message = $"1 file selected";
-        this.StateHasChanged();
-    }
-
-    private async void OnSubmit()
-    {
-        try
-        {
-            Stream stream = selectedFile.OpenReadStream();
-            var path = $"{env.WebRootPath}\\Images\\{selectedFile.Name}";
-            filePath = "Images/" + selectedFile.Name;
-            FileStream fs = File.Create(path);
-            await stream.CopyToAsync(fs);
-            stream.Close();
-            fs.Close();
-
-            Message = $"1 file uploaded on server";
-            this.StateHasChanged();
-        } catch (Exception e)
-        {   
-            Console.WriteLine(e.ToString());
-            // Write Error message to user here, user has uploaded an image that is too large
-        }
-        
     }
 
     public void UpdateProduct()
@@ -108,4 +70,5 @@
 }
 
 <style>
+    
 </style>

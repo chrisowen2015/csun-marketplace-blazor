@@ -14,9 +14,10 @@
 @code {
     [Parameter]
     public string? filePath { get; set; }
-
+    [Parameter]
+    public bool imgSaved { get; set; }
     string Message = "No file(s) selected";
-    IBrowserFile selectedFile;
+    IBrowserFile? selectedFile;
 
     private void OnInputFileChange(InputFileChangeEventArgs e)
     {
@@ -27,16 +28,26 @@
 
     private async void OnSubmit()
     {
-        Stream stream = selectedFile.OpenReadStream();
-        var path = $"{env.WebRootPath}\\{selectedFile.Name}";
-        filePath = path;
-        FileStream fs = File.Create(path);
-        await stream.CopyToAsync(fs);
-        stream.Close();
-        fs.Close();
+        try
+        {
+            Stream stream = selectedFile.OpenReadStream();
+            var path = $"{env.WebRootPath}\\images\\{selectedFile.Name}";
+            filePath = "/images/" + selectedFile.Name;
+            FileStream fs = File.Create(path);
+            await stream.CopyToAsync(fs);
+            stream.Close();
+            fs.Close();
 
-        Message = $"1 file uploaded on server";
-        this.StateHasChanged();
+            Message = $"1 file uploaded on server";
+            imgSaved = true;
+            this.StateHasChanged();
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e.ToString());
+            // Write Error message to user here, user has uploaded an image that is too large
+        }
+
     }
 }
 

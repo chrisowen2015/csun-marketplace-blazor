@@ -4,51 +4,168 @@
 
 <MudLayout Class="layout-content">
     <MudLayout>
+        <MudThemeProvider @bind-IsDarkMode="@_isDarkMode" Theme="@_theme" />
         @*Top Bar for Search, logo*@
-        <MudAppBar Fixed="true">
-            <MudImage Height="40" Src="https://cdn.discordapp.com/attachments/911058579073675284/951718035683672084/csun_logo.png" />
-            <SearchBar />
-            <MudIconButton Class="right-top-button" Icon="@Icons.Material.Rounded.Build" />
+        <MudAppBar Elevation="2" DisableGutters="true">
+            <MudIconButton Icon="@Icons.Material.Filled.Menu" Class="hamburger" OnClick="@ToggleDrawer" />
+            <MudButton Class="site-header-label-button">
+                <MudImage Height="40" Src="https://cdn.discordapp.com/attachments/911058579073675284/951718035683672084/csun_logo.png" />
+                <MudText Class="site-header-label">
+                    Marketplace
+                </MudText>
+            </MudButton>
+            <MudButton Class="filter-button" Variant="Variant.Text">
+                <MudText Class="filter-button-text">
+                    Filter
+                </MudText>
+                <MudIcon Icon="@Icons.Material.Filled.ArrowDropDown" Size="Size.Medium" />
+            </MudButton>
+            <MudTextField OnAdornmentClick="@searchFunction" FullWidth="true" AdornmentIcon="@Icons.Material.Filled.Search" Adornment="Adornment.End" Class="search-bar" Label="Search CSUN Marketplace" DisableUnderLine="true" Variant="Variant.Filled" @bind-Value="searchTerm" />
+            <MudSwitch Class="dark-mode-toggle" T="bool" @bind-Checked="@_isDarkMode" Color="Color.Primary" Label="Toggle Dark Mode" />
+            <MudIconButton Icon="@Icons.Material.Filled.AccountCircle" />
+            <MudIconButton Icon="@Icons.Material.Filled.Help" />
+            <MudIconButton Class="right-top-button" Icon="@Icons.Material.Rounded.Settings" />
         </MudAppBar>
-        <MudSpacer/>
-        @*Second Top Bar for Categories, shortcuts? Will have hamburger icon for side panel menu on the left*@
-        <MudAppBar Class="second-bar">
-            <MudIconButton Class="left-top-button" Icon="@Icons.Material.Rounded.Menu" />
-        </MudAppBar>
-            
-        
-    </MudLayout>
+        <MudTabs Centered="true" Rounded="true">
+            <MudTabPanel Text="Popular Items">
+                @*
+                    Bring back to store home
+                *@
+            </MudTabPanel>
+            <MudTabPanel Text="Order History">
 
-    <div class="main-content">
+            </MudTabPanel>
+            <MudTabPanel Text="Sell Something">
+
+            </MudTabPanel>
+            <MudTabPanel Text="Textbooks">
+                <csun_marketplace.Pages.Store.Textbooks.TextbookHome />
+            </MudTabPanel>
+            <MudTabPanel Text="Electronics">
+
+            </MudTabPanel>
+            <MudTabPanel Text="School Supplies">
+
+            </MudTabPanel>
+        </MudTabs>
+
+        <MudDrawer ClipMode="DrawerClipMode.Docked" @bind-Open="@drawerOpen" >
+            <MudDrawerHeader Class="drawer-header">
+                <MudButton FullWidth="true" Variant=Variant.Text>
+                    <MudIcon Icon="@Icons.Material.Filled.AccountCircle"/>
+                    <MudText Class="drawer-header">
+                        Hello, Signed In User
+                    </MudText>
+                </MudButton>
+            </MudDrawerHeader>
+            <MudNavMenu>
+                <MudNavLink>
+                    Popular Items
+                </MudNavLink>
+                <MudNavLink>
+                    Textbooks
+                </MudNavLink>
+                <MudNavLink>
+                    Electronics
+                </MudNavLink>
+                <MudNavLink>
+                    School Supplies
+                </MudNavLink>
+            </MudNavMenu>
+        </MudDrawer>
+
         <MudMainContent>
-            @Body
+            <MudPaper Height="100%" Width="100%" Class="main-content">
+
+                @Body
+            </MudPaper>
+
         </MudMainContent>
-    </div>
 
-    @*Bottom Tab Navigation*@
-
-    <MudTabs Position="Position.Bottom" Class="bottom-tab-bar" Elevation="2" Rounded="false" ApplyEffectsToContainer="true">
-        <MudTabPanel Class="tab" Icon="@Icons.Material.Filled.Home" />
-        <MudTabPanel Class="tab" Icon="@Icons.Material.Rounded.Person" />
-        <MudTabPanel Class="tab" Icon="@Icons.Material.Rounded.ShoppingCart" />
-    </MudTabs>
-
+        <MudAppBar Dense="true" Bottom="true">
+            <MudDivider />
+        </MudAppBar>
+    </MudLayout>
 </MudLayout>
 
 
 @code {
+    private MudTheme _theme = new();
+    private bool _isDarkMode = true;
+
     public string? searchTerm { get; set; }
-    
+    public List<string> categories = new List<String> { "Textbooks", "Electronics", "School Supplies", };
+
     public void myFunction()
+    {
+
+    }
+
+    bool drawerOpen = false;
+
+    void ToggleDrawer()
+    {
+        drawerOpen = !drawerOpen;
+    }
+
+
+
+    /*
+     * This is where our search function will go, consider making this function call another function to display search results in a sub menu
+     */
+
+    async Task searchFunction()
     {
 
     }
 }
 <style>
-.second-bar {
-    margin-top: 64px;
-    height: 50px;
-}
+    .dark-mode-toggle {
+        margin-left: 1em;
+        min-width: 190px !important;
+    }
 
+    .site-header-label {
+        font-size: 25px;
+    }
 
+    .site-header-label-button {
+        min-width: 270px !important;
+    }
+
+    .filter-button {
+        height: 54px;
+        top: 3px;
+        min-width: 80px !important;
+        margin-left: 20px;
+    }
+
+    .filter-button-text {
+        font-size: 18px;
+    }
+
+    .main-content {
+        padding: 1em;
+        width: 50%;
+    }
+
+    .hamburger {
+    }
+
+    .search-bar {
+        //min-width: max-content !important;
+        margin-left: 1px;
+    }
+
+    .second-top-bar {
+        min-width: 100% !important;
+        height: 80px;
+    }
+    .drawer-header {
+
+    }
+
+    .drawer-header-text{
+        padding-left:5px;
+    }
 </style>

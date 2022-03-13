@@ -1,18 +1,22 @@
 ﻿<div>
+    <MudSelect T="string">
+        @foreach(string category in categories)
+        {
+            <MudSelectItem Value="category"/>
+        }
+
+        <MudSelectItem T="string"/>
+    </MudSelect>
     <MudTextField AdornmentIcon="@Icons.Material.Filled.Search" Adornment="Adornment.End" Class="search-bar" Label="Search CSUN Marketplace" Variant="Variant.Filled"  @bind-Value="searchTerm">
-        <MudIconButton Class="search-icon" Icon="@Icons.Material.Filled.Search"/>
+        <MudIconButton Size="MudBlazor.Size.Medium" Class="search-icon" Icon="@Icons.Material.Filled.Search"/>
     </MudTextField>
 </div>
 
 @code {
     [Parameter]
     public string? searchTerm { get; set; }
+
+    public List<string> categories = new List<String> { "Textbooks", "Electronics", "School Supplies", };
 }
 <style>
-    .search-bar {
-
-    }
-    .search-icon {
-
-    }
 </style>
