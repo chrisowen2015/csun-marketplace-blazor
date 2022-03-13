@@ -3,20 +3,33 @@
 <PageTitle>csun-marketplace</PageTitle>
 
 <div class="page">
-    <div class="sidebar">
+    @*
+        <div class="sidebar">
         <NavMenu />
-    </div>
-
-    <main>
-        <MudThemeProvider />
-        <MudDialogProvider />
-        <MudSnackbarProvider />
-        <div class="top-row px-4">
-            <a href="https://docs.microsoft.com/aspnet/" target="_blank">About</a>
         </div>
+    *@
 
-        <article class="content px-4">
-            @Body
-        </article>
-    </main>
+    <MudThemeProvider />
+    <MudDialogProvider />
+    <MudSnackbarProvider />
+
+    <MudLayout>
+        <MudMainContent>
+            <MudPaper >
+                @Body
+            </MudPaper>
+        </MudMainContent>
+    </MudLayout>
+
 </div>
+
+<style>
+
+    /*
+        Mud Main Content has this class behind the scenes, I grabbed it to style it
+    */
+
+    .mud-main-content {
+
+    }
+</style>

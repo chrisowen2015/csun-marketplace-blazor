@@ -1,0 +1,74 @@
+﻿@page "/product-form"
+@using csun_marketplace.data;
+@using csun_marketplace.services;
+@using System;
+
+@inject ICSUNMarketplaceService _csunMarketplaceService
+@inject IWebHostEnvironment env
+
+<h3>Product Form</h3>
+
+<div class="main-content">
+
+    @if (success > -1)
+    {
+        <h1>uwu wats this? DB success?</h1>
+    }
+    else if (success > -2)
+    {
+        <h1>uwu wats this? DB failed?</h1>
+    }
+
+    <MudTextField Label="Product Title" T="string" @bind-Value=p.Title />
+    <MudTextField Label="Image URL" T="string" @bind-Value=p.ImageUrl />
+
+    <UploadImage filePath="@filePath" imgSaved="@imgSaved"/>
+
+    <MudTextField Label="Description" T="string" @bind-Value=p.Description />
+    <MudTextField Label="Price" T="decimal?" @bind-Value=p.Price />
+    <MudTextField Label="Date Created" T="DateTime" @bind-Value=p.DateCreated />
+    <MudTextField Label="Category" T="string" @bind-Value=p.Category />
+    <MudTextField Label="Tags" T="string" @bind-Value=p.Tags />
+    <MudButton Variant="Variant.Outlined" OnClick=UpdateProduct Color="Color.Secondary">Submit</MudButton>
+
+    @if (imgSaved)
+    {
+        this.StateHasChanged();
+        <h1>@filePath</h1>
+        <MudImage Src="@filePath" />
+        <img src="@filePath" />
+    }
+</div>
+
+@code {
+    public Product p = new Product();
+
+    public string? filePath { get; set; }
+    public bool imgSaved { get; set; } = false;
+    int success = -2;
+
+    protected override async Task OnInitializedAsync()
+    {
+        p.DateCreated = System.DateTime.Now;
+    }
+
+    public void UpdateProduct()
+    {
+        p.OwnerId = 1;
+        p.Available = true;
+
+        success = _csunMarketplaceService.UpdateProduct(p);
+        if (success != -1)
+        {
+            p.ProductId = success;
+        }
+        else
+        {
+            // Error pop up, DB error
+        }
+    }
+}
+
+<style>
+    
+</style>
