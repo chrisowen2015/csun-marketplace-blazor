@@ -93,12 +93,11 @@
         try
         {
             Stream stream = selectedFile.OpenReadStream();
-
             /*
             * This could be easily modified to create a folder that is specific for this user, or folders based on ID, etc. to avoid clutter of the wwwroot folder.
             * Look into rewriting later and providing a path that incorporates userId or productId to create appropriate folders
             */
-
+            
             var path = $"{env.WebRootPath}\\images\\{selectedFile.Name}";
             filePath = "/images/" + selectedFile.Name;
             FileStream fs = File.Create(path);

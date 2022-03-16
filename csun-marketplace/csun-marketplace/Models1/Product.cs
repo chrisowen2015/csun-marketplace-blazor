@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace csun_marketplace.data
+namespace csun_marketplace.Models1
 {
     public partial class Product
     {

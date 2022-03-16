@@ -28,6 +28,7 @@ namespace csun_marketplace.services
                 OwnerId = p.OwnerId,
                 Title = p.Title,
                 ImageUrl = p.ImageUrl,
+                ImageSource = p.ImageSource,
                 Description = p.Description,
                 Price = p.Price,
                 DateCreated = p.DateCreated,
@@ -58,6 +59,7 @@ namespace csun_marketplace.services
                 Title = p.Title,
                 ImageUrl = p.ImageUrl,
                 Description = p.Description,
+                ImageSource= p.ImageSource,
 
                 Price = p.Price,
                 Available = p.Available,
@@ -77,6 +79,7 @@ namespace csun_marketplace.services
                 OwnerId = p.OwnerId,
                 Title = p.Title,
                 ImageUrl = p.ImageUrl,
+                ImageSource=p.ImageSource,
                 Description = p.Description,
                 Price = p.Price,
                 Available = p.Available,
@@ -101,6 +104,7 @@ namespace csun_marketplace.services
                         OwnerId = pvm.OwnerId,
                         Title = pvm.Title,
                         ImageUrl = pvm.ImageUrl,
+                        ImageSource = pvm.ImageSource,
                         Description = pvm.Description,
                         Price = pvm.Price,
                         DateCreated = pvm.DateCreated,
@@ -118,6 +122,7 @@ namespace csun_marketplace.services
 
                     p.Title = pvm.Title;
                     p.ImageUrl = pvm.ImageUrl;
+                    p.ImageSource = pvm.ImageSource;
                     p.Description = pvm.Description;
                     p.Price = pvm.Price;
                     p.Available = pvm.Available;

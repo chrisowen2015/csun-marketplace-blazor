@@ -26,47 +26,41 @@
             <MudIconButton Icon="@Icons.Material.Filled.Help" />
             <MudIconButton Class="right-top-button" Icon="@Icons.Material.Rounded.Settings" />
         </MudAppBar>
-        <MudTabs Centered="true" Rounded="true">
+        <MudTabs Centered="true" Rounded="false" Border="true">
             @*
-                Tabs at this point seem best suited to providing a filter hierarchy or something of the sort in their main content. The tab content doesn't seem to take up the whole page, 
+                Tabs at this point seem best suited to providing a filter hierarchy or something of the sort in their main content. The tab content doesn't seem to take up the whole page,
                 and so it doesn't seem ideal for displaying different pages internally.
             *@
-            <MudTabPanel Text="All Listings">
-                @*
-                    Bring back to store home
-                *@
-            </MudTabPanel>
-            <MudTabPanel Text="New Listing" OnClick="@(() => _navMan.NavigateTo('/' + "product-form"))">
-                @*
-                    Bring back to store home
-                *@
-            </MudTabPanel>
-            <MudTabPanel Text="Popular Items">
-                @*
-                    Bring back to store home
-                *@
-            </MudTabPanel>
-            <MudTabPanel Text="Order History">
+            <MudTabPanel Icon="@Icons.Material.Filled.Home" Text="Store Home" />
+            @*
+                Bring back to store home
+            *@
+            <MudTabPanel Icon="@Icons.Material.Filled.Add" Text="New Listing" OnClick="@(() => _navMan.NavigateTo("/product-form"))" />
+            @*
+                Bring back to store home
+            *@
+            @*
+                Bring back to store home
+                Eventually add some kind of logic for item popularity?
+            *@
+            <MudTabPanel Icon="@Icons.Material.Filled.TrendingUp" Text="Popular Items" />
 
-            </MudTabPanel>
-            <MudTabPanel Text="Sell Something">
+            <MudTabPanel Icon="@Icons.Material.Filled.Bookmark" Text="Bookmarked" />
 
-            </MudTabPanel>
-            <MudTabPanel Text="Textbooks">
-                <csun_marketplace.Pages.Store.Textbooks.TextbookHome />
-            </MudTabPanel>
-            <MudTabPanel Text="Electronics">
+            <MudTabPanel Icon="@Icons.Material.Filled.History" Text="Order History" />
 
-            </MudTabPanel>
-            <MudTabPanel Text="School Supplies">
+            <MudTabPanel Icon="@Icons.Material.Filled.LibraryBooks" Text="Textbooks" />
 
-            </MudTabPanel>
+            <MudTabPanel Icon="@Icons.Material.Filled.Monitor" Text="Electronics" />
+
+            <MudTabPanel Icon="@Icons.Material.Filled.DynamicForm" Text="School Supplies" />
+
         </MudTabs>
 
-        <MudDrawer ClipMode="DrawerClipMode.Docked" @bind-Open="@drawerOpen" >
+        <MudDrawer ClipMode="DrawerClipMode.Docked" @bind-Open="@drawerOpen">
             <MudDrawerHeader Class="drawer-header">
                 <MudButton FullWidth="true" Variant=Variant.Text>
-                    <MudIcon Icon="@Icons.Material.Filled.AccountCircle"/>
+                    <MudIcon Icon="@Icons.Material.Filled.AccountCircle" />
                     <MudText Class="drawer-header">
                         Hello, Signed In User
                     </MudText>
@@ -93,7 +87,6 @@
 
         <MudMainContent>
             <MudPaper Height="100%" Width="100%" Class="main-content">
-
                 @Body
             </MudPaper>
 
@@ -178,11 +171,11 @@
         min-width: 100% !important;
         height: 80px;
     }
-    .drawer-header {
 
+    .drawer-header {
     }
 
-    .drawer-header-text{
-        padding-left:5px;
+    .drawer-header-text {
+        padding-left: 5px;
     }
 </style>

@@ -3,36 +3,27 @@
 @using csun_marketplace.services
 @inject ICSUNMarketplaceService _csunMarketplaceService
 
-<div>
-    <MudCard>
-        <MudCardMedia Image="https://cdn.discordapp.com/attachments/911058579073675284/946613625802600498/SWOLYEP.png" />
-        <MudCardContent>
-            <MudText Typo="Typo.h5">Swol Yep</MudText>
-            <MudText Typo="Typo.body2">The Swolest Yep</MudText>
-            <MudText Typo="Typo.body2">Some say none surpass his swollness or yepness</MudText>
-        </MudCardContent>
-        <MudCardActions>
-            <MudButton Variant="Variant.Text" Color="Color.Primary">Share</MudButton>
-            <MudButton Variant="Variant.Text" Color="Color.Primary">Learn More</MudButton>
-        </MudCardActions>
-    </MudCard>
-    @foreach (Product p in productList)
-    {
-        <MudCard>
-            <MudCardMedia Image="@p.ImageUrl" Height="500" />
-            <MudCardContent>
-                <MudText Typo="Typo.h5">@p.Title</MudText>
-                <MudText Typo="Typo.body2">@p.Description</MudText>
-                <MudText Typo="Typo.body2">$@p.Price</MudText>
-                <MudText Typo="Typo.body2">@p.OwnerId</MudText>
-                <MudText Typo="Typo.body2">@p.Category</MudText>
-            </MudCardContent>
-            <MudCardActions>
-                <MudButton Variant="Variant.Text" Color="Color.Primary">Share</MudButton>
-                <MudButton Variant="Variant.Text" Color="Color.Primary">Learn More</MudButton>
-            </MudCardActions>
-        </MudCard>
-    }
+<div class="feed-container">
+    <div class="feed-content">
+
+        @foreach (Product p in productList)
+        {
+            <MudCard>
+                <MudCardMedia Class="card-img" Image="@p.ImageUrl" />
+                <MudCardContent>
+                    <MudText Typo="Typo.h5">@p.Title</MudText>
+                    <MudText Typo="Typo.body2">@p.Description</MudText>
+                    <MudText Typo="Typo.body2">$@p.Price</MudText>
+                    <MudText Typo="Typo.body2">@p.OwnerId</MudText>
+                    <MudText Typo="Typo.body2">@p.Category</MudText>
+                </MudCardContent>
+                <MudCardActions>
+                    <MudButton Variant="Variant.Text" Color="Color.Primary">Share</MudButton>
+                    <MudButton Variant="Variant.Text" Color="Color.Primary">Learn More</MudButton>
+                </MudCardActions>
+            </MudCard>
+        }
+    </div>
 </div>
 
 
@@ -46,3 +37,26 @@
     }
 
 }
+<style>
+    .card-img {
+        width: 20%;
+    }
+
+    .feed-container {
+        width: 50%;
+        min-height: 100% !important;
+        margin: auto;
+        display: block;
+        margin-bottom: 2em;
+        margin-top: 1.5em;
+        overflow:scroll;
+    }
+
+    .feed-content {
+        min-height: 100% !important;
+        padding-left: 3em;
+        padding-right: 3em;
+        align-self: center;
+    }
+
+</style>

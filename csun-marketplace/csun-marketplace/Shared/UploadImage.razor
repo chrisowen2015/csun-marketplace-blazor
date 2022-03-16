@@ -29,6 +29,7 @@
     {
         try
         {
+            
             Stream stream = selectedFile.OpenReadStream();
             var path = $"{env.WebRootPath}\\images\\{selectedFile.Name}";
             filePath = "/images/" + selectedFile.Name;
