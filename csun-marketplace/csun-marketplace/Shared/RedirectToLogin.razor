@@ -1,7 +1,22 @@
 ﻿@inject NavigationManager Navigation
 @code{
-    protected override void OnInitialized()
+    //protected override void OnInitialized()
+    //{
+    //    Navigation.NavigateTo("Identity/Account/Login?returnUrl=" + Uri.EscapeDataString(Navigation.Uri), true);
+    //}
+
+
+    [CascadingParameter]
+    protected Task<AuthenticationState> AuthenticationStateTask { get; set; }
+
+    protected async override Task OnInitializedAsync()
     {
-        Navigation.NavigateTo("Identity/Account/Login?returnUrl=" + Uri.EscapeDataString(Navigation.Uri), true);
+        base.OnInitialized();
+        var user = (await AuthenticationStateTask).User;
+        if (!user.Identity.IsAuthenticated)
+        {
+            //Navigation.NavigateTo($"Identity/Account/Login?returnUrl={Uri.EscapeDataString(Navigation.Uri)}");
+            Navigation.NavigateTo($"Identity/Account/Login?returnUrl=/{Navigation.ToBaseRelativePath(Navigation.Uri)}");
+        }
     }
 }
