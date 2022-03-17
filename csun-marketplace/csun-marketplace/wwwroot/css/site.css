@@ -102,3 +102,16 @@ a, .btn-link {
 .form-row {
     padding: 1em;
 }
+
+
+.row {
+    justify-content:center;
+}
+
+.iden-footer {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    white-space: nowrap;
+    line-height: 60px;
+}
