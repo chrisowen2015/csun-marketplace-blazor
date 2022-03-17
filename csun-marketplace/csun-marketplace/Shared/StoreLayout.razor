@@ -34,7 +34,7 @@
                 Tabs at this point seem best suited to providing a filter hierarchy or something of the sort in their main content. The tab content doesn't seem to take up the whole page,
                 and so it doesn't seem ideal for displaying different pages internally.
             *@
-            <MudTabPanel Icon="@Icons.Material.Filled.Home" Text="Store Home" />
+            <MudTabPanel Icon="@Icons.Material.Filled.Home" Text="Store Home" OnClick="@(() => _navMan.NavigateTo("/store"))" />
             @*
                 Bring back to store home
             *@
