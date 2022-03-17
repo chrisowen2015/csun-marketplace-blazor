@@ -104,8 +104,22 @@ a, .btn-link {
 }
 
 
+/*Identity login register pages css*/
+.iden-h1 {
+    display: flex;
+    justify-content: center;
+    margin-bottom:30px;
+}
+
 .row {
-    justify-content:center;
+    --bs-gutter-x: 1.5rem;
+    --bs-gutter-y: 0;
+    display: flex;
+    flex-wrap: wrap;
+    margin-top: calc(var(--bs-gutter-y) * -1);
+    margin-right: calc(var(--bs-gutter-x) * -.5);
+    margin-left: calc(var(--bs-gutter-x) * -.5);
+    justify-content: center;
 }
 
 .iden-footer {
@@ -114,4 +128,13 @@ a, .btn-link {
     width: 100%;
     white-space: nowrap;
     line-height: 60px;
+}
+
+.iden-btn{
+    margin-bottom: 20px;
+}
+
+.iden-form {
+    margin-top: 15px;
+    margin-bottom: 15px;
 }
