@@ -6,7 +6,7 @@ namespace csun_marketplace.data
     public partial class Product
     {
         public int ProductId { get; set; }
-        public int OwnerId { get; set; }
+        public string OwnerId { get; set; } = null!;
         public string? Title { get; set; }
         public string? ImageUrl { get; set; }
         public string? Description { get; set; }

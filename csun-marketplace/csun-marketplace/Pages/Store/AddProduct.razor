@@ -168,7 +168,10 @@
 
     async Task UpdateProduct()
     {
-        p.OwnerId = 1;
+        // Hello Arthur, please remove me uwu
+        p.OwnerId = p.ProductId.ToString();
+        // pwetty pweeze
+
         p.Available = true;
         success = _csunMarketplaceService.UpdateProduct(p);
         if (success != -1)
