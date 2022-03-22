@@ -16,8 +16,8 @@
         if (!user.Identity.IsAuthenticated)
         {
             //Navigation.NavigateTo($"Identity/Account/Login?returnUrl={Uri.EscapeDataString(Navigation.Uri)}"); //original
-            //Navigation.NavigateTo($"Identity/Account/Login?returnUrl=/{Navigation.ToBaseRelativePath(Navigation.Uri)}"); //working auto return url
-            Navigation.NavigateTo($"Identity/Account/Login?returnUrl=/store"); //forces /store to be home page always after login
+            Navigation.NavigateTo($"Identity/Account/Login?returnUrl=/{Navigation.ToBaseRelativePath(Navigation.Uri)}"); //working auto return url
+            //Navigation.NavigateTo($"Identity/Account/Login?returnUrl=/store"); //forces /store to be home page always after login
         }
     }
 }

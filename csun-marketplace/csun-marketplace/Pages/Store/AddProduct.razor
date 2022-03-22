@@ -1,4 +1,5 @@
 ﻿@page "/product-form"
+@using System.Globalization
 @using csun_marketplace.data;
 @using csun_marketplace.services;
 @using System;
@@ -12,59 +13,82 @@
 
         <div class="page-header-container">
             <MudText Class="form-header" Color="Color.Default">
-                Create New Listing
+                <h1>
+                    Create New Listing
+                </h1>
             </MudText>
         </div>
 
         <div class="form-row">
-            <MudTextField Label="Product Title" T="string" @bind-Value=p.Title />
+            <MudTextField Label="Product Title" T="string" @bind-Value=p.Title Variant="Variant.Filled" />
         </div>
+
+        <MudText Color="Color.Surface" Class="upload-image-label">
+            <h5>
+                Upload Image
+            </h5>
+        </MudText>
+
         <div class="form-row">
             @if (imgSaved)
             {
-                <MudImage Src="@filePath" />
+                @*Copied straight from the feed, code should be refined*@
+
+                if (p.ImageSource != null)
+                {
+                    string imgSource = Convert.ToBase64String(p.ImageSource);
+                    try
+                    {
+                        p.ImageUrl = string.Format("data:image/jpg;base64,{0}", imgSource);
+                    }
+                    catch (FormatException f)
+                    {
+                        Console.WriteLine("F " + f);
+                    }
+                }
+                <MudImage Src="@p.ImageUrl" />
             }
-            <MudText Color="Color.Surface" Class="upload-image-label">
-                Upload Image
-            </MudText>
-            <form @onsubmit="@OnImageSubmit">
+            <div class="img-input-div">
                 <InputFile OnChange="OnInputFileChange" />
-                <MudButton ButtonType="ButtonType.Submit" Color="Color.Default" Variant="Variant.Filled" Size="Size.Small">
-                    Upload
-                </MudButton>
-            </form>
+            </div>
         </div>
 
         <div class="form-row">
-            <MudTextField Label="Description" T="string" @bind-Value=p.Description />
+            <MudTextField Label="Description" T="string" @bind-Value=p.Description Variant="Variant.Filled" Lines="8" />
         </div>
 
-        <div class="form-row">
-            <MudTextField Label="Price" T="decimal?" @bind-Value=p.Price />
+        <div class="grid-two">
+            <MudNumericField Class="elem-half" Label="Price" T="decimal?" @bind-Value=p.Price Variant="Variant.Filled" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.AttachMoney" />
+            <MudTextField Class="elem-half" Label="Date Created" T="DateTime" ReadOnly="true" @bind-Value=p.DateCreated Variant="Variant.Filled" Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Filled.CalendarMonth" />
         </div>
 
-        <div class="form-row">
-            <MudTextField Label="Date Created" T="DateTime" ReadOnly="true" @bind-Value=p.DateCreated />
-        </div>
 
         <div class="form-row">
-            <MudSelect T="string" @bind-Value=p.Category>
+            <MudSelect Label="Category" T="string" @bind-Value=p.Category Variant="Variant.Filled">
                 <MudSelectItem T="string" Value="@("Textbooks")" />
                 <MudSelectItem T="string" Value="@("Electronics")" />
                 <MudSelectItem T="string" Value="@("School Supplies")" />
             </MudSelect>
-            @*<MudTextField Label="Category" T="string" @bind-Value=p.Category />*@
         </div>
 
         <div class="form-row">
-            <MudTextField Label="Tags" T="string" @bind-Value=p.Tags />
+            <MudSelect Label="Tags" T="string" @bind-Value="p.Tags" Variant="Variant.Filled" MultiSelection="true" @onselect="@(()=>AddTag(p.Tags))">
+                @foreach (string tag in tagList)
+                {
+                    <MudSelectItem T="string" Value="@tag" OnClick="@(()=>AddTag(tag))"  />
+                }
+            </MudSelect>
+            <MudChipSet>
+                @foreach(string tag in selectedTags)
+                {
+                    <MudChip Text="@tag"/>
+                }
+            </MudChipSet>
         </div>
 
         <div class="form-row">
-            <MudButton Variant="Variant.Filled" OnClick=@(()=> UpdateProduct()) Color="Color.Secondary">Submit</MudButton>
+            <MudButton Variant="Variant.Filled" OnClick=@(()=> UpdateProduct()) Color="Color.Primary">Submit</MudButton>
         </div>
-
-
     </div>
 </div>
 
@@ -72,38 +96,56 @@
 @code {
     public Product p = new Product();
 
-    public string? filePath { get; set; }
+    public byte[]? imgSource { get; set; }
+    IBrowserFile? selectedFile;
     public bool imgSaved { get; set; } = false;
     int success = -2;
+    public CultureInfo _en = CultureInfo.GetCultureInfo("en-US");
+    public List<string> tagList = new List<string> { "Textbooks", "Electronics", "School Supplies", "Back to School", "Good Deal" };
+    public List<string> selectedTags = new List<string>();
+
 
     protected override async Task OnInitializedAsync()
     {
         p.DateCreated = System.DateTime.Now;
     }
-    IBrowserFile? selectedFile;
 
-    private void OnInputFileChange(InputFileChangeEventArgs e)
+    private async void OnInputFileChange(InputFileChangeEventArgs e)
     {
         selectedFile = e.File;
+        var resizedImage = await selectedFile.RequestImageFileAsync("image/jpg", 250, 250);
+        selectedFile = resizedImage;
         this.StateHasChanged();
+        SubmitImage();
     }
 
-    private async void OnImageSubmit()
+    private async void SubmitImage()
     {
         try
         {
             Stream stream = selectedFile.OpenReadStream();
+
             /*
-            * This could be easily modified to create a folder that is specific for this user, or folders based on ID, etc. to avoid clutter of the wwwroot folder.
-            * Look into rewriting later and providing a path that incorporates userId or productId to create appropriate folders
-            */
-            
-            var path = $"{env.WebRootPath}\\images\\{selectedFile.Name}";
-            filePath = "/images/" + selectedFile.Name;
-            FileStream fs = File.Create(path);
-            await stream.CopyToAsync(fs);
+            * Begin jank photo storage, bad
+             */
+
+
+
+
+
+            MemoryStream ms = new MemoryStream();
+
+            await stream.CopyToAsync(ms);
+
+            if (ms != null)
+            {
+                p.ImageSource = ms.ToArray();
+                ms.Close();
+            }
+            p.ImageUrl = string.Format("data:image/jpg;base64,{0}", imgSource);
+
             stream.Close();
-            fs.Close();
+
             imgSaved = true;
             this.StateHasChanged();
         }
@@ -112,14 +154,22 @@
             Console.WriteLine(e.ToString());
             // Write Error message to user here, user has uploaded an image that is too large
         }
+    }
 
+    private void AddTag(string tag)
+    {
+        if(!selectedTags.Contains(tag))
+        {
+            selectedTags.Add(tag);
+            this.StateHasChanged();
+            Console.WriteLine("Fired!");
+        }
     }
 
     async Task UpdateProduct()
     {
         p.OwnerId = 1;
         p.Available = true;
-        p.ImageUrl = filePath;
         success = _csunMarketplaceService.UpdateProduct(p);
         if (success != -1)
         {
@@ -135,4 +185,25 @@
 }
 
 <style>
+    .upload-image-label {
+        margin-left: 1em;
+    }
+
+    .img-input-div {
+        margin-top: 1em;
+    }
+
+    .grid-two {
+        display: flex !important;
+        flex-direction: row !important;
+        justify-content: space-between;
+        padding-top: .5em;
+        padding-bottom: .5em;
+        padding-left: 1em;
+        padding-right: 1em;
+    }
+
+    .elem-half {
+        max-width: 48%;
+    }
 </style>

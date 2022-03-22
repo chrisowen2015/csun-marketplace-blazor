@@ -1,4 +1,4 @@
-﻿@page "/store"
+﻿@page "/"
 @using csun_marketplace.data
 @using csun_marketplace.services
 @inject ICSUNMarketplaceService _csunMarketplaceService
@@ -6,23 +6,34 @@
 <div class="feed-container">
     <div class="feed-content">
 
-        @foreach (Product p in productList)
-        {
-            <MudCard>
-                <MudCardMedia Class="card-img" Image="@p.ImageUrl" />
-                <MudCardContent>
-                    <MudText Typo="Typo.h5">@p.Title</MudText>
-                    <MudText Typo="Typo.body2">@p.Description</MudText>
-                    <MudText Typo="Typo.body2">$@p.Price</MudText>
-                    <MudText Typo="Typo.body2">@p.OwnerId</MudText>
-                    <MudText Typo="Typo.body2">@p.Category</MudText>
-                </MudCardContent>
-                <MudCardActions>
-                    <MudButton Variant="Variant.Text" Color="Color.Primary">Share</MudButton>
-                    <MudButton Variant="Variant.Text" Color="Color.Primary">Learn More</MudButton>
-                </MudCardActions>
-            </MudCard>
-        }
+        <div class="products-container">
+            @if (productList != null)
+            {
+                @foreach (Product p in productList)
+                {
+                    <div class="product-tile">
+                        <div class="product-tile-header-container">
+                            <MudText Class="product-tile-header">
+                                @p.Title
+                            </MudText>
+                        </div>
+                        <div>
+                            <MudImage Src="@p.ImageUrl" Height="250" Width="250"/>
+                        </div>
+                        <div> 
+                            <MudText>
+                                $@p.Price
+                            </MudText>
+                        </div>
+                        <div class="product-tile-description-container">
+                            <MudText Class="product-tile-description">
+                                @p.Description
+                            </MudText>
+                        </div>
+                    </div>
+                }
+            }
+        </div>
     </div>
 </div>
 
@@ -33,13 +44,26 @@
     protected override async Task OnInitializedAsync()
     {
         productList = _csunMarketplaceService.GetProductList();
-
+        foreach (Product p in productList)
+        {
+            if (p.ImageSource != null)
+            {
+                string imgSource = Convert.ToBase64String(p.ImageSource);
+                try
+                {
+                    p.ImageUrl = string.Format("data:image/jpg;base64,{0}", imgSource);
+                }
+                catch (FormatException f)
+                {
+                    Console.WriteLine("F " + f);
+                }
+            }
+        }
     }
-
 }
 <style>
     .card-img {
-        width: 20%;
+        min-width: max-content;
     }
 
     .feed-container {
@@ -49,14 +73,40 @@
         display: block;
         margin-bottom: 2em;
         margin-top: 1.5em;
-        overflow:scroll;
     }
 
     .feed-content {
         min-height: 100% !important;
-        padding-left: 3em;
-        padding-right: 3em;
         align-self: center;
     }
 
+    .product-tile {
+        width: 280px;
+        height: 450px;
+        overflow-y: scroll;
+        margin: 5px;
+    }
+
+    .products-container {
+        display: flex !important;
+        flex-direction: row !important;
+        flex-flow: row wrap;
+        justify-content: space-evenly;
+        padding-top: .5em;
+        padding-bottom: .5em;
+        padding-left: 1em;
+        padding-right: 1em;
+    }
+    .product-tile-header {
+
+    }
+    .product-tile-description {
+        
+    }
+    .product-tile-description-container{
+        overflow: scroll;
+    }
+    .product-tile-header-container{
+        
+    }
 </style>
