@@ -11,6 +11,33 @@
         <h1>
             @userID
         </h1>
+        <div>
+            <div>
+                <MudTextField Label="First Name" T="string" Variant="Variant.Filled" ReadOnly=readOnly />
+            </div>
+            <div>
+                <MudTextField Label="Last Name" T="string" Variant="Variant.Filled" ReadOnly=readOnly />
+            </div>
+            <div>
+                <MudTextField Label="Bio" T="string" Variant="Variant.Filled" Lines="5" ReadOnly=readOnly />
+            </div>
+            <div>
+                <MudTextField Label="Join Date" T="DateTime" Variant="Variant.Filled" ReadOnly="true" />
+            </div>
+            <div>
+                <MudTextField Label="Rating" T="byte" Variant="Variant.Filled" ReadOnly="true" />
+            </div>
+            <div>
+                <MudTextField Label="Major" T="string" Variant="Variant.Filled" ReadOnly=readOnly />
+            </div>
+            <div>
+                <MudTextField Label="Gender" T="string" Variant="Variant.Filled" ReadOnly=readOnly />
+            </div>
+            <div>
+                <MudButton Variant="Variant.Filled" OnClick=@(() => EnableEdit()) Color="Color.Primary">Edit Profile</MudButton>
+                <MudButton Variant="Variant.Filled" OnClick=@(() => UpdateProfile()) Color="Color.Primary">Save Profile</MudButton>
+            </div>
+        </div>
     </Authorized>
     <NotAuthorized>
         Fuk u rando
@@ -19,6 +46,7 @@
 
 @code {
     public string userID { get; set; }
+    public bool readOnly = true;
 
     protected override async Task OnInitializedAsync()
     {
@@ -27,11 +55,20 @@
     }
 
 
-
     async Task<string> GetUserId()
     {
         var user = (await _authenticationStateProvider.GetAuthenticationStateAsync()).User;
         var UserId = user.FindFirst(u => u.Type.Contains("nameidentifier"))?.Value;
         return UserId;
+    }
+
+    public void EnableEdit()
+    {
+        readOnly = false;
+    }
+
+    public void UpdateProfile()
+    {
+        readOnly = true;
     }
 }
