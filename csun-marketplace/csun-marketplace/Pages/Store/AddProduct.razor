@@ -3,10 +3,14 @@
 @using csun_marketplace.data;
 @using csun_marketplace.services;
 @using System;
+@using Microsoft.AspNetCore.Authentication
+@using Microsoft.AspNetCore.Components.Authorization
+@using Microsoft.AspNetCore.Identity
 
 @inject ICSUNMarketplaceService _csunMarketplaceService
 @inject IWebHostEnvironment env
 @inject ISnackbar Snackbar
+@inject AuthenticationStateProvider _authenticationStateProvider
 
 <div class="page-container">
     <div class="page-content">
@@ -103,11 +107,20 @@
     public CultureInfo _en = CultureInfo.GetCultureInfo("en-US");
     public List<string> tagList = new List<string> { "Textbooks", "Electronics", "School Supplies", "Back to School", "Good Deal" };
     public List<string> selectedTags = new List<string>();
+    public string userID { get; set; }
 
 
     protected override async Task OnInitializedAsync()
     {
         p.DateCreated = System.DateTime.Now;
+        userID = await GetUserId();
+    }
+
+    async Task<string> GetUserId()
+    {
+        var user = (await _authenticationStateProvider.GetAuthenticationStateAsync()).User;
+        var UserId = user.FindFirst(u => u.Type.Contains("nameidentifier"))?.Value;
+        return UserId;
     }
 
     private async void OnInputFileChange(InputFileChangeEventArgs e)
@@ -169,8 +182,12 @@
     async Task UpdateProduct()
     {
         // Hello Arthur, please remove me uwu
-        p.OwnerId = p.ProductId.ToString();
+        //p.OwnerId = p.ProductId.ToString();
         // pwetty pweeze
+
+        // Hewo, I fix :3
+        // gets logged in user's unique id and associates it with the product
+        p.OwnerId = userID;
 
         p.Available = true;
         success = _csunMarketplaceService.UpdateProduct(p);
