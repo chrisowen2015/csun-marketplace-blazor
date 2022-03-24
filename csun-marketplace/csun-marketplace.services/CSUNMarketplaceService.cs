@@ -59,7 +59,7 @@ namespace csun_marketplace.services
                 Title = p.Title,
                 ImageUrl = p.ImageUrl,
                 Description = p.Description,
-                ImageSource= p.ImageSource,
+                ImageSource = p.ImageSource,
 
                 Price = p.Price,
                 Available = p.Available,
@@ -79,7 +79,7 @@ namespace csun_marketplace.services
                 OwnerId = p.OwnerId,
                 Title = p.Title,
                 ImageUrl = p.ImageUrl,
-                ImageSource=p.ImageSource,
+                ImageSource = p.ImageSource,
                 Description = p.Description,
                 Price = p.Price,
                 Available = p.Available,
@@ -166,24 +166,46 @@ namespace csun_marketplace.services
             try
             {
                 var CSUNMarketplaceEvaluatorDB = _context.CreateDbContext();
+                try
+                {
+                    UserInformation user = CSUNMarketplaceEvaluatorDB.UserInformations.Where(p => p.UserId == uvm.UserId).Single();
 
-                UserInformation user = CSUNMarketplaceEvaluatorDB.UserInformations.Where(p => p.UserId == uvm.UserId).Single();
+                    user.FirstName = uvm.FirstName;
+                    user.LastName = uvm.LastName;
+                    user.Bio = uvm.Bio;
+                    user.JoinDate = uvm.JoinDate;
+                    user.Rating = uvm.Rating;
+                    user.Major = uvm.Major;
+                    user.Gender = uvm.Gender;
 
-                user.FirstName = uvm.FirstName;
-                user.LastName = uvm.LastName;
-                user.Bio = uvm.Bio;
-                user.JoinDate = uvm.JoinDate;
-                user.Rating = uvm.Rating;
-                user.Major = uvm.Major;
-                user.Gender = uvm.Gender;
-
-                CSUNMarketplaceEvaluatorDB.SaveChanges();
-                return user.UserId;
-            }
-            catch (Exception ex)
+                    CSUNMarketplaceEvaluatorDB.SaveChanges();
+                    return user.UserId;
+                }
+                catch (Exception ex)
+                {
+                    UserInformation user = new UserInformation
+                    {
+                        UserId = uvm.UserId,
+                        Email = uvm.Email,
+                        FirstName = uvm.FirstName,
+                        LastName = uvm.LastName,
+                        Bio = uvm.Bio,
+                        JoinDate = uvm.JoinDate,
+                        Rating = uvm.Rating,
+                        Major = uvm.Major,
+                        Gender = uvm.Gender,
+                    };
+                    CSUNMarketplaceEvaluatorDB.UserInformations.Add(user);
+                    CSUNMarketplaceEvaluatorDB.SaveChanges();
+                    
+                    return user.UserId;
+                }
+            } catch (Exception ex)
             {
+                Console.WriteLine(ex.Message);
                 return "";
             }
+            
         }
     }
 }
