@@ -2,6 +2,7 @@
 @using csun_marketplace.data
 @using csun_marketplace.services
 @inject ICSUNMarketplaceService _csunMarketplaceService
+@inject NavigationManager _navMan
 
 <div class="feed-container">
     <div class="feed-content">
@@ -11,16 +12,16 @@
             {
                 @foreach (Product p in productList)
                 {
-                    <div class="product-tile">
+                    <div class="product-tile" @onclick=@(()=>ViewProduct(p.ProductId))>
                         <div class="product-tile-header-container">
                             <MudText Class="product-tile-header">
                                 @p.Title
                             </MudText>
                         </div>
                         <div>
-                            <MudImage Src="@p.ImageUrl" Height="250" Width="250"/>
+                            <MudImage Src="@p.ImageUrl" Height="250" Width="250" />
                         </div>
-                        <div> 
+                        <div>
                             <MudText>
                                 $@p.Price
                             </MudText>
@@ -30,6 +31,7 @@
                                 @p.Description
                             </MudText>
                         </div>
+
                     </div>
                 }
             }
@@ -59,6 +61,11 @@
                 }
             }
         }
+    }
+
+    public void ViewProduct(int productId)
+    {
+        _navMan.NavigateTo("/product/" + productId);
     }
 }
 <style>
@@ -97,16 +104,17 @@
         padding-left: 1em;
         padding-right: 1em;
     }
-    .product-tile-header {
 
+    .product-tile-header {
     }
+
     .product-tile-description {
-        
     }
-    .product-tile-description-container{
+
+    .product-tile-description-container {
         overflow: scroll;
     }
-    .product-tile-header-container{
-        
+
+    .product-tile-header-container {
     }
 </style>

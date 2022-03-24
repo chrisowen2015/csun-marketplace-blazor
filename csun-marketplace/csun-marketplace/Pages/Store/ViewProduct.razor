@@ -1,0 +1,105 @@
+﻿@page "/product/{productId}"
+@using System.Globalization
+@using csun_marketplace.data;
+@using csun_marketplace.services;
+@using System;
+@using Microsoft.AspNetCore.Authentication
+@using Microsoft.AspNetCore.Components.Authorization
+@using Microsoft.AspNetCore.Identity
+
+@inject ICSUNMarketplaceService _csunMarketplaceService
+@inject IWebHostEnvironment env
+@inject ISnackbar Snackbar
+@inject AuthenticationStateProvider _authenticationStateProvider
+
+<div class="page-container">
+    <div class="page-content">
+
+        <div class="page-header-container">
+            <MudText Class="form-header" Color="Color.Default">
+                <h1>
+                    Create New Listing
+                </h1>
+            </MudText>
+        </div>
+
+        <div class="form-row">
+            <MudTextField Label="Product Title" T="string" @bind-Value=p.Title Variant="Variant.Filled" ReadOnly="true" />
+        </div>
+
+        <MudImage Src="@p.ImageUrl" />
+
+        <div class="form-row">
+            <MudTextField Label="Description" T="string" @bind-Value=p.Description Variant="Variant.Filled" Lines="8" ReadOnly="true" />
+        </div>
+
+        <div class="grid-two">
+            <MudNumericField Class="elem-half" Label="Price" T="decimal?" @bind-Value=p.Price Variant="Variant.Filled" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.AttachMoney" ReadOnly="true"/>
+            <MudTextField Class="elem-half" Label="Date Created" T="DateTime" ReadOnly="true" @bind-Value=p.DateCreated Variant="Variant.Filled" Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Filled.CalendarMonth" />
+        </div>
+
+
+        <div class="form-row">
+            <MudTextField Label="Category" T="string" @bind-Value=p.Category Variant="Variant.Filled" ReadOnly="true"/>
+        </div>
+
+    </div>
+</div>
+
+
+@code {
+    [Parameter]
+    public string productId { get; set; }
+
+    public Product p { get; set; }
+
+    protected override void OnParametersSet()
+    {
+        try
+        {
+            p = _csunMarketplaceService.GetProduct(Int32.Parse(productId));
+        }
+        catch
+        {
+            p = new Product();
+        }
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        
+    }
+
+    async Task<string> GetUserId()
+    {
+        var user = (await _authenticationStateProvider.GetAuthenticationStateAsync()).User;
+        var UserId = user.FindFirst(u => u.Type.Contains("nameidentifier"))?.Value;
+        return UserId;
+    }
+
+
+}
+
+<style>
+    .upload-image-label {
+        margin-left: 1em;
+    }
+
+    .img-input-div {
+        margin-top: 1em;
+    }
+
+    .grid-two {
+        display: flex !important;
+        flex-direction: row !important;
+        justify-content: space-between;
+        padding-top: .5em;
+        padding-bottom: .5em;
+        padding-left: 1em;
+        padding-right: 1em;
+    }
+
+    .elem-half {
+        max-width: 48%;
+    }
+</style>
