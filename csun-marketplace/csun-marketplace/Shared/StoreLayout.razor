@@ -2,100 +2,87 @@
 @layout MainLayout
 @inject NavigationManager _navMan
 
+
+
 <MudLayout Class="layout-content">
-    <MudLayout>
-        <MudThemeProvider @bind-IsDarkMode="@_isDarkMode" Theme="@_theme" />
-        @*Top Bar for Search, logo*@
-        <MudAppBar Elevation="2" DisableGutters="true">
-            <MudIconButton Icon="@Icons.Material.Filled.Menu" Class="hamburger" OnClick="@ToggleDrawer" />
-            <MudButton Class="site-header-label-button">
-                <MudImage Height="40" Src="https://cdn.discordapp.com/attachments/911058579073675284/951718035683672084/csun_logo.png" />
-                <MudText Class="site-header-label">
-                    Marketplace
+    <MudThemeProvider @bind-IsDarkMode="@_isDarkMode" Theme="@_theme" />
+    @*Top Bar for Search, logo*@
+    <MudAppBar Elevation="2" DisableGutters="true">
+        <MudIconButton Icon="@Icons.Material.Filled.Menu" Class="hamburger" OnClick="@ToggleDrawer" />
+        <MudButton Class="site-header-label-button" OnClick="@(()=>_navMan.NavigateTo("/"))">
+            <MudImage Height="40" Src="https://cdn.discordapp.com/attachments/911058579073675284/951718035683672084/csun_logo.png" />
+            <MudText Color="Color.Default" Class="site-header-label">
+                Marketplace
+            </MudText>
+        </MudButton>
+        <MudButton Class="filter-button" Variant="Variant.Text">
+            <MudText Class="filter-button-text">
+                Filter
+            </MudText>
+            <MudIcon Icon="@Icons.Material.Filled.ArrowDropDown" Size="Size.Medium" />
+        </MudButton>
+        <MudTextField OnAdornmentClick="@searchFunction" FullWidth="true" AdornmentIcon="@Icons.Material.Filled.Search" Adornment="Adornment.End" Class="search-bar" Label="Search CSUN Marketplace" DisableUnderLine="true" Variant="Variant.Filled" @bind-Value="searchTerm" />
+        <MudSwitch Class="dark-mode-toggle" T="bool" @bind-Checked="@_isDarkMode" Color="Color.Primary" Label="Toggle Dark Mode" />
+        <MudIconButton Icon="@Icons.Material.Filled.AccountCircle" />
+        <MudIconButton Icon="@Icons.Material.Filled.Help" />
+        <LoginDisplay />
+        <MudIconButton Class="right-top-button" Icon="@Icons.Material.Rounded.Settings" />
+    </MudAppBar>
+
+    <MudTabs Centered="true" Rounded="false" Border="true">
+        <MudTabPanel Icon="@Icons.Material.Filled.Home" Text="Store Home" OnClick="@(() => _navMan.NavigateTo("/"))" />
+        <MudTabPanel Icon="@Icons.Material.Filled.Add" Text="New Listing" OnClick="@(() => _navMan.NavigateTo("/product-form"))" />
+
+        <MudTabPanel Icon="@Icons.Material.Filled.TrendingUp" Text="Popular Items" />
+
+        <MudTabPanel Icon="@Icons.Material.Filled.Bookmark" Text="Bookmarked" />
+
+        <MudTabPanel Icon="@Icons.Material.Filled.History" Text="Order History" />
+
+        <MudTabPanel Icon="@Icons.Material.Filled.LibraryBooks" Text="Textbooks" />
+
+        <MudTabPanel Icon="@Icons.Material.Filled.Monitor" Text="Electronics" />
+
+        <MudTabPanel Icon="@Icons.Material.Filled.DynamicForm" Text="School Supplies" />
+
+    </MudTabs>
+
+    <MudDrawer ClipMode="DrawerClipMode.Docked" @bind-Open="@drawerOpen">
+        <MudDrawerHeader Class="drawer-header">
+            <MudButton FullWidth="true" Variant=Variant.Text>
+                <MudIcon Icon="@Icons.Material.Filled.AccountCircle" />
+                <MudText Class="drawer-header">
+                    Hello, Signed In User
                 </MudText>
             </MudButton>
-            <MudButton Class="filter-button" Variant="Variant.Text">
-                <MudText Class="filter-button-text">
-                    Filter
-                </MudText>
-                <MudIcon Icon="@Icons.Material.Filled.ArrowDropDown" Size="Size.Medium" />
-            </MudButton>
-            <MudTextField OnAdornmentClick="@searchFunction" FullWidth="true" AdornmentIcon="@Icons.Material.Filled.Search" Adornment="Adornment.End" Class="search-bar" Label="Search CSUN Marketplace" DisableUnderLine="true" Variant="Variant.Filled" @bind-Value="searchTerm" />
-            <MudSwitch Class="dark-mode-toggle" T="bool" @bind-Checked="@_isDarkMode" Color="Color.Primary" Label="Toggle Dark Mode" />
-            <MudIconButton Icon="@Icons.Material.Filled.AccountCircle" />
-            <MudIconButton Icon="@Icons.Material.Filled.Help" />
-            <MudIconButton Class="right-top-button" Icon="@Icons.Material.Rounded.Settings" />
-        </MudAppBar>
-        <MudTabs Centered="true" Rounded="false" Border="true">
-            @*
-                Tabs at this point seem best suited to providing a filter hierarchy or something of the sort in their main content. The tab content doesn't seem to take up the whole page,
-                and so it doesn't seem ideal for displaying different pages internally.
-            *@
-            <MudTabPanel Icon="@Icons.Material.Filled.Home" Text="Store Home" />
-            @*
-                Bring back to store home
-            *@
-            <MudTabPanel Icon="@Icons.Material.Filled.Add" Text="New Listing" OnClick="@(() => _navMan.NavigateTo("/product-form"))" />
-            @*
-                Bring back to store home
-            *@
-            @*
-                Bring back to store home
-                Eventually add some kind of logic for item popularity?
-            *@
-            <MudTabPanel Icon="@Icons.Material.Filled.TrendingUp" Text="Popular Items" />
+        </MudDrawerHeader>
+        <MudNavMenu>
+            <MudNavLink>
+                All Products
+            </MudNavLink>
+            <MudNavLink>
+                Popular Items
+            </MudNavLink>
+            <MudNavLink>
+                Textbooks
+            </MudNavLink>
+            <MudNavLink>
+                Electronics
+            </MudNavLink>
+            <MudNavLink>
+                School Supplies
+            </MudNavLink>
+        </MudNavMenu>
+    </MudDrawer>
 
-            <MudTabPanel Icon="@Icons.Material.Filled.Bookmark" Text="Bookmarked" />
+    <MudMainContent>
+        @Body
 
-            <MudTabPanel Icon="@Icons.Material.Filled.History" Text="Order History" />
+    </MudMainContent>
 
-            <MudTabPanel Icon="@Icons.Material.Filled.LibraryBooks" Text="Textbooks" />
-
-            <MudTabPanel Icon="@Icons.Material.Filled.Monitor" Text="Electronics" />
-
-            <MudTabPanel Icon="@Icons.Material.Filled.DynamicForm" Text="School Supplies" />
-
-        </MudTabs>
-
-        <MudDrawer ClipMode="DrawerClipMode.Docked" @bind-Open="@drawerOpen">
-            <MudDrawerHeader Class="drawer-header">
-                <MudButton FullWidth="true" Variant=Variant.Text>
-                    <MudIcon Icon="@Icons.Material.Filled.AccountCircle" />
-                    <MudText Class="drawer-header">
-                        Hello, Signed In User
-                    </MudText>
-                </MudButton>
-            </MudDrawerHeader>
-            <MudNavMenu>
-                <MudNavLink>
-                    All Products
-                </MudNavLink>
-                <MudNavLink>
-                    Popular Items
-                </MudNavLink>
-                <MudNavLink>
-                    Textbooks
-                </MudNavLink>
-                <MudNavLink>
-                    Electronics
-                </MudNavLink>
-                <MudNavLink>
-                    School Supplies
-                </MudNavLink>
-            </MudNavMenu>
-        </MudDrawer>
-
-        <MudMainContent>
-            <MudPaper Height="100%" Width="100%" Class="main-content">
-                @Body
-            </MudPaper>
-
-        </MudMainContent>
-
-        <MudAppBar Dense="true" Bottom="true">
-            <MudDivider />
-        </MudAppBar>
-    </MudLayout>
+    <MudAppBar Dense="true" Bottom="true">
+        <MudDivider />
+    </MudAppBar>
 </MudLayout>
 
 
@@ -136,11 +123,11 @@
     }
 
     .site-header-label {
-        font-size: 25px;
+        font-size: 28px;
     }
 
     .site-header-label-button {
-        min-width: 270px !important;
+        min-width: 283px !important;
     }
 
     .filter-button {

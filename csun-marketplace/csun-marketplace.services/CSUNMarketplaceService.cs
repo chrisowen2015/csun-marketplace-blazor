@@ -69,7 +69,7 @@ namespace csun_marketplace.services
             return productList;
         }
 
-        public List<Product> GetUsersProducts(int userId)
+        public List<Product> GetUsersProducts(string userId)
         {
             var CSUNMarketplaceEvaluatorDB = _context.CreateDbContext();
 
@@ -139,7 +139,7 @@ namespace csun_marketplace.services
             }
         }
 
-        public UserInformation GetUserInformation(int userId)
+        public UserInformation GetUserInformation(string userId)
         {
             var CSUNMarketplaceEvaluatorDB = _context.CreateDbContext();
 
@@ -161,51 +161,28 @@ namespace csun_marketplace.services
             return user;
         }
 
-        public int UpdateUserInformation(UserInformation uvm)
+        public string UpdateUserInformation(UserInformation uvm)
         {
             try
             {
                 var CSUNMarketplaceEvaluatorDB = _context.CreateDbContext();
 
-                if (uvm.UserId == 0)
-                {
-                    UserInformation user = new UserInformation
-                    {
-                        UserId = uvm.UserId,
-                        Email = uvm.Email,
-                        FirstName = uvm.FirstName,
-                        LastName = uvm.LastName,
-                        Bio = uvm.Bio,
-                        JoinDate = uvm.JoinDate,
-                        Rating = uvm.Rating,
-                        Major = uvm.Major,
-                        Gender = uvm.Gender
-                    };
+                UserInformation user = CSUNMarketplaceEvaluatorDB.UserInformations.Where(p => p.UserId == uvm.UserId).Single();
 
-                    CSUNMarketplaceEvaluatorDB.UserInformations.Add(user);
-                    CSUNMarketplaceEvaluatorDB.SaveChanges();
-                    return user.UserId;
+                user.FirstName = uvm.FirstName;
+                user.LastName = uvm.LastName;
+                user.Bio = uvm.Bio;
+                user.JoinDate = uvm.JoinDate;
+                user.Rating = uvm.Rating;
+                user.Major = uvm.Major;
+                user.Gender = uvm.Gender;
 
-                }
-                else
-                {
-                    UserInformation user = CSUNMarketplaceEvaluatorDB.UserInformations.Where(p => p.UserId == uvm.UserId).Single();
-
-                    user.FirstName = uvm.FirstName;
-                    user.LastName = uvm.LastName;
-                    user.Bio = uvm.Bio;
-                    user.JoinDate = uvm.JoinDate;
-                    user.Rating = uvm.Rating;
-                    user.Major = uvm.Major;
-                    user.Gender = uvm.Gender;
-
-                    CSUNMarketplaceEvaluatorDB.SaveChanges();
-                    return user.UserId;
-                }
+                CSUNMarketplaceEvaluatorDB.SaveChanges();
+                return user.UserId;
             }
             catch (Exception ex)
             {
-                return -1;
+                return "";
             }
         }
     }

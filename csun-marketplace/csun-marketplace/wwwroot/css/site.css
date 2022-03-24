@@ -63,7 +63,9 @@ a, .btn-link {
         content: "An error has occurred."
     }
 
-
+/*
+        Shared CSS styles for store pages/form pages
+    */
 .page-container {
     width: 50%;
     min-height: 100% !important;
@@ -72,9 +74,10 @@ a, .btn-link {
     border: 1px solid dimgray;
     border-radius: 8px;
     box-shadow: 4px 2px 2px dimgray;
-    margin-bottom: 2em;
+    margin-bottom: 2em !important;
+    padding-bottom: 2em !important;
     margin-top: 1.5em;
-    overflow:auto;
+    overflow: auto;
 }
 
 .page-content {
@@ -100,5 +103,44 @@ a, .btn-link {
 }
 
 .form-row {
-    padding: 1em;
+    padding-top: .5em;
+    padding-bottom: .5em;
+    padding-left: 1em;
+    padding-right: 1em;
+}
+
+/*Identity login register pages css*/
+
+.iden-h1 {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 30px;
+}
+
+.row {
+    --bs-gutter-x: 1.5rem;
+    --bs-gutter-y: 0;
+    display: flex;
+    flex-wrap: wrap;
+    margin-top: calc(var(--bs-gutter-y) * -1);
+    margin-right: calc(var(--bs-gutter-x) * -.5);
+    margin-left: calc(var(--bs-gutter-x) * -.5);
+    justify-content: center;
+}
+
+.iden-footer {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    white-space: nowrap;
+    line-height: 60px;
+}
+
+.iden-btn {
+    margin-bottom: 20px;
+}
+
+.iden-form {
+    margin-top: 15px;
+    margin-bottom: 15px;
 }

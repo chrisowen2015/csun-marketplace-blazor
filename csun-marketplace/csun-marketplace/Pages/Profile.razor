@@ -1,0 +1,37 @@
+﻿@page "/profile"
+@using Microsoft.AspNetCore.Authentication
+@using Microsoft.AspNetCore.Components.Authorization
+@using Microsoft.AspNetCore.Identity
+
+@inject AuthenticationStateProvider _authenticationStateProvider
+
+<AuthorizeView>
+    <Authorized>
+        @context.User.Identity.Name
+        <h1>
+            @userID
+        </h1>
+    </Authorized>
+    <NotAuthorized>
+        Fuk u rando
+    </NotAuthorized>
+</AuthorizeView>
+
+@code {
+    public string userID { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        userID = await GetUserId();
+        // Load User's profile information
+    }
+
+
+
+    async Task<string> GetUserId()
+    {
+        var user = (await _authenticationStateProvider.GetAuthenticationStateAsync()).User;
+        var UserId = user.FindFirst(u => u.Type.Contains("nameidentifier"))?.Value;
+        return UserId;
+    }
+}

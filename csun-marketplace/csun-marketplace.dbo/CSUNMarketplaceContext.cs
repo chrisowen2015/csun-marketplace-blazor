@@ -45,6 +45,8 @@ namespace csun_marketplace.dbo
 
                 entity.Property(e => e.ImageUrl).IsUnicode(false);
 
+                entity.Property(e => e.OwnerId).IsUnicode(false);
+
                 entity.Property(e => e.Price).HasColumnType("decimal(18, 0)");
 
                 entity.Property(e => e.Tags).IsUnicode(false);
@@ -58,8 +60,6 @@ namespace csun_marketplace.dbo
 
                 entity.ToTable("UserInformation");
 
-                entity.Property(e => e.UserId).ValueGeneratedNever();
-
                 entity.Property(e => e.Bio).IsUnicode(false);
 
                 entity.Property(e => e.Email)
@@ -72,9 +72,7 @@ namespace csun_marketplace.dbo
 
                 entity.Property(e => e.Gender).HasMaxLength(50);
 
-                entity.Property(e => e.JoinDate)
-                    .HasColumnType("datetime")
-                    .HasDefaultValueSql("(getdate())");
+                entity.Property(e => e.JoinDate).HasColumnType("datetime");
 
                 entity.Property(e => e.LastName)
                     .HasMaxLength(50)
