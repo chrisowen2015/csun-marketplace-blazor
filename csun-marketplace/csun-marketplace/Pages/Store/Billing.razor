@@ -1,4 +1,4 @@
-﻿@page "/checkout"
+﻿@page "/billing"
 @using System.Globalization
 @using csun_marketplace.data;
 @using csun_marketplace.services;
@@ -10,7 +10,6 @@
 @inject ICSUNMarketplaceService _csunMarketplaceService
 @inject IWebHostEnvironment env
 @inject ISnackbar Snackbar
-@inject NavigationManager _navMan
 @inject AuthenticationStateProvider _authenticationStateProvider
 
 <div class="page-container">
@@ -19,16 +18,21 @@
         <div class="page-header-container">
             <MudText Class="form-header" Color="Color.Default">
                 <h1>
-                    Checkout
+                    Billing
                 </h1>
                 <h6>
-                    Shipping Information
+                    Billing Information
                 </h6>
             </MudText>
         </div>
 
+        <div class="grid-two">
+            <MudTextField Class="elem-half" Label="First Name" T="string" Variant="Variant.Filled" />
+            <MudTextField Class="elem-half" Label="Last Name" T="string" Variant="Variant.Filled" />
+        </div>
+
         <div class="form-row">
-            <MudTextField Label="Shipping Address" T="string" Variant="Variant.Filled" />
+            <MudTextField Label="Billing Address" T="string" Variant="Variant.Filled" />
         </div>
 
         <div class="grid-two">
@@ -42,8 +46,14 @@
         </div>
 
         <div class="form-row">
-            <MudButton Variant="Variant.Filled" OnClick="@(()=>_navMan.NavigateTo("/billing"))" Color="Color.Primary">Continue</MudButton>
+            <MudTextField Label="Card number" T="string" Variant="Variant.Filled" />
         </div>
+
+        <div class="grid-two">
+            <MudTextField Class="elem-half" Label="Expiration date" T="string" Variant="Variant.Filled" />
+            <MudTextField Class="elem-half" Label="Security code" T="string" Variant="Variant.Filled" />
+        </div>
+        
 
     </div>
 </div>
