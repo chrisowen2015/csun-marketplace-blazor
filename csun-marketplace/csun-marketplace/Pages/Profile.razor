@@ -2,36 +2,109 @@
 @using Microsoft.AspNetCore.Authentication
 @using Microsoft.AspNetCore.Components.Authorization
 @using Microsoft.AspNetCore.Identity
+@layout StoreLayout
 
 @inject AuthenticationStateProvider _authenticationStateProvider
+@inject ICSUNMarketplaceService _csunMarketplaceService
+@inject ISnackbar Snackbar
 
 <AuthorizeView>
     <Authorized>
-        @context.User.Identity.Name
-        <h1>
-            @userID
-        </h1>
+        <div class="page-container">
+            <div class="page-content">
+                <div>
+                    <MudTextField Label="First Name" T="string" @bind-Value="@User.FirstName" Variant="Variant.Filled" ReadOnly=readOnly />
+                </div>
+                <div>
+                    <MudTextField Label="Last Name" T="string" @bind-Value="@User.LastName" Variant="Variant.Filled" ReadOnly=readOnly />
+                </div>
+                <div>
+                    <MudTextField Label="Email" T="string" @bind-Value="@User.Email" Variant="Variant.Filled" ReadOnly="true" />
+                </div>
+                <div>
+                    <MudTextField Label="Bio" T="string" @bind-Value="@User.Bio" Variant="Variant.Filled" Lines="5" ReadOnly=readOnly />
+                </div>
+                <div>
+                    <MudTextField Label="Join Date" T="DateTime" @bind-Value="@User.JoinDate" Variant="Variant.Filled" ReadOnly="true" />
+                </div>
+                <div>
+                    <MudTextField Label="Rating" T="byte" @bind-Value="@User.Rating" Variant="Variant.Filled" ReadOnly="true" />
+                </div>
+                <div>
+                    <MudTextField Label="Major" T="string" @bind-Value="@User.Major" Variant="Variant.Filled" ReadOnly=readOnly />
+                </div>
+                <div>
+                    <MudSelect Label="Gender" @bind-Value="@User.Gender" T="string">
+                        <MudSelectItem T="string" Value="@("Male")" />
+                        <MudSelectItem T="string" Value="@("Female")" />
+                        <MudSelectItem T="string" Value="@("Other")" />
+                    </MudSelect>
+                </div>
+                <div>
+                    <MudButton Variant="Variant.Filled" OnClick=@(() => EnableEdit()) Color="Color.Primary">Edit Profile</MudButton>
+                    <MudButton Variant="Variant.Filled" OnClick=@(() => UpdateUserInformation()) Color="Color.Primary">Save Profile</MudButton>
+                </div>
+            </div>
+        </div>
     </Authorized>
     <NotAuthorized>
-        Fuk u rando
+        Pls sign in!
     </NotAuthorized>
 </AuthorizeView>
 
 @code {
-    public string userID { get; set; }
+    public string? userID { get; set; }
+    public string? email { get; set; }
+    public UserInformation User { get; set; }
+    public bool readOnly = true;
+    public string success { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
         userID = await GetUserId();
+        try
+        {
+            User = _csunMarketplaceService.GetUserInformation(userID);
+
+        }
+        catch (Exception e)
+        {
+            User = new UserInformation();
+            User.UserId = userID;
+            User.Email = email;
+            User.JoinDate = System.DateTime.Now;
+        }
         // Load User's profile information
     }
-
 
 
     async Task<string> GetUserId()
     {
         var user = (await _authenticationStateProvider.GetAuthenticationStateAsync()).User;
         var UserId = user.FindFirst(u => u.Type.Contains("nameidentifier"))?.Value;
+        email = user.FindFirst(u => u.Type.Contains("email"))?.Value;
         return UserId;
+    }
+
+    public void EnableEdit()
+    {
+        readOnly = false;
+    }
+
+    async Task UpdateUserInformation()
+    {
+
+        readOnly = true;
+
+        success = _csunMarketplaceService.UpdateUserInformation(User);
+        if (!String.IsNullOrWhiteSpace(success))
+        {
+            Snackbar.Add("Sucessfully Updated User Information!", Severity.Success);
+        }
+        else
+        {
+            // Error pop up, DB error
+            Snackbar.Add("There was a problem saving your user information.", Severity.Error);
+        }
     }
 }
