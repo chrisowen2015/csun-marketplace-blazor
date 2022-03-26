@@ -15,13 +15,18 @@
                 Marketplace
             </MudText>
         </MudButton>
-        <MudButton Class="filter-button" Variant="Variant.Text">
+        @*<MudButton Class="filter-button" Variant="Variant.Text">
             <MudText Class="filter-button-text">
-                Filter
+            Filter
             </MudText>
             <MudIcon Icon="@Icons.Material.Filled.ArrowDropDown" Size="Size.Medium" />
-        </MudButton>
-        <MudTextField OnAdornmentClick="@searchFunction" FullWidth="true" AdornmentIcon="@Icons.Material.Filled.Search" Adornment="Adornment.End" Class="search-bar" Label="Search CSUN Marketplace" DisableUnderLine="true" Variant="Variant.Filled" @bind-Value="searchTerm" />
+            </MudButton>*@
+        <MudSelect Style="width:150px;" T="string" Dense="true" Variant="Variant.Outlined" @bind-Value="@filterTerm" SelectedValuesChanged="@(()=>FilterSelect())" Clearable="true" OnClearButtonClick="@(()=>ResetFilter())" Placeholder="Filter">
+            <MudSelectItem Value=@("Textbooks") />
+            <MudSelectItem Value=@("Electronics") />
+            <MudSelectItem Value=@("School Supplies") />
+        </MudSelect>
+        <MudTextField OnAdornmentClick="@searchFunction" FullWidth="true" AdornmentIcon="@Icons.Material.Filled.Search" Adornment="Adornment.End" Class="search-bar" Label="@searchLabel" DisableUnderLine="true" Variant="Variant.Filled" @bind-Value="@searchTerm" />
         <MudSwitch Class="dark-mode-toggle" T="bool" @bind-Checked="@_isDarkMode" Color="Color.Primary" Label="Toggle Dark Mode" />
         <MudIconButton Icon="@Icons.Material.Filled.AccountCircle" />
         <MudIconButton Icon="@Icons.Material.Filled.Help" />
@@ -88,6 +93,12 @@
 
 
 @code {
+    public string? searchTerm { get; set; }
+    public string searchLabel = "Search CSUN Marketplace";
+    public string? filterTerm { get; set; }
+    public List<string> categories = new List<String> { "Textbooks", "Electronics", "School Supplies", };
+    bool drawerOpen = false;
+    private bool _isDarkMode = false;
     private MudTheme _theme = new MudTheme()
         {
             Palette = new Palette()
@@ -112,32 +123,31 @@
             },
 
         };
-    private bool _isDarkMode = false;
-
-    public string? searchTerm { get; set; }
-    public List<string> categories = new List<String> { "Textbooks", "Electronics", "School Supplies", };
-
-    public void myFunction()
-    {
-
-    }
-
-    bool drawerOpen = false;
 
     void ToggleDrawer()
     {
         drawerOpen = !drawerOpen;
     }
 
-
-
     /*
-     * This is where our search function will go, consider making this function call another function to display search results in a sub menu
+    * This is where our search function will go, consider making this function call another function to display search results in a sub menu
      */
 
     async Task searchFunction()
     {
 
+    }
+    public void FilterSelect()
+    {
+        if(!String.IsNullOrWhiteSpace(filterTerm))
+        {
+            searchLabel = "Search " + filterTerm + " in CSUN Marketplace";
+        }
+    }
+
+    public void ResetFilter()
+    {
+        searchLabel = "Search CSUN Marketplace";
     }
 }
 <style>
@@ -147,18 +157,19 @@
     }
 
     .site-header-label {
-        font-size: 28px;
+        font-size: 36px;
+        vertical-align: central !important;
     }
 
     .site-header-label-button {
-        min-width: 283px !important;
+        min-width: min-content !important;
     }
 
     .filter-button {
         height: 54px;
         top: 3px;
         min-width: 80px !important;
-        margin-left: 20px;
+        margin-left: 5px;
     }
 
     .filter-button-text {

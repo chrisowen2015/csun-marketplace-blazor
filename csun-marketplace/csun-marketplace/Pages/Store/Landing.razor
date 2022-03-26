@@ -3,44 +3,75 @@
 @using csun_marketplace.services
 @inject ICSUNMarketplaceService _csunMarketplaceService
 @inject NavigationManager _navMan
+<div>
+    <div class="carousel-container">
+        <MudCarousel TData="object" ShowBullets="false" Style="height:300px" AutoCycle="false" AutoCycleTime="TimeSpan.FromSeconds(10)">
+            <MudCarouselItem Transition="transition" Color="Color.Primary">
+                <div class="d-flex" style="height:100%">
+                    <MudText>
+                        <h1>Welcome to the Marketplace</h1>
+                    </MudText>
+                    <MudImage Src=@("../../images/SWOLYEP.png") />
+                    <h2>uwu</h2>
+                    <div class="spacer" />
+                </div>
+            </MudCarouselItem>
+            <MudCarouselItem Transition="transition" Color="@Color.Dark">
+                <div class="d-flex" style="height:100%">
+                    <MudIcon Class="mx-auto my-auto" Icon="@Icons.Custom.Brands.MudBlazor" Size="@Size.Large" />
+                </div>
+            </MudCarouselItem>
+            <MudCarouselItem Transition="transition" Color="@Color.Secondary">
+                <div class="d-flex" style="height:100%">
+                    <MudIcon Class="mx-auto my-auto" Icon="@Icons.Custom.Brands.MudBlazor" Color="@Color.Primary" Size="@Size.Large" />
+                </div>
+            </MudCarouselItem>
+        </MudCarousel>
+    </div>
 
-<div class="feed-container">
-    <div class="feed-content">
+    <div class="feed-container">
+        <div class="feed-content">
 
-        <div class="products-container">
-            @if (productList != null)
-            {
-                @foreach (Product p in productList)
+            <div class="products-container">
+                @if (productList != null)
                 {
-                    <MudPaper class="product-tile" Elevation=2 @onclick=@(()=>ViewProduct(p.ProductId))>
-                        <div>
-                            <MudImage Src="@p.ImageUrl" Height="250" Width="250" />
-                        </div>
-                        <div class="product-tile-header-container">
-                            <MudText Class="product-tile-header">
-                                @p.Title
-                            </MudText>
-                        </div>
-                        <div>
-                            <MudText Class="product-tile-price">
-                                $@p.Price
-                            </MudText>
-                        </div>
-                        <div class="product-tile-description-container">
-                            <MudText Class="product-tile-description">
-                                @p.Description
-                            </MudText>
-                        </div>
+                    @foreach (Product p in productList)
+                    {
+                        <MudPaper class="product-tile" Elevation=2 @onclick=@(()=>ViewProduct(p.ProductId))>
+                            <div>
+                                <MudImage ObjectPosition="ObjectPosition.Center" Src="@p.ImageUrl" Height="310" Width="310" />
+                            </div>
+                            <div class="product-tile-header-container">
+                                <MudText Class="product-tile-header">
+                                    @p.Title
+                                </MudText>
+                            </div>
+                            <div>
+                                <MudText Class="product-tile-price">
+                                    $@p.Price
+                                </MudText>
+                            </div>
+                            <MudTextField Value="p.Description" ReadOnly="true" Lines="4" Variant="Variant.Outlined" DisableUnderLine="true" Margin="Margin.Dense" Class="product-tile-description-container" />
 
-                    </MudPaper>
+                            @*<div class="product-tile-description-container">
+                                <MudText Class="product-tile-description">
+                                @p.Description
+                                </MudText>
+                                </div>*@
+
+                        </MudPaper>
+                    }
                 }
-            }
+            </div>
         </div>
     </div>
 </div>
 
 
+
 @code {
+    private bool autocycle = true;
+    private Transition transition = Transition.Slide;
     public List<Product>? productList { get; set; }
 
     protected override async Task OnInitializedAsync()
@@ -62,6 +93,21 @@
             }
         }
     }
+    public int GetLines(string description)
+    {
+        int lines = 1;
+        if (!String.IsNullOrWhiteSpace(description))
+        {
+            int accum = description.Length;
+            while (accum > 33)
+            {
+                accum -= 33;
+                lines++;
+            }
+        }
+
+        return lines;
+    }
 
     public void ViewProduct(int productId)
     {
@@ -74,7 +120,7 @@
     }
 
     .feed-container {
-        width: 50%;
+        width: 65%;
         min-height: 100% !important;
         margin: auto;
         display: block;
@@ -89,9 +135,9 @@
 
     .product-tile {
         padding: 16px;
-        width: 280px;
-        height: 450px;
-        overflow-y: scroll;
+        width: 350px;
+        height: 520px;
+        //overflow-y: scroll;
         margin: 5px;
     }
 
@@ -124,8 +170,20 @@
 
     .product-tile-description-container {
         overflow: scroll;
+        margin-top: 0 !important;
     }
 
     .product-tile-header-container {
+    }
+
+    .carousel-container {
+        max-width: 80%;
+        margin: auto;
+    }
+
+    .spacer {
+        height: 50px;
+        width: 100%;
+        clear: both;
     }
 </style>
