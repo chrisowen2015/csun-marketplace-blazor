@@ -87,8 +87,17 @@
 
 
 @code {
-    private MudTheme _theme = new();
-    private bool _isDarkMode = true;
+    private MudTheme _theme = new MudTheme()
+    {
+        Palette = new Palette()
+        {
+            Primary = "#d22030", // CSUN Red
+            Secondary = Colors.Red.Accent4,
+            AppbarBackground = "#efefef",
+            AppbarText = "#333333",
+        },
+    };
+    private bool _isDarkMode = false;
 
     public string? searchTerm { get; set; }
     public List<string> categories = new List<String> { "Textbooks", "Electronics", "School Supplies", };
