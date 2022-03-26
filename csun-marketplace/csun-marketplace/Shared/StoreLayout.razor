@@ -77,7 +77,8 @@
 
     <MudMainContent>
         @Body
-
+        <div class="spacer">
+        </div>
     </MudMainContent>
 
     <MudAppBar Dense="true" Bottom="true">
@@ -107,7 +108,7 @@
                 Surface = "#373840",
                 TextPrimary = "#ffffffb2",
                 TextSecondary = "rgba(255,255,255, 0.50)",
-                
+
             },
 
         };
@@ -187,5 +188,11 @@
 
     .drawer-header-text {
         padding-left: 5px;
+    }
+
+    .spacer {
+        height: 50px;
+        width: 100%;
+        clear: both;
     }
 </style>
