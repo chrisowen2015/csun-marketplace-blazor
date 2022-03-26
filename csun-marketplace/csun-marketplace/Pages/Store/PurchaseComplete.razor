@@ -1,4 +1,4 @@
-﻿@page "/cart"
+﻿@page "/thankyou"
 @using System.Globalization
 @using csun_marketplace.data;
 @using csun_marketplace.services;
@@ -19,41 +19,24 @@
         <div class="page-header-container">
             <MudText Class="form-header" Color="Color.Default">
                 <h1>
-                    My cart
+                    Order Complete
                 </h1>
-                <h6>
-                    In my cart:
-                </h6>
             </MudText>
         </div>
 
-        <div class="products-container">
-           @* @if (cartList != null)
-            {
-                @foreach (Product p in cartList)
-                {
-                <div>
-                    <MudImage Src="@p.ImageUrl" Height="250" Width="250" />
-                </div>
-                    <div class="product-tile">
-                        <div class="product-tile-header-container">
-                            <MudText Class="product-tile-header">
-                               @p.Title
-                            </MudText>
-                        </div>
-                        
-                        <div>
-                            <MudText>
-                               $@p.Price
-                            </MudText>
-                        </div>
-                    </div>
-                }
-            } *@
+        <div class="form-row">
+            <MudText Color="Color.Default">
+                <h3>
+                    Thank you for your purchase!
+                </h3>
+                <h5>
+                    You may safely close this window or return to the store
+                </h5>
+            </MudText>
         </div>
 
         <div class="form-row">
-            <MudButton Variant="Variant.Filled" OnClick="@(()=>_navMan.NavigateTo("/checkout"))" Color="Color.Primary">Checkout</MudButton>
+            <MudButton Variant="Variant.Filled" OnClick="@(()=>_navMan.NavigateTo("/"))" Color="Color.Primary">Return to store</MudButton>
         </div>
 
     </div>

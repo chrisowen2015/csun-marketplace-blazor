@@ -10,6 +10,7 @@
 @inject ICSUNMarketplaceService _csunMarketplaceService
 @inject IWebHostEnvironment env
 @inject ISnackbar Snackbar
+@inject NavigationManager _navMan
 @inject AuthenticationStateProvider _authenticationStateProvider
 
 <div class="page-container">
@@ -54,6 +55,9 @@
             <MudTextField Class="elem-half" Label="Security code" T="string" Variant="Variant.Filled" />
         </div>
         
+        <div class="form-row">
+            <MudButton Variant="Variant.Filled" OnClick="@(()=>_navMan.NavigateTo("/thankyou"))" Color="Color.Primary">Place Order</MudButton>
+        </div>
 
     </div>
 </div>
