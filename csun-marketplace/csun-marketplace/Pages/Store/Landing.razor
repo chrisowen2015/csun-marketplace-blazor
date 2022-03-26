@@ -5,7 +5,7 @@
 @inject NavigationManager _navMan
 <div>
     <div class="carousel-container">
-        <MudCarousel TData="object" ShowBullets="false" Style="height:300px" AutoCycle="false" AutoCycleTime="TimeSpan.FromSeconds(10)">
+        <MudCarousel TData="object" ShowBullets="false" Style="height:300px" AutoCycle="@autocycle" AutoCycleTime="TimeSpan.FromSeconds(10)">
             <MudCarouselItem Transition="transition" Color="Color.Primary">
                 <div class="d-flex" style="height:100%">
                     <MudText>
