@@ -1,0 +1,92 @@
+﻿@page "/cart"
+@using System.Globalization
+@using csun_marketplace.data;
+@using csun_marketplace.services;
+@using System;
+@using Microsoft.AspNetCore.Authentication
+@using Microsoft.AspNetCore.Components.Authorization
+@using Microsoft.AspNetCore.Identity
+
+@inject ICSUNMarketplaceService _csunMarketplaceService
+@inject IWebHostEnvironment env
+@inject ISnackbar Snackbar
+@inject NavigationManager _navMan
+@inject AuthenticationStateProvider _authenticationStateProvider
+
+<div class="page-container">
+    <div class="page-content">
+
+        <div class="page-header-container">
+            <MudText Class="form-header" Color="Color.Default">
+                <h1>
+                    My cart
+                </h1>
+                <h6>
+                    In my cart:
+                </h6>
+            </MudText>
+        </div>
+
+        <div class="products-container">
+           @* @if (cartList != null)
+            {
+                @foreach (Product p in cartList)
+                {
+                <div>
+                    <MudImage Src="@p.ImageUrl" Height="250" Width="250" />
+                </div>
+                    <div class="product-tile">
+                        <div class="product-tile-header-container">
+                            <MudText Class="product-tile-header">
+                               @p.Title
+                            </MudText>
+                        </div>
+                        
+                        <div>
+                            <MudText>
+                               $@p.Price
+                            </MudText>
+                        </div>
+                    </div>
+                }
+            } *@
+        </div>
+
+        
+
+        <div class="form-row">
+            <MudButton Variant="Variant.Filled" OnClick="@(()=>_navMan.NavigateTo("/checkout"))" Color="Color.Primary">Checkout</MudButton>
+        </div>
+
+    </div>
+</div>
+
+
+
+@code {
+
+}
+
+<style>
+    .upload-image-label {
+        margin-left: 1em;
+    }
+
+    .img-input-div {
+        margin-top: 1em;
+    }
+
+    .grid-two {
+        display: flex !important;
+        flex-direction: row !important;
+        justify-content: space-between;
+        padding-top: .5em;
+        padding-bottom: .5em;
+        padding-left: 1em;
+        padding-right: 1em;
+    }
+
+    .elem-half {
+        max-width: 48%;
+    }
+</style>
