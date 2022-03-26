@@ -12,17 +12,17 @@
             {
                 @foreach (Product p in productList)
                 {
-                    <div class="product-tile" @onclick=@(()=>ViewProduct(p.ProductId))>
+                    <MudPaper class="product-tile" Elevation=2 @onclick=@(()=>ViewProduct(p.ProductId))>
+                        <div>
+                            <MudImage Src="@p.ImageUrl" Height="250" Width="250" />
+                        </div>
                         <div class="product-tile-header-container">
                             <MudText Class="product-tile-header">
                                 @p.Title
                             </MudText>
                         </div>
                         <div>
-                            <MudImage Src="@p.ImageUrl" Height="250" Width="250" />
-                        </div>
-                        <div>
-                            <MudText>
+                            <MudText Class="product-tile-price">
                                 $@p.Price
                             </MudText>
                         </div>
@@ -32,7 +32,7 @@
                             </MudText>
                         </div>
 
-                    </div>
+                    </MudPaper>
                 }
             }
         </div>
@@ -88,6 +88,7 @@
     }
 
     .product-tile {
+        padding: 16px;
         width: 280px;
         height: 450px;
         overflow-y: scroll;
@@ -99,6 +100,7 @@
         flex-direction: row !important;
         flex-flow: row wrap;
         justify-content: space-evenly;
+        gap: 16px;
         padding-top: .5em;
         padding-bottom: .5em;
         padding-left: 1em;
@@ -106,6 +108,15 @@
     }
 
     .product-tile-header {
+        color: #d22030;
+        font-weight: bold;
+        font-size: 20px;
+        padding-top: .5em;
+    }
+
+    .product-tile-price {
+        font-weight: bold;
+        font-size: 20px;
     }
 
     .product-tile-description {
