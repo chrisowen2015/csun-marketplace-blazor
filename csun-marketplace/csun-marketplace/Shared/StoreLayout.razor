@@ -77,7 +77,8 @@
 
     <MudMainContent>
         @Body
-
+        <div class="spacer">
+        </div>
     </MudMainContent>
 
     <MudAppBar Dense="true" Bottom="true">
@@ -87,8 +88,31 @@
 
 
 @code {
-    private MudTheme _theme = new();
-    private bool _isDarkMode = true;
+    private MudTheme _theme = new MudTheme()
+        {
+            Palette = new Palette()
+            {
+                Primary = "#d22030", // CSUN Red
+                Secondary = Colors.Red.Accent4,
+                AppbarBackground = "#efefef",
+                AppbarText = "#333333",
+            },
+            PaletteDark = new Palette()
+            {
+                Primary = "#d22030",
+                Secondary = Colors.Shades.White,
+                Black = "#27282f",
+                Background = "#32343d",
+                AppbarBackground = "#27272fff",
+                BackgroundGrey = "#27282f",
+                Surface = "#373840",
+                TextPrimary = "#ffffffb2",
+                TextSecondary = "rgba(255,255,255, 0.50)",
+
+            },
+
+        };
+    private bool _isDarkMode = false;
 
     public string? searchTerm { get; set; }
     public List<string> categories = new List<String> { "Textbooks", "Electronics", "School Supplies", };
@@ -164,5 +188,11 @@
 
     .drawer-header-text {
         padding-left: 5px;
+    }
+
+    .spacer {
+        height: 50px;
+        width: 100%;
+        clear: both;
     }
 </style>
