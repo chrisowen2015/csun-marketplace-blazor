@@ -20,6 +20,8 @@ builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.Requ
     options.UseSqlServer(builder.Configuration.GetConnectionString("csun_marketplaceContextConnection")));
 builder.Services.AddScoped<ICSUNMarketplaceService, CSUNMarketplaceService>();
 builder.Services.AddScoped<TokenProvider>();
+builder.Services.AddScoped<CartService>();
+
 
 var app = builder.Build();
 

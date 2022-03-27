@@ -11,6 +11,7 @@
 @inject IWebHostEnvironment env
 @inject ISnackbar Snackbar
 @inject AuthenticationStateProvider _authenticationStateProvider
+@inject CartService _cart
 
 <div class="page-container">
     <div class="page-content">
@@ -46,7 +47,7 @@
         </div>
 
         <div class="form-row">
-            <MudButton Variant="Variant.Filled" OnClick=@(()=> UpdateCart()) Color="Color.Primary" EndIcon="@Icons.Material.Filled.AddShoppingCart">Add To Cart</MudButton>
+            <MudButton Variant="Variant.Filled" OnClick=@(()=> _cart.AddToCart(p)) Color="Color.Primary" EndIcon="@Icons.Material.Filled.AddShoppingCart">Add To Cart</MudButton>
         </div>
 
     </div>

@@ -12,6 +12,7 @@
 @inject ISnackbar Snackbar
 @inject NavigationManager _navMan
 @inject AuthenticationStateProvider _authenticationStateProvider
+@inject CartService _cart
 
 <div class="page-container">
     <div class="page-content">
@@ -28,9 +29,9 @@
         </div>
 
         <div class="products-container">
-           @* @if (cartList != null)
+            @if (_cart.Length() > 0)
             {
-                @foreach (Product p in cartList)
+                @foreach (Product p in _cart._cartProductIDList)
                 {
                 <div>
                     <MudImage Src="@p.ImageUrl" Height="250" Width="250" />
@@ -49,7 +50,7 @@
                         </div>
                     </div>
                 }
-            } *@
+            } 
         </div>
 
         <div class="form-row">
