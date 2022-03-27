@@ -15,12 +15,6 @@
                 Marketplace
             </MudText>
         </MudButton>
-        @*<MudButton Class="filter-button" Variant="Variant.Text">
-            <MudText Class="filter-button-text">
-            Filter
-            </MudText>
-            <MudIcon Icon="@Icons.Material.Filled.ArrowDropDown" Size="Size.Medium" />
-            </MudButton>*@
         <MudSelect Style="width:150px;" T="string" Dense="true" Variant="Variant.Outlined" @bind-Value="@filterTerm" SelectedValuesChanged="@(()=>FilterSelect())" Clearable="true" OnClearButtonClick="@(()=>ResetFilter())" Placeholder="Filter">
             <MudSelectItem Value=@("Textbooks") />
             <MudSelectItem Value=@("Electronics") />
@@ -119,7 +113,8 @@
                 Surface = "#373840",
                 TextPrimary = "#ffffffb2",
                 TextSecondary = "rgba(255,255,255, 0.50)",
-
+                DrawerBackground= "#27272fff",
+                
             },
 
         };
