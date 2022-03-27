@@ -31,26 +31,29 @@
         <div class="products-container">
             @if (_cart.Length() > 0)
             {
-                @foreach (Product p in _cart._cartProductIDList)
+                @foreach (Product p in _cart._cartProductList)
                 {
-                <div>
-                    <MudImage Src="@p.ImageUrl" Height="250" Width="250" />
-                </div>
+                    <div>
+                        <MudImage Src="@p.ImageUrl" Height="250" Width="250" />
+                    </div>
                     <div class="product-tile">
                         <div class="product-tile-header-container">
                             <MudText Class="product-tile-header">
-                               @p.Title
+                                @p.Title
                             </MudText>
                         </div>
-                        
+
                         <div>
                             <MudText>
-                               $@p.Price
+                                $@p.Price
                             </MudText>
                         </div>
                     </div>
+                    <div>
+                        <MudButton Variant="Variant.Filled" OnClick=@(()=> _cart.RemoveFromCart(p)) Color="Color.Primary" EndIcon="@Icons.Material.Filled.RemoveShoppingCart">Remove</MudButton>
+                    </div>
                 }
-            } 
+            }
         </div>
 
         <div class="form-row">

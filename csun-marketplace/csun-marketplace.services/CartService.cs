@@ -9,7 +9,7 @@ namespace csun_marketplace.services
 {
     public class CartService
     {
-        public List<Product> _cartProductIDList = new List<Product>();
+        public HashSet<Product> _cartProductList = new HashSet<Product>();
         protected decimal? total = 0;
 
         public void AddToCart(Product product)
@@ -18,11 +18,21 @@ namespace csun_marketplace.services
             {
                 total += product.Price;
             }
-            _cartProductIDList.Add(product);
+            _cartProductList.Add(product);
         }
+
+        public void RemoveFromCart(Product product)
+        {
+            if (product.Price != null)
+            {
+                total -= product.Price;
+            }
+            _cartProductList.Remove(product); 
+        }
+
         public int Length()
         {
-            return _cartProductIDList.Count;
+            return _cartProductList.Count;
         }
     }
 
