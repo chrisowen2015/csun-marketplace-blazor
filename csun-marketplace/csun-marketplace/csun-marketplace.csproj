@@ -25,7 +25,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Pages\Store\StoreStyles\" />
+    <None Include="wwwroot\images\csun_logo.png" />
+    <None Include="wwwroot\images\SWOLYEP.png" />
   </ItemGroup>
 
   <ItemGroup>
