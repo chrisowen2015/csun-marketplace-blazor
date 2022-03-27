@@ -12,6 +12,7 @@
 @inject ISnackbar Snackbar
 @inject NavigationManager _navMan
 @inject AuthenticationStateProvider _authenticationStateProvider
+@inject CartService _cart
 
 <div class="page-container">
     <div class="page-content">
@@ -41,10 +42,68 @@
             <MudTextField Class="elem-half" Label="Country" T="string" Variant="Variant.Filled" Text="United States" ReadOnly="true" />
         </div>
 
+
         <div class="form-row">
-            <MudButton Variant="Variant.Filled" OnClick="@(()=>_navMan.NavigateTo("/billing"))" Color="Color.Primary">Continue</MudButton>
+            <MudText Color="Color.Default">
+                <h6>
+                    Review Order
+                </h6>
+            </MudText>
         </div>
 
+
+
+        <div class="products-container">
+            @if (_cart.Length() > 0)
+            {
+                @foreach (Product p in _cart._cartProductList)
+                {
+                    <div>
+                        <div>
+                            <MudImage Src="@p.ImageUrl" Height="85" Width="85" />
+                        </div>
+                        <div class="product-tile">
+                            <div class="product-tile-header-container">
+                                <MudText Class="product-tile-header">
+                                    @p.Title
+                                </MudText>
+                            </div>
+
+                            <div>
+                                <MudText>
+                                    $@p.Price
+                                </MudText>
+                            </div>
+                        </div>
+                        <div>
+                            <MudButton Variant="Variant.Filled" OnClick=@(()=> _cart.RemoveFromCart(p)) Color="Color.Primary" EndIcon="@Icons.Material.Filled.RemoveShoppingCart">Remove</MudButton>
+                        </div>
+                    </div>
+                }
+            }
+        </div>
+
+        <div>
+            <div class="go-back">
+                <MudButton Variant="Variant.Filled" OnClick="@(()=>_navMan.NavigateTo("/cart"))" Color="Color.Primary">Back</MudButton>
+            </div>
+
+            @if (@_cart.GetTotal() > 0)
+            {
+                <div class="billing-continue">
+                    <MudText>
+                        Cart Total: $@_cart.GetTotal().ToString()
+                    </MudText>
+                    <MudButton Variant="Variant.Filled" OnClick="@(()=>_navMan.NavigateTo("/billing"))" Color="Color.Primary">Continue</MudButton>
+                </div>
+            }
+            else
+            {
+                <div class="keep-shopping">
+                    <MudButton Variant="Variant.Filled" OnClick="@(()=>_navMan.NavigateTo("/"))" Color="Color.Primary">Keep Shopping</MudButton>
+                </div>
+            }
+        </div>
     </div>
 </div>
 
@@ -75,5 +134,31 @@
 
     .elem-half {
         max-width: 48%;
+    }
+
+    .products-container {
+        display: flex !important;
+        flex-direction: row !important;
+        flex-flow: row wrap;
+        justify-content: space-evenly;
+        gap: 16px;
+        padding-top: .5em;
+        padding-bottom: .5em;
+        padding-left: 1em;
+        padding-right: 1em;
+    }
+
+    .billing-continue {
+        float: right;
+    }
+
+    .go-back {
+        float: left;
+        padding-top: 24px;
+    }
+
+    .keep-shopping {
+        float: right;
+        padding-top: 24px;
     }
 </style>

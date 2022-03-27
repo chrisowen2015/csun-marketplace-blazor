@@ -54,9 +54,16 @@
             <MudTextField Class="elem-half" Label="Expiration date" T="string" Variant="Variant.Filled" />
             <MudTextField Class="elem-half" Label="Security code" T="string" Variant="Variant.Filled" />
         </div>
-        
-        <div class="form-row">
-            <MudButton Variant="Variant.Filled" OnClick="@(()=>_navMan.NavigateTo("/thankyou"))" Color="Color.Primary">Place Order</MudButton>
+
+
+        <div>
+            <div class="go-back">
+                <MudButton Variant="Variant.Filled" OnClick="@(()=>_navMan.NavigateTo("/checkout"))" Color="Color.Primary">Back</MudButton>
+            </div>
+
+            <div class="billing-continue">
+                <MudButton Variant="Variant.Filled" OnClick="@(()=>_navMan.NavigateTo("/thankyou"))" Color="Color.Primary">Place Order</MudButton>
+            </div>
         </div>
 
     </div>
@@ -90,4 +97,15 @@
     .elem-half {
         max-width: 48%;
     }
+
+    .billing-continue {
+        float: right;
+        padding-top: 24px;
+    }
+
+    .go-back {
+        float: left;
+        padding-top: 24px;
+    }
+
 </style>
