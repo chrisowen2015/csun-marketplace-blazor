@@ -23,6 +23,7 @@
         <MudTextField OnAdornmentClick="@searchFunction" FullWidth="true" AdornmentIcon="@Icons.Material.Filled.Search" Adornment="Adornment.End" Class="search-bar" Label="@searchLabel" DisableUnderLine="true" Variant="Variant.Filled" @bind-Value="@searchTerm" />
         <MudSwitch Class="dark-mode-toggle" T="bool" @bind-Checked="@_isDarkMode" Color="Color.Primary" Label="Toggle Dark Mode" />
         <MudIconButton Icon="@Icons.Material.Filled.AccountCircle" />
+        <MudIconButton Icon="@Icons.Material.Filled.ShoppingCart" OnClick="@(() => _navMan.NavigateTo("/cart"))"/>
         <MudIconButton Icon="@Icons.Material.Filled.Help" />
         <LoginDisplay />
         <MudIconButton Class="right-top-button" Icon="@Icons.Material.Rounded.Settings" />

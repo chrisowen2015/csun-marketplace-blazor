@@ -1,4 +1,4 @@
-﻿@page "/checkout"
+﻿@page "/thankyou"
 @using System.Globalization
 @using csun_marketplace.data;
 @using csun_marketplace.services;
@@ -19,30 +19,24 @@
         <div class="page-header-container">
             <MudText Class="form-header" Color="Color.Default">
                 <h1>
-                    Checkout
+                    Order Complete
                 </h1>
-                <h6>
-                    Shipping Information
-                </h6>
             </MudText>
         </div>
 
         <div class="form-row">
-            <MudTextField Label="Shipping Address" T="string" Variant="Variant.Filled" />
-        </div>
-
-        <div class="grid-two">
-            <MudTextField Class="elem-half" Label="City" T="string" Variant="Variant.Filled" />
-            <MudTextField Class="elem-half" Label="State" T="string" Variant="Variant.Filled" />
-        </div>
-
-        <div class="grid-two">
-            <MudTextField Class="elem-half" Label="Zip" T="string" Variant="Variant.Filled" />
-            <MudTextField Class="elem-half" Label="Country" T="string" Variant="Variant.Filled" Text="United States" ReadOnly="true" />
+            <MudText Color="Color.Default">
+                <h3>
+                    Thank you for your purchase!
+                </h3>
+                <h5>
+                    You may safely close this window or return to the store
+                </h5>
+            </MudText>
         </div>
 
         <div class="form-row">
-            <MudButton Variant="Variant.Filled" OnClick="@(()=>_navMan.NavigateTo("/billing"))" Color="Color.Primary">Continue</MudButton>
+            <MudButton Variant="Variant.Filled" OnClick="@(()=>_navMan.NavigateTo("/"))" Color="Color.Primary">Return to store</MudButton>
         </div>
 
     </div>

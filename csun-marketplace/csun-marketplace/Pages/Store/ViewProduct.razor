@@ -18,7 +18,7 @@
         <div class="page-header-container">
             <MudText Class="form-header" Color="Color.Default">
                 <h1>
-                    Create New Listing
+                    View Listing
                 </h1>
             </MudText>
         </div>
@@ -27,8 +27,10 @@
             <MudTextField Label="Product Title" T="string" @bind-Value=p.Title Variant="Variant.Filled" ReadOnly="true" />
         </div>
 
-        <MudImage Src="@p.ImageUrl" />
-
+        <div class="form-row">
+            <MudImage Src="@p.ImageUrl" />
+        </div>
+        
         <div class="form-row">
             <MudTextField Label="Description" T="string" @bind-Value=p.Description Variant="Variant.Filled" Lines="8" ReadOnly="true" />
         </div>
@@ -41,6 +43,10 @@
 
         <div class="form-row">
             <MudTextField Label="Category" T="string" @bind-Value=p.Category Variant="Variant.Filled" ReadOnly="true"/>
+        </div>
+
+        <div class="form-row">
+            <MudButton Variant="Variant.Filled" OnClick=@(()=> UpdateCart()) Color="Color.Primary" EndIcon="@Icons.Material.Filled.AddShoppingCart">Add To Cart</MudButton>
         </div>
 
     </div>
@@ -67,7 +73,7 @@
 
     protected override async Task OnInitializedAsync()
     {
-        
+
     }
 
     async Task<string> GetUserId()
@@ -75,6 +81,11 @@
         var user = (await _authenticationStateProvider.GetAuthenticationStateAsync()).User;
         var UserId = user.FindFirst(u => u.Type.Contains("nameidentifier"))?.Value;
         return UserId;
+    }
+
+    async Task UpdateCart()
+    {
+        
     }
 
 

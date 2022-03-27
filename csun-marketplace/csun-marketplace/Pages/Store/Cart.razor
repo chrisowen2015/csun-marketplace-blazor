@@ -1,4 +1,4 @@
-﻿@page "/checkout"
+﻿@page "/cart"
 @using System.Globalization
 @using csun_marketplace.data;
 @using csun_marketplace.services;
@@ -19,30 +19,41 @@
         <div class="page-header-container">
             <MudText Class="form-header" Color="Color.Default">
                 <h1>
-                    Checkout
+                    My cart
                 </h1>
                 <h6>
-                    Shipping Information
+                    In my cart:
                 </h6>
             </MudText>
         </div>
 
+        <div class="products-container">
+           @* @if (cartList != null)
+            {
+                @foreach (Product p in cartList)
+                {
+                <div>
+                    <MudImage Src="@p.ImageUrl" Height="250" Width="250" />
+                </div>
+                    <div class="product-tile">
+                        <div class="product-tile-header-container">
+                            <MudText Class="product-tile-header">
+                               @p.Title
+                            </MudText>
+                        </div>
+                        
+                        <div>
+                            <MudText>
+                               $@p.Price
+                            </MudText>
+                        </div>
+                    </div>
+                }
+            } *@
+        </div>
+
         <div class="form-row">
-            <MudTextField Label="Shipping Address" T="string" Variant="Variant.Filled" />
-        </div>
-
-        <div class="grid-two">
-            <MudTextField Class="elem-half" Label="City" T="string" Variant="Variant.Filled" />
-            <MudTextField Class="elem-half" Label="State" T="string" Variant="Variant.Filled" />
-        </div>
-
-        <div class="grid-two">
-            <MudTextField Class="elem-half" Label="Zip" T="string" Variant="Variant.Filled" />
-            <MudTextField Class="elem-half" Label="Country" T="string" Variant="Variant.Filled" Text="United States" ReadOnly="true" />
-        </div>
-
-        <div class="form-row">
-            <MudButton Variant="Variant.Filled" OnClick="@(()=>_navMan.NavigateTo("/billing"))" Color="Color.Primary">Continue</MudButton>
+            <MudButton Variant="Variant.Filled" OnClick="@(()=>_navMan.NavigateTo("/checkout"))" Color="Color.Primary">Checkout</MudButton>
         </div>
 
     </div>
