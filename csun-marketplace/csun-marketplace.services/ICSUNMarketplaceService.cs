@@ -6,6 +6,7 @@ namespace csun_marketplace.services
     {
         Product GetProduct(int productId);
         List<Product> GetProductList();
+        List<Product> GetTextbooks();
         List<Product> GetUsersProducts(string userId);
         int UpdateProduct(Product pvm);
         UserInformation GetUserInformation(string userId);

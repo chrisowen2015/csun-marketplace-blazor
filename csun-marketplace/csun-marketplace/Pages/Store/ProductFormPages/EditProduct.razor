@@ -1,4 +1,4 @@
-﻿@page "/product-form"
+﻿@page "/edit-listing/{productId}"
 @using System.Globalization
 @using csun_marketplace.data;
 @using csun_marketplace.services;
@@ -18,7 +18,7 @@
         <div class="page-header-container">
             <MudText Class="form-header" Color="Color.Default">
                 <h1>
-                    Create New Listing
+                    Edit Listing
                 </h1>
             </MudText>
         </div>
@@ -26,7 +26,7 @@
         <div class="form-row">
             <MudTextField Label="Product Title" T="string" @bind-Value=p.Title Variant="Variant.Filled" />
         </div>
-
+        <MudImage Src="@p.ImageUrl"/>
         <MudText Color="Color.Surface" Class="upload-image-label">
             <h5>
                 Upload Image
@@ -68,29 +68,34 @@
 
 
         <div class="form-row">
-            <MudSelect Label="Category" T="string" @bind-Value=p.Category Variant="Variant.Filled">
+            <MudSelect Label="Category" T="string" @bind-Value=p.Category Variant="Variant.Filled" AnchorOrigin="Origin.TopCenter" Direction="Direction.Top" Dense="true">
                 <MudSelectItem T="string" Value="@("Textbooks")" />
                 <MudSelectItem T="string" Value="@("Electronics")" />
                 <MudSelectItem T="string" Value="@("School Supplies")" />
+                <MudSelectItem T="string" Value="@("Sports & Fitness")" />
+                <MudSelectItem T="string" Value="@("Furniture")" />
             </MudSelect>
         </div>
 
         <div class="form-row">
-            <MudSelect Label="Tags" T="string" @bind-Value="p.Tags" Variant="Variant.Filled" MultiSelection="true" @onselect="@(()=>AddTag(p.Tags))">
+            <MudSelect Label="Tags" T="string" @bind-Value="p.Tags" Variant="Variant.Filled" MultiSelection="true"  OnBlur="@(()=>AddTag(p.Tags))">
                 @foreach (string tag in tagList)
                 {
-                    <MudSelectItem T="string" Value="@tag" OnClick="@(()=>AddTag(tag))"  />
+                    <MudSelectItem T="string" Value="@tag"/>
                 }
             </MudSelect>
             <MudChipSet>
                 @foreach(string tag in selectedTags)
                 {
-                    <MudChip Text="@tag"/>
+                    @if(!String.IsNullOrWhiteSpace(tag))
+                    {
+                        <MudChip Color="Color.Primary" Text="@tag" OnClose="@(()=>RemoveTag(p.Tags))"/>
+                    }
                 }
             </MudChipSet>
         </div>
 
-        <div class="form-row">
+        <div class="form-row" style="padding-top: 1em;">
             <MudButton Variant="Variant.Filled" OnClick=@(()=> UpdateProduct()) Color="Color.Primary">Submit</MudButton>
         </div>
     </div>
@@ -98,7 +103,9 @@
 
 
 @code {
-    public Product p = new Product();
+    [Parameter]
+    public string productId { get; set; }
+    public Product p { get; set; }
 
     public byte[]? imgSource { get; set; }
     IBrowserFile? selectedFile;
@@ -109,11 +116,16 @@
     public List<string> selectedTags = new List<string>();
     public string userID { get; set; }
 
-
-    protected override async Task OnInitializedAsync()
+    protected override void OnParametersSet()
     {
-        p.DateCreated = System.DateTime.Now;
-        userID = await GetUserId();
+        try
+        {
+            p = _csunMarketplaceService.GetProduct(Int32.Parse(productId));
+        }
+        catch
+        {
+            p = new Product();
+        }
     }
 
     async Task<string> GetUserId()
@@ -177,6 +189,18 @@
             this.StateHasChanged();
             Console.WriteLine("Fired!");
         }
+    }
+
+    private void RemoveTag(string tag)
+    {
+        selectedTags.Remove(tag);
+        if (p.Tags != null && p.Tags.Contains(tag))
+        {
+            p.Tags= p.Tags.Remove(p.Tags.IndexOf(tag), p.Tags.IndexOf(tag) + tag.Length);
+            // Work in Progress
+            // TODO: Fix this, currently not unbinding the tags on the element. 
+        }
+        StateHasChanged();
     }
 
     async Task UpdateProduct()
