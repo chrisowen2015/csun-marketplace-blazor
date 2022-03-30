@@ -19,6 +19,7 @@ namespace csun_marketplace.dbo
 
         public virtual DbSet<Product> Products { get; set; } = null!;
         public virtual DbSet<UserInformation> UserInformations { get; set; } = null!;
+        public virtual DbSet<TextbookInformation> TextbookInformations { get; set; } = null!;
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -50,6 +51,35 @@ namespace csun_marketplace.dbo
                 entity.Property(e => e.Price).HasColumnType("decimal(18, 0)");
 
                 entity.Property(e => e.Tags).IsUnicode(false);
+
+                entity.Property(e => e.Title).IsUnicode(false);
+            });
+
+            modelBuilder.Entity<TextbookInformation>(entity =>
+            {
+                entity.ToTable("TextbookInformation");
+
+                entity.Property(e => e.Authors).IsUnicode(false);
+
+                entity.Property(e => e.Condition)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Course)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Department)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Edition)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Isbn)
+                    .IsUnicode(false)
+                    .HasColumnName("ISBN");
 
                 entity.Property(e => e.Title).IsUnicode(false);
             });

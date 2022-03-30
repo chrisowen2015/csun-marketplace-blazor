@@ -1,4 +1,4 @@
-﻿@page "/product/{productId}"
+﻿@page "/view-listing/{productId}"
 @using System.Globalization
 @using csun_marketplace.data;
 @using csun_marketplace.services;
@@ -12,6 +12,7 @@
 @inject ISnackbar Snackbar
 @inject AuthenticationStateProvider _authenticationStateProvider
 @inject CartService _cart
+@inject NavigationManager _navMan
 
 <div class="page-container">
     <div class="page-content">
@@ -47,6 +48,7 @@
         </div>
 
         <div class="form-row">
+            <MudButton Variant="Variant.Filled" OnClick=@(()=> _navMan.NavigateTo("edit-listing/" + p.ProductId)) Color="Color.Primary" EndIcon="@Icons.Material.Filled.AddShoppingCart"> Go to Edit Form </MudButton>
             <MudButton Variant="Variant.Filled" OnClick=@(()=> _cart.AddToCart(p)) Color="Color.Primary" EndIcon="@Icons.Material.Filled.AddShoppingCart">Add To Cart</MudButton>
         </div>
 

@@ -1,5 +1,85 @@
-﻿<h3>Textbooks</h3>
+﻿@page "/textbooks"
+
+@inject NavigationManager _navMan
+@inject ICSUNMarketplaceService _csunMarketplaceService
+
+
+<div>
+    <div class="carousel-container">
+        <MudPaper>
+            <MudContainer Fixed="true">
+                <MudPaper Height="400px" Width="100%">
+
+                </MudPaper>
+            </MudContainer>
+        </MudPaper>
+    </div>
+
+    <div class="feed-container">
+        <div class="feed-content">
+
+            <div class="products-container">
+                @if (productList != null)
+                {
+                    @foreach (Product p in productList)
+                    {
+                        <MudPaper class="product-tile" Elevation=2 @onclick=@(()=>ViewProduct(p.ProductId)) >
+                            <div>
+                                <MudImage ObjectPosition="ObjectPosition.Center" Src="@p.ImageUrl" Height="310" Width="310" />
+                            </div>
+                            <div class="product-tile-header-container">
+                                <MudText Class="product-tile-header">
+                                    @p.Title
+                                </MudText>
+                            </div>
+                            <div>
+                                <MudText Class="product-tile-price">
+                                    $@p.Price
+                                </MudText>
+                            </div>
+                            <MudTextField Value="p.Description" ReadOnly="true" Lines="4" Variant="Variant.Outlined" DisableUnderLine="true" Margin="Margin.Dense" Class="product-tile-description-container" />
+
+                            @*
+                                <div class="product-tile-description-container">
+                                    <MudText Class="product-tile-description">
+                                        @p.Description
+                                    </MudText>
+                                </div>
+                            *@
+
+                        </MudPaper>
+                    }
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+<h3>Textbooks</h3>
 
 @code {
+    TextbookInformation tinfo = new TextbookInformation();
+    List<Product> productList = new List<Product>();
+
+
+
+    public void ViewProduct(int productId)
+    {
+        _navMan.NavigateTo("/view-listing/" + productId);
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        //productList = _csunMarketplaceService.GetTextbooks();
+        foreach (Product p in productList)
+        {
+            
+        }
+    }
 
 }

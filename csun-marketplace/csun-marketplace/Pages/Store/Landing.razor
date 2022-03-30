@@ -33,11 +33,11 @@
         <div class="feed-content">
 
             <div class="products-container">
-                @if (productList != null)
+                @if (productsToRender != null)
                 {
-                    @foreach (Product p in productList)
+                    @foreach (Product p in productsToRender)
                     {
-                        <MudPaper class="product-tile" Elevation=2 @onclick=@(()=>ViewProduct(p.ProductId))>
+                        <MudPaper class="product-tile" Elevation="2" @onclick=@(()=>ViewProduct(p.ProductId))>
                             <div>
                                 <MudImage ObjectPosition="ObjectPosition.Center" Src="@p.ImageUrl" Height="310" Width="310" />
                             </div>
@@ -63,6 +63,9 @@
                     }
                 }
             </div>
+            <div class="pagination-container">
+                <MudPagination Count="@maxNumberOfPages" Color="Color.Primary" SelectedChanged="@((int newPage)=>UpdateProductsOnPage(newPage))" Size="Size.Large"/>
+            </div>
         </div>
     </div>
 </div>
@@ -72,27 +75,44 @@
 @code {
     private bool autocycle = true;
     private Transition transition = Transition.Slide;
+    public List<Product>? productsToRender { get; set; }
     public List<Product>? productList { get; set; }
+    public int itemsPerPage = 15;
+    public int maxNumberOfPages = 1;
+    public int pageIndex = 1;
 
     protected override async Task OnInitializedAsync()
     {
         productList = _csunMarketplaceService.GetProductList();
-        foreach (Product p in productList)
+
+        maxNumberOfPages = productList.Count() / itemsPerPage + 1;
+
+        productsToRender = new List<Product>();
+        for (int i = ((pageIndex - 1) * itemsPerPage); i < itemsPerPage * pageIndex; i++)
         {
-            if (p.ImageSource != null)
-            {
-                string imgSource = Convert.ToBase64String(p.ImageSource);
-                try
-                {
-                    p.ImageUrl = string.Format("data:image/jpg;base64,{0}", imgSource);
-                }
-                catch (FormatException f)
-                {
-                    Console.WriteLine("F " + f);
-                }
-            }
+            productsToRender.Add(productList.ElementAt(i));
         }
+
     }
+
+    /*
+    * Pretty proud of this actually, it will update the items on the page based on the current page and defined items per page.
+     *
+     */
+
+    public void UpdateProductsOnPage(int newPage)
+    {
+        pageIndex = newPage;
+        productsToRender.Clear();
+        productsToRender = new List<Product>();
+        for (int i = ((pageIndex - 1) * itemsPerPage); i < itemsPerPage * pageIndex; i++)
+        {
+            productsToRender.Add(productList.ElementAt(i));
+        }
+        StateHasChanged();
+    }
+
+
     public int GetLines(string description)
     {
         int lines = 1;
@@ -111,79 +131,14 @@
 
     public void ViewProduct(int productId)
     {
-        _navMan.NavigateTo("/product/" + productId);
+        _navMan.NavigateTo("/view-listing/" + productId);
     }
 }
 <style>
-    .card-img {
-        min-width: max-content;
-    }
-
-    .feed-container {
-        width: 65%;
-        min-height: 100% !important;
-        margin: auto;
-        display: block;
-        margin-bottom: 2em;
-        margin-top: 1.5em;
-    }
-
-    .feed-content {
-        min-height: 100% !important;
-        align-self: center;
-    }
-
-    .product-tile {
-        padding: 16px;
-        width: 350px;
-        height: 520px;
-        //overflow-y: scroll;
-        margin: 5px;
-    }
-
-    .products-container {
-        display: flex !important;
-        flex-direction: row !important;
-        flex-flow: row wrap;
-        justify-content: space-evenly;
-        gap: 16px;
-        padding-top: .5em;
-        padding-bottom: .5em;
-        padding-left: 1em;
-        padding-right: 1em;
-    }
-
-    .product-tile-header {
-        color: #d22030;
-        font-weight: bold;
-        font-size: 20px;
-        padding-top: .5em;
-    }
-
-    .product-tile-price {
-        font-weight: bold;
-        font-size: 20px;
-    }
-
-    .product-tile-description {
-    }
-
-    .product-tile-description-container {
-        overflow: scroll;
-        margin-top: 0 !important;
-    }
-
-    .product-tile-header-container {
-    }
-
-    .carousel-container {
-        max-width: 80%;
-        margin: auto;
-    }
-
-    .spacer {
-        height: 50px;
-        width: 100%;
-        clear: both;
-    }
+.pagination-container{
+    padding: 2em;
+    display:flex;
+    align-content:center !important;
+    justify-content: center !important;
+}
 </style>

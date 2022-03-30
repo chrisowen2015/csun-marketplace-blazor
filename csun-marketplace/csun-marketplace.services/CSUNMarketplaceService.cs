@@ -48,11 +48,38 @@ namespace csun_marketplace.services
          * Also note this function doesn't need to fill all fields, just the ones needed for how we display all products, then we can just call getProduct() for the rest
          */
 
+        
         public List<Product> GetProductList()
         {
             var CSUNMarketplaceEvaluatorDB = _context.CreateDbContext();
 
             List<Product> productList = CSUNMarketplaceEvaluatorDB.Products.Select(p => new Product
+            {
+                ProductId = p.ProductId,
+                OwnerId = p.OwnerId,
+                Title = p.Title,
+                ImageUrl = p.ImageUrl,
+                Description = p.Description,
+                ImageSource = p.ImageSource,
+
+                Price = p.Price,
+                Available = p.Available,
+
+            }).ToList();
+
+            return productList;
+        }
+
+        /*
+         * Function to get all textbooks, as determined by their textbook category. Will need to update to pull a Textbook Information as well once DB has been populated correctly
+         * 
+         */
+
+        public List<Product> GetTextbooks()
+        {
+            var CSUNMarketplaceEvaluatorDB = _context.CreateDbContext();
+
+            List<Product> productList = CSUNMarketplaceEvaluatorDB.Products.Where(p => p.Category == "Textbooks").Select(p => new Product
             {
                 ProductId = p.ProductId,
                 OwnerId = p.OwnerId,
