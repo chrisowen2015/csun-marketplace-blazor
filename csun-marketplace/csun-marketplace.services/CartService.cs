@@ -14,7 +14,7 @@ namespace csun_marketplace.services
 
         public void AddToCart(Product product)
         {
-            if(product.Price != null)
+            if(product.Price != null && !_cartProductList.Contains(product))
             {
                 total += product.Price;
             }
@@ -23,7 +23,7 @@ namespace csun_marketplace.services
 
         public void RemoveFromCart(Product product)
         {
-            if (product.Price != null)
+            if (product.Price != null && _cartProductList.Contains(product))
             {
                 total -= product.Price;
             }
@@ -33,6 +33,11 @@ namespace csun_marketplace.services
         public int Length()
         {
             return _cartProductList.Count;
+        }
+
+        public decimal? GetTotal()
+        {
+            return total;
         }
     }
 
