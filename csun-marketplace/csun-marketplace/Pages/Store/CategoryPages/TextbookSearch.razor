@@ -1,0 +1,304 @@
+﻿@page "/textbooks/search"
+
+@inject NavigationManager _navMan
+@inject ICSUNMarketplaceService _csunMarketplaceService
+
+
+<div class="carousel-container">
+    <MudText Color="Color.Primary" Style="text-align:center;">
+        <h1>
+            Need Help Finding Your Textbook?
+        </h1>
+    </MudText>
+
+    <MudText Style="text-align:center;">
+        <h4>
+            Use one of the methods below to find the textbook required for your class.
+        </h4>
+    </MudText>
+
+    <MudPaper>
+        <MudText Class="label" Color="Color.Primary">
+            <b>Search by ISBN</b>
+        </MudText>
+        <div class="textbook-search-row">
+            <MudTextField Class="isbn-search" @bind-Value="tinfo.Isbn" Label="Enter the ISBN" Variant="Variant.Filled" HelperText="Usually a 20 digit number on the back of your textbook." HelperTextOnFocus="true" />
+        </div>
+
+        <h4 style="text-align:center;"><b> Or </b></h4>
+
+        <MudText Class="label" Color="Color.Primary">
+            <b>Search by Course</b>
+        </MudText>
+
+        <div class="textbook-search-row">
+            <MudSelect Class="textbook-course-search" @bind-Value="tinfo.Department" Label="Select the Department" Dense="true" Variant="Variant.Filled" Style="margin-right: .5em;">
+                @foreach (string department in departmentList)
+                {
+                    <MudSelectItem T="string" Value=@department />
+                }
+            </MudSelect>
+
+            <MudSelect Class="textbook-course-search" @bind-Value="tinfo.Course" Label="Select the Course" Dense="true" Variant="Variant.Filled" Style="margin-left: .5em;">
+                @foreach (string course in courseList)
+                {
+                    <MudSelectItem T="string" Value=@course />
+                }
+            </MudSelect>
+        </div>
+
+        <h4 style="text-align:center; margin-top: 1em;"><b> Or </b></h4>
+
+        <MudText Class="label" Color="Color.Primary">
+            <b>Search by Title, Author(s) and Edition</b>
+        </MudText>
+
+        <div class="textbook-search-row" style="padding-bottom: 1em !important;">
+            <MudTextField Class="title-search-elem" @bind-Value="tinfo.Title" Label="Title" Variant="Variant.Filled" Style="margin-right: 1em;" HelperText="The Title of your Textbook" HelperTextOnFocus="true" />
+            <MudTextField Class="title-search-elem" @bind-Value="tinfo.Authors" Label="Author(s)" Variant="Variant.Filled" HelperText="Author(s) of your Textbook, separated by commas" HelperTextOnFocus="true" />
+            <MudSelect Class="title-search-elem" T="string" @bind-Value="tinfo.Edition" Label="Edition" Variant="Variant.Filled" Style="margin-left: 1em;">
+                <MudSelectItem Value=@("1st") />
+                <MudSelectItem Value=@("2nd") />
+                <MudSelectItem Value=@("3rd") />
+                <MudSelectItem Value=@("4th") />
+                <MudSelectItem Value=@("5th") />
+                <MudSelectItem Value=@("6th") />
+                <MudSelectItem Value=@("7th") />
+                <MudSelectItem Value=@("8th") />
+                <MudSelectItem Value=@("9th") />
+                <MudSelectItem Value=@("10th") />
+                <MudSelectItem Value=@("11th") />
+                <MudSelectItem Value=@("12th") />
+                <MudSelectItem Value=@("13th") />
+            </MudSelect>
+        </div>
+        @if (!validTextbookSearch)
+        {
+            <div class="validation-message" style="padding: 1em;">
+                @textbookSearchValidationMessage
+            </div>
+        }
+
+        <div class="button-single">
+            <MudButton Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.Search" Color="Color.Primary" Size="Size.Large" OnClick=@(()=> TextbookSearchValidator())>
+                Search
+            </MudButton>
+        </div>
+
+    </MudPaper>
+
+</div>
+
+@if (clickedSearch)
+{
+    <MudText Class="page-header" Color="Color.Primary">
+        <h3>
+            @productsToRender.Count() Search Results
+        </h3>
+    </MudText>
+
+    <div class="feed-container">
+        <div class="feed-content">
+            <div class="products-container">
+                @foreach (Product p in productsToRender)
+                {
+                    TextbookInformation tinfo = textbookInformationList.Where((t) => t.ProductId == p.ProductId).Single();
+
+                    <MudPaper class="product-tile" Elevation=2 @onclick=@(()=>ViewProduct(p.ProductId))>
+                        <div>
+                            <MudImage ObjectPosition="ObjectPosition.Center" Src="@p.ImageUrl" Height="310" Width="310" />
+                        </div>
+
+                        <div class="product-tile-header-container">
+                            <MudText Class="product-tile-header">
+                                @tinfo.Title
+                            </MudText>
+                        </div>
+
+                        <div>
+                            <MudText Class="product-tile-price" Color="Color.Primary">
+                                @tinfo.Department @tinfo.Course
+                            </MudText>
+                        </div>
+
+                        <div>
+                            <MudText Class="product-tile-price">
+                                Author:  @tinfo.Authors
+                            </MudText>
+                        </div>
+
+                        <div>
+                            <MudText Class="product-tile-price">
+                                @tinfo.Edition Edition
+                            </MudText>
+                        </div>
+
+                        <div>
+                            <MudText Class="product-tile-price">
+                                ISBN: @tinfo.Isbn
+                            </MudText>
+                        </div>
+
+                        <div>
+                            <b>
+                                $@p.Price
+                            </b>
+                        </div>
+                    </MudPaper>
+                }
+            </div>
+        </div>
+    </div>
+}
+else
+{
+    @*Fixing whitespace that appears before search, gross I know*@
+    <div class="spacer" />
+    <div class="spacer" />
+    <div class="spacer" />
+}
+
+
+@code {
+    List<Product> productList = new List<Product>();
+    List<Product> productsToRender = new List<Product>();
+    List<TextbookInformation> textbookInformationList = new List<TextbookInformation>();
+
+    TextbookInformation tinfo = new TextbookInformation();
+    List<string> departmentList = new List<string> { "ART", "CHEM", "COMP", "ECE", "ENGL", "FIN", "GEOL", "HIST", "MATH", "PHYS", "PSY", "SCI" };
+    List<string> courseList = new List<string> { "100", "108", "110", "122", "182", "222", "256", "282", "310", "322", "356", "380", "410", "424", "440" };
+    public bool validTextbookSearch = true;
+    public string? textbookSearchValidationMessage { get; set; }
+    public bool clickedSearch = false;
+
+    public void TextbookSearchValidator()
+    {
+        // Reset validation variable and message each time you check
+        validTextbookSearch = true;
+        textbookSearchValidationMessage = "";
+        clickedSearch = false;
+
+        if (!String.IsNullOrWhiteSpace(tinfo.Isbn))
+        {
+            SearchByISBN(tinfo.Isbn);
+        }
+        else
+        {
+            if (!String.IsNullOrWhiteSpace(tinfo.Department) && !String.IsNullOrWhiteSpace(tinfo.Course))
+            {
+                SearchByCourse(tinfo.Department, tinfo.Course);
+            }
+            else
+            {
+                if (!String.IsNullOrWhiteSpace(tinfo.Title) && !String.IsNullOrWhiteSpace(tinfo.Authors) && !String.IsNullOrWhiteSpace(tinfo.Edition))
+                {
+                    SearchByTextbookInfo(tinfo.Title, tinfo.Authors, tinfo.Edition);
+                }
+                else
+                {
+                    // If this block has been reached, then the user has not provided any of the combinations of necessary information to search. Display error message and wait for them to try again.
+                    validTextbookSearch = false;
+                    textbookSearchValidationMessage = "You must provide either the ISBN, Department and Course, or the Title, Authors, and Edition to use the search.";
+                }
+            }
+        }
+    }
+
+    public void ViewProduct(int productId)
+    {
+        _navMan.NavigateTo("/view-listing/" + productId);
+    }
+
+    public void SearchByISBN(string isbn)
+    {
+        Console.WriteLine("Searching by isbn");
+        productsToRender.Clear();
+        clickedSearch = true;
+
+        foreach (TextbookInformation tinfo in textbookInformationList)
+        {
+
+            if (tinfo.Isbn == isbn)
+            {
+                Console.WriteLine("Found it!!!");
+                productsToRender.Add(productList.Where((p) => p.ProductId == tinfo.ProductId).Single());
+            }
+        }
+        Console.WriteLine(productsToRender.Count());
+        StateHasChanged();
+    }
+
+    public void SearchByCourse(string department, string course)
+    {
+        productsToRender.Clear();
+        clickedSearch = true;
+
+        foreach (TextbookInformation tinfo in textbookInformationList)
+        {
+            if (tinfo.Department == department && tinfo.Course == course)
+            {
+                Console.WriteLine("Found it!!!");
+                productsToRender.Add(productList.Where((p) => p.ProductId == tinfo.ProductId).Single());
+            }
+        }
+        Console.WriteLine(productsToRender.Count());
+        StateHasChanged();
+    }
+
+    public void SearchByTextbookInfo(string title, string authors, string edition)
+    {
+        productsToRender.Clear();
+        clickedSearch = true;
+
+        foreach (TextbookInformation tinfo in textbookInformationList)
+        {
+            if (tinfo.Title == title && tinfo.Authors == authors && tinfo.Edition == edition)
+            {
+                Console.WriteLine("Found it!!!");
+                productsToRender.Add(productList.Where((p) => p.ProductId == tinfo.ProductId).Single());
+            }
+        }
+        Console.WriteLine(productsToRender.Count());
+        StateHasChanged();
+
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        productList = _csunMarketplaceService.GetProductList();
+        textbookInformationList = _csunMarketplaceService.GetTextbookInformationList();
+    }
+
+}
+<style>
+    .textbook-course-search {
+    }
+
+    .textbook-search-row {
+        padding-left: 1em;
+        padding-right: 1em;
+        display: flex;
+        align-content: space-between !important;
+    }
+
+    .isbn-search {
+        margin-bottom: 0;
+    }
+
+    .label {
+        margin-left: 1em;
+        padding-top: 1em !important;
+        padding-bottom: .5em;
+    }
+
+    .title-search-elem {
+    }
+
+    .page-header {
+        margin-top: 2em;
+        padding-bottom: 1em;
+        font-size: 30px;
+        text-align: center;
+        z-index: 0;
+    }
+</style>

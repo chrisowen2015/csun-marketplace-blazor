@@ -48,7 +48,7 @@ namespace csun_marketplace.services
          * Also note this function doesn't need to fill all fields, just the ones needed for how we display all products, then we can just call getProduct() for the rest
          */
 
-        
+
         public List<Product> GetProductList()
         {
             var CSUNMarketplaceEvaluatorDB = _context.CreateDbContext();
@@ -70,6 +70,26 @@ namespace csun_marketplace.services
             return productList;
         }
 
+        public List<TextbookInformation> GetTextbookInformationList()
+        {
+            var CSUNMarketplaceEvaluatorDB = _context.CreateDbContext();
+
+            List<TextbookInformation> textbookInformationList = CSUNMarketplaceEvaluatorDB.TextbookInformations.Select(t => new TextbookInformation
+            {
+                TextbookInformationId = t.TextbookInformationId,
+                ProductId = t.ProductId,
+                Title = t.Title,
+                Authors = t.Authors,
+                Edition = t.Edition,
+                Isbn = t.Isbn,
+                Course = t.Course,
+                Department = t.Department,
+                Condition = t.Condition,
+            }).ToList();
+
+            return textbookInformationList;
+        }
+
         /*
          * Function to get all textbooks, as determined by their textbook category. Will need to update to pull a Textbook Information as well once DB has been populated correctly
          * 
@@ -80,6 +100,86 @@ namespace csun_marketplace.services
             var CSUNMarketplaceEvaluatorDB = _context.CreateDbContext();
 
             List<Product> productList = CSUNMarketplaceEvaluatorDB.Products.Where(p => p.Category == "Textbooks").Select(p => new Product
+            {
+                ProductId = p.ProductId,
+                OwnerId = p.OwnerId,
+                Title = p.Title,
+                ImageUrl = p.ImageUrl,
+                Description = p.Description,
+                ImageSource = p.ImageSource,
+
+                Price = p.Price,
+                Available = p.Available,
+
+            }).ToList();
+
+            return productList;
+        }
+        public List<Product> GetElectronics()
+        {
+            var CSUNMarketplaceEvaluatorDB = _context.CreateDbContext();
+
+            List<Product> productList = CSUNMarketplaceEvaluatorDB.Products.Where(p => p.Category == "Electronics").Select(p => new Product
+            {
+                ProductId = p.ProductId,
+                OwnerId = p.OwnerId,
+                Title = p.Title,
+                ImageUrl = p.ImageUrl,
+                Description = p.Description,
+                ImageSource = p.ImageSource,
+
+                Price = p.Price,
+                Available = p.Available,
+
+            }).ToList();
+
+            return productList;
+        }
+        public List<Product> GetSchoolSupplies()
+        {
+            var CSUNMarketplaceEvaluatorDB = _context.CreateDbContext();
+
+            List<Product> productList = CSUNMarketplaceEvaluatorDB.Products.Where(p => p.Category == "School Supplies").Select(p => new Product
+            {
+                ProductId = p.ProductId,
+                OwnerId = p.OwnerId,
+                Title = p.Title,
+                ImageUrl = p.ImageUrl,
+                Description = p.Description,
+                ImageSource = p.ImageSource,
+
+                Price = p.Price,
+                Available = p.Available,
+
+            }).ToList();
+
+            return productList;
+        }
+        public List<Product> GetSportsAndFitness()
+        {
+            var CSUNMarketplaceEvaluatorDB = _context.CreateDbContext();
+
+            List<Product> productList = CSUNMarketplaceEvaluatorDB.Products.Where(p => p.Category == "Sports & Fitness").Select(p => new Product
+            {
+                ProductId = p.ProductId,
+                OwnerId = p.OwnerId,
+                Title = p.Title,
+                ImageUrl = p.ImageUrl,
+                Description = p.Description,
+                ImageSource = p.ImageSource,
+
+                Price = p.Price,
+                Available = p.Available,
+
+            }).ToList();
+
+            return productList;
+        }
+        public List<Product> GetFurniture()
+        {
+            var CSUNMarketplaceEvaluatorDB = _context.CreateDbContext();
+
+            List<Product> productList = CSUNMarketplaceEvaluatorDB.Products.Where(p => p.Category == "Furniture").Select(p => new Product
             {
                 ProductId = p.ProductId,
                 OwnerId = p.OwnerId,
@@ -166,6 +266,53 @@ namespace csun_marketplace.services
             }
         }
 
+        public int UpdateTextbookInformation(TextbookInformation tvm)
+        {
+            try
+            {
+                var CSUNMarketplaceEvaluatorDB = _context.CreateDbContext();
+
+                if (tvm.TextbookInformationId == 0)
+
+                {
+                    TextbookInformation t = new TextbookInformation
+                    {
+                        TextbookInformationId = tvm.TextbookInformationId,
+                        ProductId = tvm.ProductId,
+                        Title = tvm.Title,
+                        Authors = tvm.Authors,
+                        Edition = tvm.Edition,
+                        Isbn = tvm.Isbn,
+                        Course = tvm.Course,
+                        Department = tvm.Department,
+                        Condition = tvm.Condition,
+                    };
+                    CSUNMarketplaceEvaluatorDB.TextbookInformations.Add(t);
+                    CSUNMarketplaceEvaluatorDB.SaveChanges();
+                    return t.TextbookInformationId;
+                }
+                else
+                {
+                    TextbookInformation t = CSUNMarketplaceEvaluatorDB.TextbookInformations.Where(t => t.TextbookInformationId == tvm.TextbookInformationId).Single();
+
+                    t.Title = tvm.Title;
+                    t.Authors = tvm.Authors;
+                    t.Edition = tvm.Edition;
+                    t.Isbn = tvm.Isbn;
+                    t.Course = tvm.Course;
+                    t.Department = tvm.Department;
+                    t.Condition = tvm.Condition;
+
+                    CSUNMarketplaceEvaluatorDB.SaveChanges();
+                    return t.TextbookInformationId;
+                }
+            }
+            catch (Exception ex)
+            {
+                return -1;
+            }
+        }
+
         public UserInformation GetUserInformation(string userId)
         {
             var CSUNMarketplaceEvaluatorDB = _context.CreateDbContext();
@@ -224,15 +371,16 @@ namespace csun_marketplace.services
                     };
                     CSUNMarketplaceEvaluatorDB.UserInformations.Add(user);
                     CSUNMarketplaceEvaluatorDB.SaveChanges();
-                    
+
                     return user.UserId;
                 }
-            } catch (Exception ex)
+            }
+            catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
                 return "";
             }
-            
+
         }
     }
 }

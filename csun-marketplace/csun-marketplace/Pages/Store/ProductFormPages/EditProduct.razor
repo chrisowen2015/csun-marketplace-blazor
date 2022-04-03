@@ -26,10 +26,13 @@
         <div class="form-row">
             <MudTextField Label="Product Title" T="string" @bind-Value=p.Title Variant="Variant.Filled" />
         </div>
-        <MudImage Src="@p.ImageUrl"/>
+        <div class="form-row">
+            <MudImage Src="@p.ImageUrl"/>
+        </div>
+        
         <MudText Color="Color.Surface" Class="upload-image-label">
             <h5>
-                Upload Image
+                Upload New Image
             </h5>
         </MudText>
 

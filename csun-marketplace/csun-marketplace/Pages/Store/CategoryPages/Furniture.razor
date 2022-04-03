@@ -1,7 +1,72 @@
 ﻿@page "/furniture"
 
-<h3>Furniture</h3>
+@inject NavigationManager _navMan
+@inject ICSUNMarketplaceService _csunMarketplaceService
+
+<div>
+    <MudText Color="Color.Primary" Class="page-header">
+        <h2>
+            Browse All Furniture
+        </h2>
+    </MudText>
+
+    <div class="carousel-container">
+        <MudCarousel TData="object" Style="height:300px" ShowArrows="false" ShowBullets="false">
+            <MudCarouselItem Color="Color.Primary">
+                
+            </MudCarouselItem>
+        </MudCarousel>
+    </div>
+    <div class="feed-container">
+        <div class="feed-content">
+            <div class="products-container">
+                @if (furnitureList != null)
+                {
+                    @foreach (Product p in furnitureList)
+                    {
+                        <MudPaper class="product-tile" Elevation="2" @onclick=@(()=>ViewProduct(p.ProductId))>
+                            <div>
+                                <MudImage ObjectPosition="ObjectPosition.Center" Src="@p.ImageUrl" Height="310" Width="310" />
+                            </div>
+                            <div class="product-tile-header-container">
+                                <MudText Class="product-tile-header">
+                                    @p.Title
+                                </MudText>
+                            </div>
+                            <div>
+                                <MudText Class="product-tile-price">
+                                    $@p.Price
+                                </MudText>
+                            </div>
+                            <MudTextField Value="p.Description" ReadOnly="true" Lines="4" Variant="Variant.Outlined" DisableUnderLine="true" Margin="Margin.Dense" Class="product-tile-description-container" />
+                        </MudPaper>
+                    }
+                }
+            </div>
+        </div>
+    </div>
+</div>
 
 @code {
+    List<Product> productList = new List<Product>();
+    List<Product> furnitureList = new List<Product>();
+
+    public void ViewProduct(int productId)
+    {
+        _navMan.NavigateTo("/view-listing/" + productId);
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        furnitureList = _csunMarketplaceService.GetFurniture();
+    }
 
 }
+
+<style>
+    .page-header {
+        margin-top: -1em;
+        padding-bottom: 1em;
+        text-align: center;
+    }
+</style>

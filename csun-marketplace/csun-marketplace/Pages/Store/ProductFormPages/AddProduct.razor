@@ -24,7 +24,17 @@
         </div>
 
         <div class="form-row">
-            <MudTextField Label="Product Title" T="string" @bind-Value=p.Title Variant="Variant.Filled" />
+            <MudTextField Label="Listing Title" T="string" @bind-Value=p.Title Variant="Variant.Filled" />
+        </div>
+
+        <div class="form-row">
+            <MudSelect Label="Category" T="string" @bind-Value=p.Category Variant="Variant.Filled" OnBlur=@(()=> CategoryChanged())>
+                <MudSelectItem T="string" Value="@("Textbooks")" />
+                <MudSelectItem T="string" Value="@("Electronics")" />
+                <MudSelectItem T="string" Value="@("School Supplies")" />
+                <MudSelectItem T="string" Value="@("Sports & Fitness")" />
+                <MudSelectItem T="string" Value="@("Furniture")" />
+            </MudSelect>
         </div>
 
         <MudText Color="Color.Surface" Class="upload-image-label">
@@ -62,35 +72,91 @@
         </div>
 
         <div class="grid-two">
-            <MudNumericField Class="elem-half" Label="Price" T="decimal?" @bind-Value=p.Price Variant="Variant.Filled" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.AttachMoney" />
-            <MudTextField Class="elem-half" Label="Date Created" T="DateTime" ReadOnly="true" @bind-Value=p.DateCreated Variant="Variant.Filled" Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Filled.CalendarMonth" />
-        </div>
-
-
-        <div class="form-row">
-            <MudSelect Label="Category" T="string" @bind-Value=p.Category Variant="Variant.Filled">
-                <MudSelectItem T="string" Value="@("Textbooks")" />
-                <MudSelectItem T="string" Value="@("Electronics")" />
-                <MudSelectItem T="string" Value="@("School Supplies")" />
-            </MudSelect>
+            <MudNumericField Label="Price" FullWidth="true" T="decimal?" @bind-Value=p.Price Variant="Variant.Filled" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.AttachMoney" Style="margin-right:.5em;" />
+            <MudTextField Label="Date Created" FullWidth="true" T="DateTime" ReadOnly="true" @bind-Value=p.DateCreated Variant="Variant.Filled" Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Filled.CalendarMonth" Style="margin-left:.5em;" />
         </div>
 
         <div class="form-row">
             <MudSelect Label="Tags" T="string" @bind-Value="p.Tags" Variant="Variant.Filled" MultiSelection="true" @onselect="@(()=>AddTag(p.Tags))">
                 @foreach (string tag in tagList)
                 {
-                    <MudSelectItem T="string" Value="@tag" OnClick="@(()=>AddTag(tag))"  />
+                    <MudSelectItem T="string" Value="@tag" OnClick="@(()=>AddTag(tag))" />
                 }
             </MudSelect>
             <MudChipSet>
-                @foreach(string tag in selectedTags)
+                @foreach (string tag in selectedTags)
                 {
-                    <MudChip Text="@tag"/>
+                    <MudChip Text="@tag" />
                 }
             </MudChipSet>
         </div>
 
-        <div class="form-row">
+        @if (showTextbookInformation)
+        {
+            @*Begin TextbookInformation*@
+
+            <MudText Style="margin:1em;">
+                <h3>
+                    Please provide additional information about your Textbook:
+                </h3>
+            </MudText>
+
+            <div>
+                <div class="form-row">
+                    <MudTextField Label="Title of Textbook" @bind-Value="tinfo.Title" Variant="Variant.Filled" />
+                </div>
+
+                <div class="two-row">
+                    <MudTextField Label="Author(s)" @bind-Value="tinfo.Authors" FullWidth="true" HelperText="" HelperTextOnFocus="true" Variant="Variant.Filled" />
+
+                    <MudSelect Class="title-search-elem" T="string" @bind-Value="tinfo.Edition" Label="Edition" Variant="Variant.Filled" Style="margin-left: 1em; max-width: 300px;">
+                        <MudSelectItem Value=@("1st") />
+                        <MudSelectItem Value=@("2nd") />
+                        <MudSelectItem Value=@("3rd") />
+                        <MudSelectItem Value=@("4th") />
+                        <MudSelectItem Value=@("5th") />
+                        <MudSelectItem Value=@("6th") />
+                        <MudSelectItem Value=@("7th") />
+                        <MudSelectItem Value=@("8th") />
+                        <MudSelectItem Value=@("9th") />
+                        <MudSelectItem Value=@("10th") />
+                        <MudSelectItem Value=@("11th") />
+                        <MudSelectItem Value=@("12th") />
+                        <MudSelectItem Value=@("13th") />
+                    </MudSelect>
+
+                </div>
+
+                <div class="form-row">
+                    <MudTextField Label="ISBN" @bind-Value="tinfo.Isbn" HelperText="" HelperTextOnFocus="true" Variant="Variant.Filled" />
+                </div>
+
+                <div class="two-row">
+                    <MudSelect Class="textbook-course-search" @bind-Value="tinfo.Department" Label="Select the Department" Dense="true" Variant="Variant.Filled" Style="margin-right: .5em;">
+                        @foreach (string department in departmentList)
+                        {
+                        <MudSelectItem T="string" Value=@department />
+                        }
+                </MudSelect>
+
+                <MudSelect Class="textbook-course-search" @bind-Value="tinfo.Course" Label="Select the Course" Dense="true" Variant="Variant.Filled" Style="margin-left: .5em;">
+                    @foreach (string course in courseList)
+                        {
+                        <MudSelectItem T="string" Value=@course />
+                        }
+                </MudSelect>
+
+
+
+            </div>
+
+        </div>
+
+        }
+
+
+
+        <div class="button-single">
             <MudButton Variant="Variant.Filled" OnClick=@(()=> UpdateProduct()) Color="Color.Primary">Submit</MudButton>
         </div>
     </div>
@@ -99,7 +165,6 @@
 
 @code {
     public Product p = new Product();
-
     public byte[]? imgSource { get; set; }
     IBrowserFile? selectedFile;
     public bool imgSaved { get; set; } = false;
@@ -108,6 +173,13 @@
     public List<string> tagList = new List<string> { "Textbooks", "Electronics", "School Supplies", "Back to School", "Good Deal" };
     public List<string> selectedTags = new List<string>();
     public string userID { get; set; }
+
+    // Begin TextbookInformation variables
+
+    public TextbookInformation tinfo = new TextbookInformation();
+    public bool showTextbookInformation = false;
+    List<string> departmentList = new List<string> { "ART", "CHEM", "COMP", "ECE", "ENGL", "FIN", "GEOL", "HIST", "MATH", "PHYS", "PSY", "SCI" };
+    List<string> courseList = new List<string> { "100", "108", "110", "122", "182", "222", "256", "282", "310", "322", "356", "380", "410", "424", "440" };
 
 
     protected override async Task OnInitializedAsync()
@@ -171,11 +243,22 @@
 
     private void AddTag(string tag)
     {
-        if(!selectedTags.Contains(tag))
+        if (!selectedTags.Contains(tag))
         {
             selectedTags.Add(tag);
             this.StateHasChanged();
             Console.WriteLine("Fired!");
+        }
+    }
+
+    public void CategoryChanged()
+    {
+        if (p.Category != null)
+        {
+            if (p.Category == "Textbooks")
+            {
+                showTextbookInformation = true;
+            }
         }
     }
 
@@ -190,11 +273,31 @@
         p.OwnerId = userID;
 
         p.Available = true;
+
+
         success = _csunMarketplaceService.UpdateProduct(p);
         if (success != -1)
         {
             p.ProductId = success;
-            Snackbar.Add("Product Listing successfully saved to the database!.", Severity.Success);
+
+            if (p.Category == "Textbooks")
+            {
+                tinfo.ProductId = p.ProductId;
+                int textbookInfoSuccess = _csunMarketplaceService.UpdateTextbookInformation(tinfo);
+
+                if (textbookInfoSuccess != -1)
+                {
+                    Snackbar.Add("Product Listing successfully saved to the database!.", Severity.Success);
+                }
+                else
+                {
+                    Snackbar.Add("Error, Product not saved to database.", Severity.Error);
+                }
+            }
+            else
+            {
+                Snackbar.Add("Product Listing successfully saved to the database!.", Severity.Success);
+            }
         }
         else
         {
@@ -216,14 +319,13 @@
     .grid-two {
         display: flex !important;
         flex-direction: row !important;
-        justify-content: space-between;
         padding-top: .5em;
         padding-bottom: .5em;
         padding-left: 1em;
         padding-right: 1em;
     }
-
-    .elem-half {
-        max-width: 48%;
+    .two-row {
+        display: flex;
+        padding: 1em;
     }
 </style>

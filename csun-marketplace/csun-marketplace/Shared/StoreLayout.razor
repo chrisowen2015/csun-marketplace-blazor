@@ -29,7 +29,7 @@
         <MudIconButton Class="right-top-button" Icon="@Icons.Material.Rounded.Settings" />
     </MudAppBar>
 
-    <MudTabs Centered="true" Rounded="false" Border="true">
+    <MudTabs Centered="true" Rounded="false" Border="true" ActivePanelIndex="@activePanel" ActivePanelIndexChanged="(int index) => SetPanelIndex(index)">
         <MudTabPanel Icon="@Icons.Material.Filled.Home" Text="Store Home" OnClick="@(() => _navMan.NavigateTo("/"))" />
         <MudTabPanel Icon="@Icons.Material.Filled.Add" Text="New Listing" OnClick="@(() => _navMan.NavigateTo("/new-listing"))" />
         <MudTabPanel Icon="@Icons.Material.Filled.Bookmark" Text="Bookmarked" />
@@ -87,6 +87,7 @@
     public List<string> categories = new List<String> { "Textbooks", "Electronics", "School Supplies", };
     bool drawerOpen = false;
     private bool _isDarkMode = false;
+    private int activePanel { get; set; }
 
     private MudTheme _theme = new MudTheme()
         {
@@ -138,6 +139,58 @@
     public void ResetFilter()
     {
         searchLabel = "Search CSUN Marketplace";
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        GetActiveTabPanel();
+    }
+    protected override void OnInitialized()
+    {
+        // Subscribe to the event
+        _navMan.LocationChanged += LocationChanged;
+        GetActiveTabPanel();
+        base.OnInitialized();
+    }
+
+    public void GetActiveTabPanel()
+    {
+        string currentURL = _navMan.Uri;
+
+        if (currentURL.Contains("/textbooks"))
+        {
+            activePanel = 3;
+        }
+        else if (currentURL.Contains("electronics"))
+        {
+            activePanel = 4;
+        }
+        else if (currentURL.Contains("school-supplies"))
+        {
+            activePanel = 5;
+        }
+        else if (currentURL.Contains("sports"))
+        {
+            activePanel = 6;
+        }
+        else if (currentURL.Contains("furniture"))
+        {
+            activePanel = 7;
+        }
+        else
+        {
+            activePanel = 0;
+        }
+    }
+
+    void LocationChanged(object sender, LocationChangedEventArgs e)
+    {
+        GetActiveTabPanel();
+    }
+
+    public void SetPanelIndex(int index)
+    {
+        activePanel = index;
     }
 }
 

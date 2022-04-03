@@ -5,48 +5,79 @@
 
 
 <div>
-    <div class="carousel-container">
-        <MudPaper>
-            <MudContainer Fixed="true">
-                <MudPaper Height="400px" Width="100%">
+    <MudText Color="Color.Primary" Class="page-header">
+        <h2>
+            Browse All Textbooks
+        </h2>
+    </MudText>
 
-                </MudPaper>
-            </MudContainer>
-        </MudPaper>
+    <div class="carousel-container">
+        <MudCarousel TData="object" Style="height:300px" ShowArrows="false" ShowBullets="false">
+            <MudCarouselItem onclick=@(()=>_navMan.NavigateTo("textbooks/search"))>
+                <MudImage Class="carousel-background-image" Src="https://cdn.discordapp.com/attachments/959989259492790352/959989315298005033/textbooks-final.jpg" />
+                <div class="carousel-content">
+                    <MudText Class="carousel-overlayed-text">
+                        <h1>
+                            Looking for a specific textbook?
+                        </h1>
+                        <h4>
+                            Click Here to use our <b>Textbook Search</b> to find what you need.
+                        </h4>
+                    </MudText>
+                </div>
+            </MudCarouselItem>
+        </MudCarousel>
     </div>
 
     <div class="feed-container">
         <div class="feed-content">
-
             <div class="products-container">
                 @if (productList != null)
                 {
-                    @foreach (Product p in productList)
+                    @foreach (TextbookInformation t in textbookInformationList)
                     {
-                        <MudPaper class="product-tile" Elevation=2 @onclick=@(()=>ViewProduct(p.ProductId)) >
+                        Product p = productList.Where((p) => p.ProductId == t.ProductId).Single();
+
+                        <MudPaper class="product-tile" Elevation=2 @onclick=@(()=>ViewProduct(p.ProductId))>
                             <div>
                                 <MudImage ObjectPosition="ObjectPosition.Center" Src="@p.ImageUrl" Height="310" Width="310" />
                             </div>
+
                             <div class="product-tile-header-container">
                                 <MudText Class="product-tile-header">
-                                    @p.Title
+                                    @t.Title
                                 </MudText>
                             </div>
+
+                            <div>
+                                <MudText Class="product-tile-price" Color="Color.Primary">
+                                   @t.Department @t.Course
+                                </MudText>
+                            </div>
+
                             <div>
                                 <MudText Class="product-tile-price">
-                                    $@p.Price
+                                   Author:  @t.Authors
                                 </MudText>
                             </div>
-                            <MudTextField Value="p.Description" ReadOnly="true" Lines="4" Variant="Variant.Outlined" DisableUnderLine="true" Margin="Margin.Dense" Class="product-tile-description-container" />
+                            
+                            <div>
+                                <MudText Class="product-tile-price">
+                                    @t.Edition Edition
+                                </MudText>
+                            </div>
 
-                            @*
-                                <div class="product-tile-description-container">
-                                    <MudText Class="product-tile-description">
-                                        @p.Description
-                                    </MudText>
-                                </div>
-                            *@
+                            <div>
+                                <MudText Class="product-tile-price">
+                                   ISBN: @t.Isbn
+                                </MudText>
+                            </div>
 
+                            <div>
+                                <b>
+                                    $@p.Price
+                                </b>
+                            </div>
                         </MudPaper>
                     }
                 }
@@ -55,18 +86,14 @@
     </div>
 </div>
 
-
-
-
-
-
-<h3>Textbooks</h3>
-
 @code {
     TextbookInformation tinfo = new TextbookInformation();
     List<Product> productList = new List<Product>();
+    List<TextbookInformation> textbookInformationList = new List<TextbookInformation>();
 
+    List<string> departmentList = new List<string> { "ART", "CHEM", "COMP", "ECE", "ENGL", "FIN", "GEOL", "HIST", "MATH", "PHYS", "PSY", "SCI" };
 
+    List<string> courseList = new List<string> { "100", "108", "110", "122", "182", "222", "256", "282", "310", "322", "356", "380", "410", "424", "440" };
 
     public void ViewProduct(int productId)
     {
@@ -75,11 +102,36 @@
 
     protected override async Task OnInitializedAsync()
     {
-        //productList = _csunMarketplaceService.GetTextbooks();
-        foreach (Product p in productList)
-        {
-            
-        }
+        productList = _csunMarketplaceService.GetTextbooks();
+        textbookInformationList = _csunMarketplaceService.GetTextbookInformationList();
     }
 
 }
+
+<style>
+    .page-header {
+        margin-top: -1em;
+        padding-bottom: 1em;
+        text-align: center;
+    }
+
+    .carousel-background-image {
+        opacity: .6;
+        position: absolute;
+        z-index: 0;
+    }
+
+    .carousel-content {
+        display: flex;
+        position: absolute;
+        top: 100px;
+        left: 500px;
+        z-index: 1;
+    }
+
+    .carousel-overlayed-text {
+        font-size: 30px;
+        text-align: center !important;
+    }
+</style>
+
