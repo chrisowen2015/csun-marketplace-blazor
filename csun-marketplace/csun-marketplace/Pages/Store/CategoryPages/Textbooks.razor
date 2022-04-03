@@ -14,16 +14,18 @@
     <div class="carousel-container">
         <MudCarousel TData="object" Style="height:300px" ShowArrows="false" ShowBullets="false">
             <MudCarouselItem onclick=@(()=>_navMan.NavigateTo("textbooks/search"))>
-                <MudImage Class="carousel-background-image" Src="https://cdn.discordapp.com/attachments/959989259492790352/959989315298005033/textbooks-final.jpg" />
-                <div class="carousel-content">
-                    <MudText Class="carousel-overlayed-text">
-                        <h1>
-                            Looking for a specific textbook?
-                        </h1>
-                        <h4>
-                            Click Here to use our <b>Textbook Search</b> to find what you need.
-                        </h4>
-                    </MudText>
+                <div class="carousel-background-gradient">
+                    <MudImage Class="carousel-background-image" Src="https://cdn.discordapp.com/attachments/959989259492790352/959989315298005033/textbooks-final.jpg" />
+                    <div class="carousel-content">
+                        <MudText Class="carousel-overlayed-text">
+                            <h1>
+                                Looking for a specific textbook?
+                            </h1>
+                            <h4>
+                                Click Here to use our <b>Textbook Search</b> to find what you need.
+                            </h4>
+                        </MudText>
+                    </div>
                 </div>
             </MudCarouselItem>
         </MudCarousel>
@@ -51,16 +53,16 @@
 
                             <div>
                                 <MudText Class="product-tile-price" Color="Color.Primary">
-                                   @t.Department @t.Course
+                                    @t.Department @t.Course
                                 </MudText>
                             </div>
 
                             <div>
                                 <MudText Class="product-tile-price">
-                                   Author:  @t.Authors
+                                    Author:  @t.Authors
                                 </MudText>
                             </div>
-                            
+
                             <div>
                                 <MudText Class="product-tile-price">
                                     @t.Edition Edition
@@ -69,7 +71,7 @@
 
                             <div>
                                 <MudText Class="product-tile-price">
-                                   ISBN: @t.Isbn
+                                    ISBN: @t.Isbn
                                 </MudText>
                             </div>
 

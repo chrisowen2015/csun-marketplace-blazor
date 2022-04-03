@@ -15,17 +15,19 @@
             <MudCarouselItem Transition="transition">
                 <MudImage Src="https://cdn.discordapp.com/attachments/959989259492790352/960000500412059669/carousel-placeholder.png" />
             </MudCarouselItem>
-            <MudCarouselItem Transition="transition" onclick=@(()=>_navMan.NavigateTo("textbooks/search"))>
-                <MudImage Class="carousel-background-image" Src="https://cdn.discordapp.com/attachments/959989259492790352/959989315298005033/textbooks-final.jpg" />
-                <div class="carousel-content">
-                    <MudText Class="carousel-overlayed-text">
-                        <h1>
-                            Looking for a textbook?
-                        </h1>
-                        <h4>
-                            Click Here to use our <b>Textbook Search</b> to find what you need.
-                        </h4>
-                    </MudText>
+            <MudCarouselItem onclick=@(()=>_navMan.NavigateTo("textbooks/search"))>
+                <div class="carousel-background-gradient">
+                    <MudImage Class="carousel-background-image" Src="https://cdn.discordapp.com/attachments/959989259492790352/959989315298005033/textbooks-final.jpg" />
+                    <div class="carousel-content">
+                        <MudText Class="carousel-overlayed-text">
+                            <h1>
+                                Looking for a specific textbook?
+                            </h1>
+                            <h4>
+                                Click Here to use our <b>Textbook Search</b> to find what you need.
+                            </h4>
+                        </MudText>
+                    </div>
                 </div>
             </MudCarouselItem>
         </MudCarousel>
@@ -149,24 +151,5 @@
         padding-bottom: 1em;
         text-align: center;
         z-index: 0;
-    }
-
-    .carousel-background-image {
-        opacity: .6;
-        position: absolute;
-        z-index: 0;
-    }
-
-    .carousel-content {
-        display: flex;
-        position: absolute;
-        top: 100px;
-        left: 500px;
-        z-index: 1;
-    }
-
-    .carousel-overlayed-text {
-        font-size: 30px;
-        text-align: center !important;
     }
 </style>
