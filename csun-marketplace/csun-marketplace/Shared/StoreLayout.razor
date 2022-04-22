@@ -119,8 +119,8 @@
         GetActiveTabPanel();
 
         // Prompt First time User Dialog
-        
-        
+
+
         base.OnInitialized();
     }
 
@@ -156,6 +156,7 @@
         {
             activePanel = 0;
         }
+        StateHasChanged();
     }
 
     void LocationChanged(object sender, LocationChangedEventArgs e)
