@@ -10,14 +10,22 @@
 
 
         </MudButton>
-
+        
         <form action="/Identity/Account/Logout?returnUrl=%2F" method="post">
-            <button class="nav-link btn btn-link" type="submit">Logout</button>
+            <MudButton StartIcon="@Icons.Material.Filled.Logout" IconColor="Color.Secondary" Style="min-width: min-content !important;" ButtonType="ButtonType.Submit">
+                Logout
+            </MudButton>
             <input name="__RequestVerificationToken" type="hidden" value="@TokenProvider.XsrfToken" />
         </form>
+
     </Authorized>
     <NotAuthorized>
-        <a href="Identity/Account/Register">Register</a>
-        <a href="Identity/Account/Login">Login</a>
+        <MudButton StartIcon="@Icons.Material.Filled.AccountCircle" Style="min-width: min-content !important;" IconColor="Color.Secondary" OnClick="@(()=>_navMan.NavigateTo("Identity/Account/Register"))">
+            Register
+        </MudButton>
+
+        <MudButton StartIcon="@Icons.Material.Filled.Login" Style="min-width: min-content !important;" IconColor="Color.Secondary" OnClick="@(()=>_navMan.NavigateTo("Identity/Account/Login"))">
+            Login
+        </MudButton>
     </NotAuthorized>
 </AuthorizeView>
