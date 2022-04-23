@@ -28,35 +28,24 @@
             </MudText>
         </div>
 
-        <div class="products-container">
             @if (_cart.Length() > 0)
             {
                 @foreach (Product p in _cart.GetCart())
                 {
-                    <div>
-                        <div>
-                            <MudImage Src="@p.ImageUrl" Height="85" Width="85" />
-                        </div>
-                        <div class="product-tile">
-                            <div class="product-tile-header-container">
-                                <MudText Class="product-tile-header">
-                                    @p.Title
-                                </MudText>
+                    <MudPaper Style="margin-left: 1em; margin-right: 1em; margin-bottom: 1em; padding: .5em;" Elevation="3">
+                        <MudContainer Class="cart-product-flex-row" Fixed="true">
+                            <div class="cart-product-img-small">
+                                <MudImage Src="@p.ImageUrl" Height="120" Width="120" />
                             </div>
-
-                            <div>
-                                <MudText>
-                                    $@p.Price
-                                </MudText>
+                            <div class="cart-popover-title-price-flex-col">
+                                <p> @p.Title </p>
+                                <b class="product-price-text"> @formatCurrency(p.Price) </b>
                             </div>
-                        </div>
-                        <div>
-                            <MudButton Variant="Variant.Filled" OnClick=@(()=> _cart.RemoveFromCart(p)) Color="Color.Primary" EndIcon="@Icons.Material.Filled.RemoveShoppingCart">Remove</MudButton>
-                        </div>
-                    </div>
+                            <MudIconButton Class="cart-remove-icon" Icon="@Icons.Material.Filled.Delete" OnClick="@(()=> RemoveFromCart(p))" />
+                        </MudContainer>
+                    </MudPaper>
                 }
             }
-        </div>
 
         <div class="grid-two">
             <div class="keep-shopping">
@@ -80,6 +69,30 @@
 
 
 @code {
+
+    CultureInfo USD = new CultureInfo("en-US");
+
+    public string formatCurrency(decimal? amount)
+    {
+        float subtotal = (float)amount;
+        return subtotal.ToString("C2", USD);
+    }
+
+    public void RemoveFromCart(Product p)
+    {
+        _cart.RemoveFromCart(p);
+        Snackbar.Add("Product successfully removed from Cart.", Severity.Success, config =>
+        {
+            config.Action = "Undo";
+            config.ActionColor = Color.Secondary;
+            config.Onclick = snackbar =>
+            {
+                _cart.UndoRemoveFromCart();
+                Snackbar.Clear();
+                return Task.CompletedTask;
+            };
+        });
+    }
 
 }
 

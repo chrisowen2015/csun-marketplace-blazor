@@ -18,7 +18,7 @@
     <div class="page-content">
 
         <div class="page-header-container">
-            <MudText Class="form-header" Color="Color.Default">
+            <MudText Class="form-header" Color="Color.Primary">
                 <h1>
                     Checkout
                 </h1>
@@ -46,7 +46,7 @@
         </MudExpansionPanel>
 
         <div class="page-header-container">
-            <MudText Class="form-header" Color="Color.Default">
+            <MudText Class="form-header" Color="Color.Primary">
                 <h1>
                     Billing
                 </h1>
@@ -90,7 +90,7 @@
 
 
         <div class="form-row">
-            <MudText Color="Color.Default">
+            <MudText Color="Color.Primary">
                 <h6>
                     Review Order
                 </h6>
@@ -98,36 +98,14 @@
         </div>
 
 
-        <div class="products-container">
             @if (_cart.Length() > 0)
             {
                 @foreach (Product p in _cart.GetCart())
                 {
-                    @*<div>
-                        <div>
-                            <MudImage Src="@p.ImageUrl" Height="85" Width="85" />
-                        </div>
-                        <div class="product-tile">
-                            <div class="product-tile-header-container">
-                                <MudText Class="product-tile-header">
-                                    @p.Title
-                                </MudText>
-                            </div>
-
-                            <div>
-                                <MudText>
-                                    $@p.Price
-                                </MudText>
-                            </div>
-                        </div>
-                        <div>
-                            <MudButton Variant="Variant.Filled" OnClick=@(()=> _cart.RemoveFromCart(p)) Color="Color.Primary" EndIcon="@Icons.Material.Filled.RemoveShoppingCart">Remove</MudButton>
-                        </div>
-                    </div>*@
                     <MudPaper Style="margin-left: 1em; margin-right: 1em; margin-bottom: 1em; padding: .5em;" Elevation="3">
                         <MudContainer Class="cart-product-flex-row" Fixed="true">
                             <div class="cart-product-img-small">
-                                <MudImage Src="@p.ImageUrl" Height="70" Width="70" />
+                                <MudImage Src="@p.ImageUrl" Height="120" Width="120" />
                             </div>
                             <div class="cart-popover-title-price-flex-col">
                                 <p> @p.Title </p>
@@ -138,7 +116,6 @@
                     </MudPaper>
                 }
             }
-        </div>
 
         <div>
             <div class="go-back">
