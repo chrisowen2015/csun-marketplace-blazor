@@ -10,7 +10,7 @@
 
 <AuthorizeView>
     <Authorized>
-        <div class="page-container">
+        <MudPaper Elevation="5" class="page-container">
             <div class="page-content">
                 <div>
                     <MudTextField Label="First Name" T="string" @bind-Value="@User.FirstName" Variant="Variant.Filled" ReadOnly=readOnly />
@@ -45,7 +45,7 @@
                     <MudButton Variant="Variant.Filled" OnClick=@(() => UpdateUserInformation()) Color="Color.Primary">Save Profile</MudButton>
                 </div>
             </div>
-        </div>
+        </MudPaper>
     </Authorized>
     <NotAuthorized>
         Pls sign in!

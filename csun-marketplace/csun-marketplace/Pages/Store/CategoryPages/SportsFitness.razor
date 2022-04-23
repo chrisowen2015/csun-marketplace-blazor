@@ -28,11 +28,11 @@
     <div class="feed-container">
         <div class="feed-content">
             <div class="products-container">
-                @if (sportsAndFitnessList != null)
+                @if (sportsAndFitnessToRender != null)
                 {
-                    @foreach (Product p in sportsAndFitnessList)
+                    @foreach (Product p in sportsAndFitnessToRender)
                     {
-                        <MudPaper class="product-tile" Elevation="2" @onclick=@(()=>ViewProduct(p.ProductId))>
+                        <MudPaper class="product-tile" Elevation="7" @onclick=@(()=>ViewProduct(p.ProductId))>
                             <div>
                                 <MudImage ObjectPosition="ObjectPosition.Center" Src="@p.ImageUrl" Height="310" Width="310" />
                             </div>
@@ -52,12 +52,20 @@
                 }
             </div>
         </div>
+
+        <div class="pagination-container">
+            <MudPagination Count="@maxNumberOfPages" Color="Color.Primary" SelectedChanged="@((int newPage)=>UpdateProductsOnPage(newPage))" Size="Size.Large" />
+        </div>
     </div>
 </div>
 
 @code {
-    List<Product> productList = new List<Product>();
     List<Product> sportsAndFitnessList = new List<Product>();
+    List<Product> sportsAndFitnessToRender = new List<Product>();
+
+    public int itemsPerPage = 6;
+    public int maxNumberOfPages = 1;
+    public int pageIndex = 1;
 
     public void ViewProduct(int productId)
     {
@@ -67,14 +75,32 @@
     protected override async Task OnInitializedAsync()
     {
         sportsAndFitnessList = _csunMarketplaceService.GetSportsAndFitness();
+
+        maxNumberOfPages = sportsAndFitnessList.Count() / itemsPerPage + 1;
+
+        sportsAndFitnessToRender = new List<Product>();
+        for (int i = ((pageIndex - 1) * itemsPerPage); i < itemsPerPage * pageIndex && i < sportsAndFitnessList.Count(); i++)
+        {
+            sportsAndFitnessToRender.Add(sportsAndFitnessList.ElementAt(i));
+        }
+
+    }
+
+    public void UpdateProductsOnPage(int newPage)
+    {
+        pageIndex = newPage;
+        sportsAndFitnessToRender.Clear();
+        sportsAndFitnessToRender = new List<Product>();
+
+        for (int i = ((pageIndex - 1) * itemsPerPage); i < itemsPerPage * pageIndex && i < sportsAndFitnessList.Count(); i++)
+        {
+            sportsAndFitnessToRender.Add(sportsAndFitnessList.ElementAt(i));
+        }
+        StateHasChanged();
     }
 
 }
 
 <style>
-    .page-header {
-        margin-top: -1em;
-        padding-bottom: 1em;
-        text-align: center;
-    }
+
 </style>

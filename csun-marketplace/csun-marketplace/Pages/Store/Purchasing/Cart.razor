@@ -14,10 +14,10 @@
 @inject AuthenticationStateProvider _authenticationStateProvider
 @inject CartService _cart
 
-<div class="page-container">
+<MudPaper Class="page-container" Elevation="7">
     <div class="page-content">
 
-        <div class="page-header-container">
+        <div class="page-header-container" style="padding-left: 0em !important;">
             <MudText Class="form-header" Color="Color.Default">
                 <h1>
                     My cart
@@ -28,46 +28,59 @@
             </MudText>
         </div>
 
-        <div class="products-container">
-            @if (_cart.Length() > 0)
-            {
+        @if (_cart.Length() > 0)
+        {
                 @foreach (Product p in _cart.GetCart())
                 {
-                    <div>
-                        <div>
-                            <MudImage Src="@p.ImageUrl" Height="85" Width="85" />
-                        </div>
-                        <div class="product-tile">
-                            <div class="product-tile-header-container">
-                                <MudText Class="product-tile-header">
-                                    @p.Title
-                                </MudText>
-                            </div>
+                    <MudPaper Style="margin-bottom: 1em; padding: .5em;" Elevation="3" Width="100%">
+                        <MudContainer Fixed="true" Style="padding: .5em !important;">
+                            <MudGrid>
+                                <MudItem lg="2" xl="2">
+                                    <MudImage Src="@p.ImageUrl" Height="120" Width="120" />
+                                </MudItem>
 
-                            <div>
-                                <MudText>
-                                    $@p.Price
-                                </MudText>
-                            </div>
-                        </div>
-                        <div>
-                            <MudButton Variant="Variant.Filled" OnClick=@(()=> _cart.RemoveFromCart(p)) Color="Color.Primary" EndIcon="@Icons.Material.Filled.RemoveShoppingCart">Remove</MudButton>
-                        </div>
-                    </div>
+                                <MudItem lg="9" xl="9" Style="display: flex; flex-direction:column; justify-content:space-between !important;">
+                                    <MudText Color="Color.Primary">
+                                        <h5> @p.Title </h5>
+                                    </MudText>
+
+                                    <MudText Color="Color.Secondary">
+                                        Sold by @GetSellerName(p)
+                                    </MudText>
+
+                                    
+                                    <div>
+                                        <MudButton OnClick="@(()=> RemoveFromCart(p))" Variant="Variant.Filled" Color="Color.Default" >
+                                            Remove
+                                        </MudButton>
+
+                                        <MudButton Variant="Variant.Filled" Color="Color.Default" Style="margin-left: 1em;">
+                                            Save For Later
+                                        </MudButton>
+                                    </div>
+                                </MudItem>
+
+                                <MudItem lg="1" xl="1">
+                                    <b class="product-price-text"> @formatCurrency(p.Price) </b>
+                                </MudItem>
+                            </MudGrid>
+                        </MudContainer>
+                    </MudPaper>
                 }
-            }
-        </div>
+        }
 
-        <div class="grid-two">
+        <div class="two-buttons">
             <div class="keep-shopping">
-                <MudButton Variant="Variant.Filled" OnClick="@(()=>_navMan.NavigateTo("/"))" Color="Color.Primary">Keep Shopping</MudButton>
+                <MudButton Variant="Variant.Filled" OnClick="@(()=>_navMan.NavigateTo("/"))" Style="margin-top:1em;" Color="Color.Primary">Keep Shopping</MudButton>
             </div>
 
             @if (_cart.Length() > 0)
             {
                 <div class="billing-continue">
-                    <MudText>
-                        Cart Total: $@_cart.GetTotal().ToString()
+                    <MudText Color="Color.Primary" Style="padding-bottom: 1em;">
+                        <b>
+                            Cart Total: @formatCurrency(_cart.GetTotal())
+                        </b>
                     </MudText>
                     <MudButton Variant="Variant.Filled" OnClick="@(()=>_navMan.NavigateTo("/checkout"))" Color="Color.Primary">Checkout</MudButton>
                 </div>
@@ -75,11 +88,71 @@
         </div>
 
     </div>
-</div>
+</MudPaper>
 
 
 
 @code {
+
+    CultureInfo USD = new CultureInfo("en-US");
+    HashSet<UserInformation> sellerInfos = new HashSet<UserInformation>();
+
+    public string formatCurrency(decimal? amount)
+    {
+        float subtotal = (float)amount;
+        return subtotal.ToString("C2", USD);
+    }
+
+    protected override void OnInitialized()
+    {
+        foreach (Product p in _cart.GetCart())
+        {
+            UserInformation user = _csunMarketplaceService.GetUserInformation(p.OwnerId);
+            if(!sellerInfos.Contains(user))
+            {
+                sellerInfos.Add(_csunMarketplaceService.GetUserInformation(p.OwnerId));    
+            }
+        }
+    }
+
+    public void RemoveFromCart(Product p)
+    {
+        _cart.RemoveFromCart(p);
+        Snackbar.Add("Product successfully removed from Cart.", Severity.Success, config =>
+        {
+            config.Action = "Undo";
+            config.ActionColor = Color.Secondary;
+            config.Onclick = snackbar =>
+            {
+                _cart.UndoRemoveFromCart();
+                Snackbar.Clear();
+                StateHasChanged();
+                return Task.CompletedTask;
+            };
+        });
+    }
+
+    public string GetSellerName(Product p)
+    {
+        UserInformation? user = null;
+        try
+        {
+            user = sellerInfos.Where((u) => u.UserId == p.OwnerId).First();
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine("Exception " + e);
+        }
+
+        if(user != null)
+        {
+            return user.FirstName + " " + user.LastName;
+        }
+        else
+        {
+            return "New Seller";
+        }
+    }
 
 }
 
@@ -92,14 +165,13 @@
         margin-top: 1em;
     }
 
-    .grid-two {
+    .two-buttons {
+        width: 100%;
         display: flex !important;
         flex-direction: row !important;
         justify-content: space-between;
         padding-top: .5em;
         padding-bottom: .5em;
-        padding-left: 1em;
-        padding-right: 1em;
     }
 
     .elem-half {
@@ -135,6 +207,8 @@
     }
 
     .billing-continue {
-        float: right;
+        display: flex;
+        flex-direction:column;
+        justify-content:flex-end !important;
     }
 </style>

@@ -6,45 +6,95 @@
 @using Microsoft.AspNetCore.Authentication
 @using Microsoft.AspNetCore.Components.Authorization
 @using Microsoft.AspNetCore.Identity
+@using System.ComponentModel.DataAnnotations
 
 @inject ICSUNMarketplaceService _csunMarketplaceService
 @inject IWebHostEnvironment env
 @inject ISnackbar Snackbar
 @inject NavigationManager _navMan
-@inject AuthenticationStateProvider _authenticationStateProvider
 @inject CartService _cart
 
-<div class="page-container">
+<MudPaper Class="page-container" Elevation="7">
     <div class="page-content">
 
         <div class="page-header-container">
-            <MudText Class="form-header" Color="Color.Default">
+            <MudText Class="form-header" Color="Color.Primary">
                 <h1>
                     Checkout
                 </h1>
-                <h6>
-                    Shipping Information
-                </h6>
             </MudText>
         </div>
 
+        <MudExpansionPanel Text="Shipping Information">
+            <div class="grid-two">
+                <MudTextField Class="elem-half" Label="First Name" T="string" Variant="Variant.Filled" @bind-Value="@checkoutViewModel.shippingFirstName" />
+                <MudTextField Class="elem-half" Label="Last Name" T="string" Variant="Variant.Filled" @bind-Value="@checkoutViewModel.shippingLastName" />
+            </div>
+
+            <div class="grid-two">
+                <MudTextField Class="elem-half" Label="Shipping Address" T="string" Variant="Variant.Filled" @bind-Value="@checkoutViewModel.shippingAddress" />
+                <MudTextField Class="elem-half" Label="City" T="string" Variant="Variant.Filled" @bind-Value="@checkoutViewModel.shippingCity" />
+            </div>
+
+            <div class="grid-two">
+                <MudSelect Style="margin-right:.35em" Label="State" T="string" Variant="Variant.Filled" Dense="true" @bind-Value="@checkoutViewModel.shippingState">
+                    @foreach (string state in states)
+                    {
+                        <MudSelectItem T="string" Value="state" />
+                    }
+                </MudSelect>
+                <MudTextField Style="margin-left: .35em; margin-right: .35em;" Label="Zip" T="string" Variant="Variant.Filled" Mask="@(new PatternMask("00000"))" @bind-Value="@checkoutViewModel.shippingZip" />
+                <MudTextField Style="margin-left: .35em;" Label="Country" T="string" Variant="Variant.Filled" ReadOnly="true" @bind-Value="@checkoutViewModel.country" />
+            </div>
+        </MudExpansionPanel>
+
+        <div class="page-header-container">
+            <MudText Class="form-header" Color="Color.Primary">
+                <h1>
+                    Billing
+                </h1>
+            </MudText>
+        </div>
+
+        <MudExpansionPanel Text="Billing Information">
+            <MudCheckBox T="bool" Label="Billing same as Shipping?" CheckedChanged="@((value) => CheckBoxChanged(value))" />
+
+
+            <div class="grid-two">
+                <MudTextField Class="elem-half" Label="First Name" T="string" Variant="Variant.Filled" @bind-Value="@checkoutViewModel.billingFirstName" />
+                <MudTextField Class="elem-half" Label="Last Name" T="string" Variant="Variant.Filled" @bind-Value="@checkoutViewModel.billingLastName" />
+            </div>
+
+
+            <div class="grid-two">
+                <MudTextField Class="elem-half" Label="Billing Address" T="string" Variant="Variant.Filled" @bind-Value="@checkoutViewModel.billingAddress" />
+                <MudTextField Class="elem-half" Label="City" T="string" Variant="Variant.Filled" @bind-Value="@checkoutViewModel.billingCity" />
+            </div>
+
+            <div class="grid-two">
+                <MudSelect Style="margin-right:.35em" Label="State" T="string" Variant="Variant.Filled" Dense="true" @bind-Value="@checkoutViewModel.billingState">
+                    @foreach (string state in states)
+                    {
+                        <MudSelectItem T="string" Value="state" />
+                    }
+                </MudSelect>
+                <MudTextField Style="margin-left: .35em; margin-right: .35em;" Label="Zip" T="string" Variant="Variant.Filled" Mask="@(new PatternMask("00000"))" @bind-Value="@checkoutViewModel.billingZip" />
+                <MudTextField Style="margin-left: .35em" Label="Country" T="string" Variant="Variant.Filled" ReadOnly="true" @bind-Value="@checkoutViewModel.country" />
+            </div>
+
+            <div class="form-row">
+                <MudTextField Label="Card number" T="string" Variant="Variant.Filled" Mask="@(new PatternMask("0000 0000 0000 0000"))" @bind-Value="@checkoutViewModel.cardNumber" />
+            </div>
+
+            <div class="grid-two">
+                <MudTextField Class="elem-half" Label="Expiration date" T="string" Variant="Variant.Filled" Mask="@(new PatternMask("00/00"))" @bind-Value="@checkoutViewModel.expirationDate" />
+                <MudTextField Class="elem-half" Label="Security code" T="string" Variant="Variant.Filled" Mask="@(new PatternMask("000"))" @bind-Value="@checkoutViewModel.securityCode" />
+            </div>
+        </MudExpansionPanel>
+
+
         <div class="form-row">
-            <MudTextField Label="Shipping Address" T="string" Variant="Variant.Filled" />
-        </div>
-
-        <div class="grid-two">
-            <MudTextField Class="elem-half" Label="City" T="string" Variant="Variant.Filled" />
-            <MudTextField Class="elem-half" Label="State" T="string" Variant="Variant.Filled" />
-        </div>
-
-        <div class="grid-two">
-            <MudTextField Class="elem-half" Label="Zip" T="string" Variant="Variant.Filled" />
-            <MudTextField Class="elem-half" Label="Country" T="string" Variant="Variant.Filled" Text="United States" ReadOnly="true" />
-        </div>
-
-
-        <div class="form-row">
-            <MudText Color="Color.Default">
+            <MudText Color="Color.Primary">
                 <h6>
                     Review Order
                 </h6>
@@ -52,64 +102,230 @@
         </div>
 
 
-
-        <div class="products-container">
-            @if (_cart.Length() > 0)
+        @if (_cart.Length() > 0)
+        {
+            @foreach (Product p in _cart.GetCart())
             {
-                @foreach (Product p in _cart.GetCart())
-                {
-                    <div>
-                        <div>
-                            <MudImage Src="@p.ImageUrl" Height="85" Width="85" />
-                        </div>
-                        <div class="product-tile">
-                            <div class="product-tile-header-container">
-                                <MudText Class="product-tile-header">
-                                    @p.Title
-                                </MudText>
-                            </div>
+                <MudPaper Style="margin-bottom: 1em; padding: .5em;" Elevation="3" Width="100%">
+                    <MudContainer Fixed="true" Style="padding: .5em !important;">
+                        <MudGrid>
+                            <MudItem lg="2" xl="2">
+                                <MudImage Src="@p.ImageUrl" Height="120" Width="120" />
+                            </MudItem>
 
-                            <div>
-                                <MudText>
-                                    $@p.Price
+                            <MudItem lg="9" xl="9" Style="display: flex; flex-direction:column; justify-content:space-between !important;">
+                                <MudText Color="Color.Primary">
+                                    <h5> @p.Title </h5>
                                 </MudText>
-                            </div>
-                        </div>
-                        <div>
-                            <MudButton Variant="Variant.Filled" OnClick=@(()=> _cart.RemoveFromCart(p)) Color="Color.Primary" EndIcon="@Icons.Material.Filled.RemoveShoppingCart">Remove</MudButton>
-                        </div>
-                    </div>
-                }
+
+                                <MudText Color="Color.Secondary">
+                                    Sold by @GetSellerName(p)
+                                </MudText>
+
+
+                                <div>
+                                    <MudButton OnClick="@(()=> RemoveFromCart(p))" Variant="Variant.Filled" Color="Color.Default">
+                                        Remove
+                                    </MudButton>
+
+                                    <MudButton Variant="Variant.Filled" Color="Color.Default" Style="margin-left: 1em;">
+                                        Save For Later
+                                    </MudButton>
+                                </div>
+                            </MudItem>
+
+                            <MudItem lg="1" xl="1">
+                                <b class="product-price-text"> @formatCurrency(p.Price) </b>
+                            </MudItem>
+                        </MudGrid>
+                    </MudContainer>
+                </MudPaper>
             }
-        </div>
+        }
 
-        <div>
+        <div class="two-buttons">
             <div class="go-back">
-                <MudButton Variant="Variant.Filled" OnClick="@(()=>_navMan.NavigateTo("/cart"))" Color="Color.Primary">Back</MudButton>
+                <MudButton Variant="Variant.Filled" OnClick="@(()=>_navMan.NavigateTo("/cart"))" Style="margin-top:1em;" Color="Color.Primary">Back</MudButton>
             </div>
 
             @if (@_cart.GetTotal() > 0)
             {
                 <div class="billing-continue">
-                    <MudText>
-                        Cart Total: $@_cart.GetTotal().ToString()
+                    <MudText Color="Color.Primary" Style="padding-bottom: 1em;">
+                        <b>
+                            Cart Total: @formatCurrency(_cart.GetTotal())
+                        </b>
                     </MudText>
-                    <MudButton Variant="Variant.Filled" OnClick="@(()=>_navMan.NavigateTo("/billing"))" Color="Color.Primary">Continue</MudButton>
+                    <MudButton Variant="Variant.Filled" OnClick="@(()=> OrderComplete())" Color="Color.Primary">Place Order</MudButton>
+                    @*<MudButton Variant="Variant.Filled" OnClick="@(()=>_navMan.NavigateTo("/billing"))" Color="Color.Primary">Continue</MudButton>*@
                 </div>
             }
             else
             {
                 <div class="keep-shopping">
-                    <MudButton Variant="Variant.Filled" OnClick="@(()=>_navMan.NavigateTo("/"))" Color="Color.Primary">Keep Shopping</MudButton>
+                    <MudButton Variant="Variant.Filled" OnClick="@(()=>_navMan.NavigateTo("/"))" Style="margin-top:1em;" ButtonType="ButtonType.Submit" Color="Color.Primary">Keep Shopping</MudButton>
                 </div>
             }
         </div>
     </div>
-</div>
+</MudPaper>
 
 
 
 @code {
+
+    HashSet<UserInformation> sellerInfos = new HashSet<UserInformation>();
+
+    CheckoutModel checkoutViewModel = new CheckoutModel();
+
+    protected override void OnInitialized()
+    {
+        foreach (Product p in _cart.GetCart())
+        {
+            UserInformation user = _csunMarketplaceService.GetUserInformation(p.OwnerId);
+            if (!sellerInfos.Contains(user))
+            {
+                sellerInfos.Add(_csunMarketplaceService.GetUserInformation(p.OwnerId));
+            }
+        }
+    }
+
+
+    public List<string> states = new List<string>
+    {
+        "AL", "AK", "AZ", "AR", "CA", "CA", "CO", "CT", "DE", "FL", "GA", "HI", "ID", "IL", "IN", "IA", "KY", "LA", "ME", "MD", "MA","MI","MN","MS","MO","MT","NE","NV","NJ", "NM", "NY", "NC", "ND", "OH", "OK", "OR", "PA", "RI", "SC", "SD", "TN", "TX", "UT", "VT", "VA", "WA", "WV", "WI", "WY",
+
+    };
+
+
+    public void OrderComplete()
+    {
+        _cart.EmptyCart();
+        Snackbar.Add("Order Accepted, Thank You!", Severity.Success);
+        _navMan.NavigateTo("/thankyou");
+    }
+
+
+    CultureInfo USD = new CultureInfo("en-US");
+
+    public string formatCurrency(decimal? amount)
+    {
+        float subtotal = (float)amount;
+        return subtotal.ToString("C2", USD);
+    }
+
+    public void RemoveFromCart(Product p)
+    {
+        _cart.RemoveFromCart(p);
+        Snackbar.Add("Product successfully removed from Cart.", Severity.Success, config =>
+        {
+            config.Action = "Undo";
+            config.ActionColor = Color.Secondary;
+            config.Onclick = snackbar =>
+            {
+                _cart.UndoRemoveFromCart();
+                Snackbar.Clear();
+                StateHasChanged();
+                return Task.CompletedTask;
+            };
+        });
+    }
+
+    public string GetSellerName(Product p)
+    {
+        UserInformation? user = null;
+        try
+        {
+            user = sellerInfos.Where((u) => u.UserId == p.OwnerId).First();
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine("Exception " + e);
+        }
+
+        if (user != null)
+        {
+            return user.FirstName + " " + user.LastName;
+        }
+        else
+        {
+            return "New Seller";
+        }
+    }
+
+    public void CheckBoxChanged(bool value)
+    {
+        if (value)
+        {
+            checkoutViewModel.billingFirstName = checkoutViewModel.shippingFirstName;
+            checkoutViewModel.billingLastName = checkoutViewModel.shippingLastName;
+            checkoutViewModel.billingAddress = checkoutViewModel.shippingAddress;
+            checkoutViewModel.billingCity = checkoutViewModel.shippingCity;
+            checkoutViewModel.billingState = checkoutViewModel.shippingState;
+            checkoutViewModel.billingZip = checkoutViewModel.shippingZip;
+        }
+        else
+        {
+            checkoutViewModel.billingFirstName = "";
+            checkoutViewModel.billingLastName = "";
+            checkoutViewModel.billingAddress = "";
+            checkoutViewModel.billingCity = "";
+            checkoutViewModel.billingState = "";
+            checkoutViewModel.billingZip = "";
+        }
+    }
+
+    public class CheckoutModel
+    {
+        [Required]
+        public string? shippingFirstName;
+
+        [Required]
+        public string? shippingLastName;
+
+        [Required]
+        public string? shippingAddress;
+
+        [Required]
+        public string? shippingCity;
+
+        [Required]
+        public string? shippingState;
+
+        [Required]
+        public string? shippingZip;
+
+        [Required]
+        public string? country = "United States";
+
+        [Required]
+        public string? billingFirstName;
+
+        [Required]
+        public string? billingLastName;
+
+        [Required]
+        public string? billingAddress;
+
+        [Required]
+        public string? billingCity;
+
+        [Required]
+        public string? billingState;
+
+        [Required]
+        public string? billingZip;
+
+        [Required]
+        public string? cardNumber;
+
+        [Required]
+        public string? expirationDate;
+
+        [Required]
+        public string? securityCode;
+
+    }
 
 }
 
@@ -122,10 +338,21 @@
         margin-top: 1em;
     }
 
-    .grid-two {
+    .two-buttons {
+        width: 100%;
         display: flex !important;
         flex-direction: row !important;
         justify-content: space-between;
+        padding-top: .5em;
+        padding-bottom: .5em;
+    }
+
+    .grid-two {
+        width: 100%;
+        display: flex !important;
+        flex-direction: row !important;
+        justify-content: space-between !important;
+        align-content: space-between !important;
         padding-top: .5em;
         padding-bottom: .5em;
         padding-left: 1em;
@@ -160,5 +387,18 @@
     .keep-shopping {
         float: right;
         padding-top: 24px;
+    }
+
+    .stupid-select {
+        max-width: 411.84px;
+        min-width: 48%;
+        position: absolute;
+        right: 0px;
+    }
+
+    .flex-it-up {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
     }
 </style>

@@ -41,7 +41,7 @@
                 {
                     @foreach (Product p in productsToRender)
                     {
-                        <MudPaper class="product-tile" Elevation="2" @onclick=@(()=>ViewProduct(p.ProductId))>
+                        <MudPaper class="product-tile" Elevation="7" @onclick=@(()=>ViewProduct(p.ProductId))>
                             <div>
                                 <MudImage ObjectPosition="ObjectPosition.Center" Src="@p.ImageUrl" Height="310" Width="310" />
                             </div>
@@ -79,8 +79,8 @@
 @code {
     private bool autocycle = true;
     private Transition transition = Transition.Slide;
-    public List<Product>? productsToRender { get; set; }
-    public List<Product>? productList { get; set; }
+    public List<Product>? productsToRender = new List<Product>();
+    public List<Product>? productList = new List<Product>();
     public int itemsPerPage = 15;
     public int maxNumberOfPages = 1;
     public int pageIndex = 1;
@@ -92,7 +92,7 @@
         maxNumberOfPages = productList.Count() / itemsPerPage + 1;
 
         productsToRender = new List<Product>();
-        for (int i = ((pageIndex - 1) * itemsPerPage); i < itemsPerPage * pageIndex; i++)
+        for (int i = ((pageIndex - 1) * itemsPerPage); i < itemsPerPage * pageIndex && i < productList.Count(); i++)
         {
             productsToRender.Add(productList.ElementAt(i));
         }
@@ -109,7 +109,7 @@
         pageIndex = newPage;
         productsToRender.Clear();
         productsToRender = new List<Product>();
-        for (int i = ((pageIndex - 1) * itemsPerPage); i < itemsPerPage * pageIndex; i++)
+        for (int i = ((pageIndex - 1) * itemsPerPage); i < itemsPerPage * pageIndex && i < productList.Count(); i++)
         {
             productsToRender.Add(productList.ElementAt(i));
         }
@@ -139,17 +139,5 @@
     }
 }
 <style>
-    .pagination-container {
-        padding: 2em;
-        display: flex;
-        align-content: center !important;
-        justify-content: center !important;
-    }
 
-    .page-header {
-        margin-top: -1em;
-        padding-bottom: 1em;
-        text-align: center;
-        z-index: 0;
-    }
 </style>
