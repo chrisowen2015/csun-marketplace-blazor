@@ -14,7 +14,7 @@
 @inject AuthenticationStateProvider _authenticationStateProvider
 @inject CartService _cart
 
-<div class="page-container">
+<MudPaper Class="page-container" Elevation="7">
     <div class="page-content">
 
         <div class="page-header-container">
@@ -28,24 +28,24 @@
             </MudText>
         </div>
 
-            @if (_cart.Length() > 0)
+        @if (_cart.Length() > 0)
+        {
+            @foreach (Product p in _cart.GetCart())
             {
-                @foreach (Product p in _cart.GetCart())
-                {
-                    <MudPaper Style="margin-left: 1em; margin-right: 1em; margin-bottom: 1em; padding: .5em;" Elevation="3">
-                        <MudContainer Class="cart-product-flex-row" Fixed="true">
-                            <div class="cart-product-img-small">
-                                <MudImage Src="@p.ImageUrl" Height="120" Width="120" />
-                            </div>
-                            <div class="cart-popover-title-price-flex-col">
-                                <p> @p.Title </p>
-                                <b class="product-price-text"> @formatCurrency(p.Price) </b>
-                            </div>
-                            <MudIconButton Class="cart-remove-icon" Icon="@Icons.Material.Filled.Delete" OnClick="@(()=> RemoveFromCart(p))" />
-                        </MudContainer>
-                    </MudPaper>
-                }
+                <MudPaper Style="margin-left: 1em; margin-right: 1em; margin-bottom: 1em; padding: .5em;" Elevation="3">
+                    <MudContainer Class="cart-product-flex-row" Fixed="true">
+                        <div class="cart-product-img-small">
+                            <MudImage Src="@p.ImageUrl" Height="120" Width="120" />
+                        </div>
+                        <div class="cart-popover-title-price-flex-col">
+                            <p> @p.Title </p>
+                            <b class="product-price-text"> @formatCurrency(p.Price) </b>
+                        </div>
+                        <MudIconButton Class="cart-remove-icon" Icon="@Icons.Material.Filled.Delete" OnClick="@(()=> RemoveFromCart(p))" />
+                    </MudContainer>
+                </MudPaper>
             }
+        }
 
         <div class="grid-two">
             <div class="keep-shopping">
@@ -64,7 +64,7 @@
         </div>
 
     </div>
-</div>
+</MudPaper>
 
 
 

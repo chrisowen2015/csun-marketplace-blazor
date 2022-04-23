@@ -12,7 +12,7 @@
 @inject IDialogService Dialog
 @inject AuthenticationStateProvider _authenticationStateProvider
 
-<MudLayout Class="layout-content">
+<MudLayout>
     <MudThemeProvider @bind-IsDarkMode="@_isDarkMode" Theme="@_theme" />
     @*Top Bar for Search, logo*@
     <MudAppBar Elevation="2" DisableGutters="true">
@@ -36,6 +36,7 @@
 
         <LoginDisplay />
     </MudAppBar>
+    <div class="navbar-spacer"/>
 
     <MudTabs Centered="true" Rounded="false" Border="true" ActivePanelIndex="@activePanel" ActivePanelIndexChanged="(int index) => SetPanelIndex(index)">
         <MudTabPanel Icon="@Icons.Material.Filled.Home" Text="Store Home" OnClick="@(() => _navMan.NavigateTo("/"))" />
@@ -49,7 +50,7 @@
     </MudTabs>
 
     <MudMainContent>
-        <MudPaper Height="100%" Width="100%" MinHeight="1000px">
+        <MudPaper Height="100%" Width="100%" MinHeight="1000px" Style="justify-content:center !important;">
             @Body
             <div class="spacer"/>
         </MudPaper>

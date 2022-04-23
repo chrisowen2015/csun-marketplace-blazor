@@ -12,7 +12,7 @@
 @inject ISnackbar Snackbar
 @inject AuthenticationStateProvider _authenticationStateProvider
 
-<div class="page-container">
+<MudPaper class="page-container" Elevation="7">
     <div class="page-content">
 
         <div class="page-header-container">
@@ -160,7 +160,7 @@
             <MudButton Variant="Variant.Filled" OnClick=@(()=> UpdateProduct()) Color="Color.Primary">Submit</MudButton>
         </div>
     </div>
-</div>
+</MudPaper>
 
 
 @code {
