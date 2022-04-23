@@ -111,7 +111,9 @@
         productsToRender = new List<Product>();
         for (int i = ((pageIndex - 1) * itemsPerPage); i < itemsPerPage * pageIndex; i++)
         {
-            productsToRender.Add(productList.ElementAt(i));
+            if(i < productList.Count){
+                productsToRender.Add(productList.ElementAt(i));
+            }
         }
         StateHasChanged();
     }

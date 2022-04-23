@@ -14,37 +14,83 @@
 @inject AuthenticationStateProvider _authenticationStateProvider
 @inject CartService _cart
 
-<div class="page-container">
+<MudPaper Class="page-container" Elevation="7">
     <div class="page-content">
 
         <div class="page-header-container">
-            <MudText Class="form-header" Color="Color.Default">
+            <MudText Class="form-header" Color="Color.Primary">
                 <h1>
                     Checkout
                 </h1>
-                <h6>
-                    Shipping Information
-                </h6>
+            </MudText>
+        </div>
+        <MudExpansionPanel Text="Shipping Information">
+            <div class="form-row">
+                <MudTextField Label="Shipping Address" T="string" Variant="Variant.Filled" />
+            </div>
+
+            <div class="grid-two">
+                <MudTextField Class="elem-half" Label="City" T="string" Variant="Variant.Filled" />
+                <MudSelect style="width: 100px;" Label="State" T="string" Variant="Variant.Filled" Dense="true">
+                    @foreach (string state in states)
+                    {
+                        <MudSelectItem T="string" Value="state" />
+                    }
+                </MudSelect>
+            </div>
+
+            <div class="grid-two">
+                <MudTextField Class="elem-half" Label="Zip" T="string" Variant="Variant.Filled" Mask="@(new PatternMask("00000"))" />
+                <MudTextField Class="elem-half" Label="Country" T="string" Variant="Variant.Filled" Text="United States" ReadOnly="true" />
+            </div>
+        </MudExpansionPanel>
+
+        <div class="page-header-container">
+            <MudText Class="form-header" Color="Color.Primary">
+                <h1>
+                    Billing
+                </h1>
             </MudText>
         </div>
 
+        <MudExpansionPanel Text="Billing Information">
+            <div class="grid-two">
+                <MudTextField Class="elem-half" Label="First Name" T="string" Variant="Variant.Filled" />
+                <MudTextField Class="elem-half" Label="Last Name" T="string" Variant="Variant.Filled" />
+            </div>
+
+            <div class="form-row">
+                <MudTextField Label="Billing Address" T="string" Variant="Variant.Filled" />
+            </div>
+
+            <div class="grid-two">
+                <MudTextField Class="elem-half" Label="City" T="string" Variant="Variant.Filled" />
+                <MudSelect style="width: 100px;" Label="State" T="string" Variant="Variant.Filled" Dense="true">
+                    @foreach (string state in states)
+                    {
+                        <MudSelectItem T="string" Value="state" />
+                    }
+                </MudSelect>
+            </div>
+
+            <div class="grid-two">
+                <MudTextField Class="elem-half" Label="Zip" T="string" Variant="Variant.Filled" Mask="@(new PatternMask("00000"))" />
+                <MudTextField Class="elem-half" Label="Country" T="string" Variant="Variant.Filled" Text="United States" ReadOnly="true" />
+            </div>
+
+            <div class="form-row">
+                <MudTextField Label="Card number" T="string" Variant="Variant.Filled" Mask="@(new PatternMask("0000 0000 0000 0000"))" />
+            </div>
+
+            <div class="grid-two">
+                <MudTextField Class="elem-half" Label="Expiration date" T="string" Variant="Variant.Filled" Mask="@(new PatternMask("00/00"))" />
+                <MudTextField Class="elem-half" Label="Security code" T="string" Variant="Variant.Filled" Mask="@(new PatternMask("000"))" />
+            </div>
+        </MudExpansionPanel>
+
+
         <div class="form-row">
-            <MudTextField Label="Shipping Address" T="string" Variant="Variant.Filled" />
-        </div>
-
-        <div class="grid-two">
-            <MudTextField Class="elem-half" Label="City" T="string" Variant="Variant.Filled" />
-            <MudTextField Class="elem-half" Label="State" T="string" Variant="Variant.Filled" />
-        </div>
-
-        <div class="grid-two">
-            <MudTextField Class="elem-half" Label="Zip" T="string" Variant="Variant.Filled" />
-            <MudTextField Class="elem-half" Label="Country" T="string" Variant="Variant.Filled" Text="United States" ReadOnly="true" />
-        </div>
-
-
-        <div class="form-row">
-            <MudText Color="Color.Default">
+            <MudText Color="Color.Primary">
                 <h6>
                     Review Order
                 </h6>
@@ -52,36 +98,24 @@
         </div>
 
 
-
-        <div class="products-container">
             @if (_cart.Length() > 0)
             {
                 @foreach (Product p in _cart.GetCart())
                 {
-                    <div>
-                        <div>
-                            <MudImage Src="@p.ImageUrl" Height="85" Width="85" />
-                        </div>
-                        <div class="product-tile">
-                            <div class="product-tile-header-container">
-                                <MudText Class="product-tile-header">
-                                    @p.Title
-                                </MudText>
+                    <MudPaper Style="margin-left: 1em; margin-right: 1em; margin-bottom: 1em; padding: .5em;" Elevation="3">
+                        <MudContainer Class="cart-product-flex-row" Fixed="true">
+                            <div class="cart-product-img-small">
+                                <MudImage Src="@p.ImageUrl" Height="120" Width="120" />
                             </div>
-
-                            <div>
-                                <MudText>
-                                    $@p.Price
-                                </MudText>
+                            <div class="cart-popover-title-price-flex-col">
+                                <p> @p.Title </p>
+                                <b class="product-price-text"> @formatCurrency(p.Price) </b>
                             </div>
-                        </div>
-                        <div>
-                            <MudButton Variant="Variant.Filled" OnClick=@(()=> _cart.RemoveFromCart(p)) Color="Color.Primary" EndIcon="@Icons.Material.Filled.RemoveShoppingCart">Remove</MudButton>
-                        </div>
-                    </div>
+                            <MudIconButton Class="cart-remove-icon" Icon="@Icons.Material.Filled.Delete" OnClick="@(()=> RemoveFromCart(p))" />
+                        </MudContainer>
+                    </MudPaper>
                 }
             }
-        </div>
 
         <div>
             <div class="go-back">
@@ -94,7 +128,8 @@
                     <MudText>
                         Cart Total: $@_cart.GetTotal().ToString()
                     </MudText>
-                    <MudButton Variant="Variant.Filled" OnClick="@(()=>_navMan.NavigateTo("/billing"))" Color="Color.Primary">Continue</MudButton>
+                    <MudButton Variant="Variant.Filled" OnClick="@(()=> OrderComplete())" Color="Color.Primary">Place Order</MudButton>
+                    @*<MudButton Variant="Variant.Filled" OnClick="@(()=>_navMan.NavigateTo("/billing"))" Color="Color.Primary">Continue</MudButton>*@
                 </div>
             }
             else
@@ -105,12 +140,49 @@
             }
         </div>
     </div>
-</div>
+</MudPaper>
 
 
 
 @code {
+    public List<string> states = new List<string>
+    {
+        "AL", "AK", "AZ", "AR", "CA", "CA", "CO", "CT", "DE", "FL", "GA", "HI", "ID", "IL", "IN", "IA", "KY", "LA", "ME", "MD", "MA","MI","MN","MS","MO","MT","NE","NV","NJ", "NM", "NY", "NC", "ND", "OH", "OK", "OR", "PA", "RI", "SC", "SD", "TN", "TX", "UT", "VT", "VA", "WA", "WV", "WI", "WY",
 
+    };
+
+
+    public void OrderComplete()
+    {
+        _cart.EmptyCart();
+        Snackbar.Add("Order Accepted, Thank You!", Severity.Success);
+        _navMan.NavigateTo("/thankyou");
+    }
+
+
+    CultureInfo USD = new CultureInfo("en-US");
+
+    public string formatCurrency(decimal? amount)
+    {
+        float subtotal = (float)amount;
+        return subtotal.ToString("C2", USD);
+    }
+
+    public void RemoveFromCart(Product p)
+    {
+        _cart.RemoveFromCart(p);
+        Snackbar.Add("Product successfully removed from Cart.", Severity.Success, config =>
+        {
+            config.Action = "Undo";
+            config.ActionColor = Color.Secondary;
+            config.Onclick = snackbar =>
+            {
+                _cart.UndoRemoveFromCart();
+                Snackbar.Clear();
+                return Task.CompletedTask;
+            };
+        });
+    }
 }
 
 <style>
