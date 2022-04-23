@@ -12,6 +12,8 @@
 @inject ISnackbar Snackbar
 @inject NavigationManager _navMan
 @inject AuthenticationStateProvider _authenticationStateProvider
+@inject CartService _cart
+
 
 <div class="page-container">
     <div class="page-content">
@@ -38,21 +40,26 @@
 
         <div class="grid-two">
             <MudTextField Class="elem-half" Label="City" T="string" Variant="Variant.Filled" />
-            <MudTextField Class="elem-half" Label="State" T="string" Variant="Variant.Filled" />
+            <MudSelect style="width: 100px;" Label="State" T="string" Variant="Variant.Filled" Dense="true">
+                @foreach (string state in states)
+                {
+                    <MudSelectItem T="string" Value="state"  />
+                }
+            </MudSelect>
         </div>
 
         <div class="grid-two">
-            <MudTextField Class="elem-half" Label="Zip" T="string" Variant="Variant.Filled" />
+            <MudTextField Class="elem-half" Label="Zip" T="string" Variant="Variant.Filled" Mask="@(new PatternMask("00000"))" />
             <MudTextField Class="elem-half" Label="Country" T="string" Variant="Variant.Filled" Text="United States" ReadOnly="true" />
         </div>
 
         <div class="form-row">
-            <MudTextField Label="Card number" T="string" Variant="Variant.Filled" />
+            <MudTextField Label="Card number" T="string" Variant="Variant.Filled" Mask="@(new PatternMask("0000 0000 0000 0000"))" />
         </div>
 
         <div class="grid-two">
-            <MudTextField Class="elem-half" Label="Expiration date" T="string" Variant="Variant.Filled" />
-            <MudTextField Class="elem-half" Label="Security code" T="string" Variant="Variant.Filled" />
+            <MudTextField Class="elem-half" Label="Expiration date" T="string" Variant="Variant.Filled" Mask="@(new PatternMask("00/00"))" />
+            <MudTextField Class="elem-half" Label="Security code" T="string" Variant="Variant.Filled" Mask="@(new PatternMask("000"))" />
         </div>
 
 
@@ -62,7 +69,7 @@
             </div>
 
             <div class="billing-continue">
-                <MudButton Variant="Variant.Filled" OnClick="@(()=>_navMan.NavigateTo("/thankyou"))" Color="Color.Primary">Place Order</MudButton>
+                <MudButton Variant="Variant.Filled" OnClick="@(()=> OrderComplete())" Color="Color.Primary">Place Order</MudButton>
             </div>
         </div>
 
@@ -72,7 +79,19 @@
 
 
 @code {
+    public List<string> states = new List<string>
+    {
+        "AL", "AK", "AZ", "AR", "CA", "CA", "CO", "CT", "DE", "FL", "GA", "HI", "ID", "IL", "IN", "IA", "KY", "LA", "ME", "MD", "MA","MI","MN","MS","MO","MT","NE","NV","NJ", "NM", "NY", "NC", "ND", "OH", "OK", "OR", "PA", "RI", "SC", "SD", "TN", "TX", "UT", "VT", "VA", "WA", "WV", "WI", "WY",
 
+    };
+
+
+    public void OrderComplete()
+    {
+        _cart.EmptyCart();
+        Snackbar.Add("Order Accepted, Thank You!", Severity.Success);
+        _navMan.NavigateTo("/thankyou");
+    }
 }
 
 <style>

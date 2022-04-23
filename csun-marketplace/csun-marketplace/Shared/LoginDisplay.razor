@@ -1,12 +1,16 @@
 ﻿@using Microsoft.AspNetCore.Components.Authorization
-@inject NavigationManager Navigation
+@inject NavigationManager _navMan
 @inject TokenProvider TokenProvider
 
 <AuthorizeView>
     <Authorized>
-        <a href="Identity/Account/Manage/Index">
+        <MudButton StartIcon="@Icons.Material.Filled.AccountCircle" IconColor="Color.Secondary" OnClick="@(() => _navMan.NavigateTo("/profile"))" Style="min-width: min-content !important; padding-left: 15px; padding-right: 15px;">
+
             Hello, @context.User.Identity.Name!
-        </a>
+
+
+        </MudButton>
+
         <form action="/Identity/Account/Logout?returnUrl=%2F" method="post">
             <button class="nav-link btn btn-link" type="submit">Logout</button>
             <input name="__RequestVerificationToken" type="hidden" value="@TokenProvider.XsrfToken" />

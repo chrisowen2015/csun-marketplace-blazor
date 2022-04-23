@@ -4,9 +4,9 @@
 @inject CartService _cart
 @inject ISnackbar Snackbar
 
-<MudMenu ActivationEvent="@MouseEvent.MouseOver" AnchorOrigin="Origin.BottomCenter" TransformOrigin="Origin.TopCenter">
+<MudMenu ActivationEvent="@MouseEvent.MouseOver" AnchorOrigin="Origin.BottomCenter" TransformOrigin="Origin.TopCenter" Class="cart-icon">
     <ActivatorContent>
-        <MudIconButton Icon="@Icons.Material.Filled.ShoppingCart" OnClick="@(() => _navMan.NavigateTo("/cart"))" />
+        <MudIconButton Icon="@Icons.Material.Filled.ShoppingCart" Color="Color.Secondary" OnClick="@(() => _navMan.NavigateTo("/cart"))"  />
     </ActivatorContent>
     <ChildContent>
         @if (_cart.Length() > 0)
@@ -138,4 +138,7 @@
         margin-right: -25px;
     }
 
+    .cart-icon{
+        margin-right: .5em;
+    }
 </style>

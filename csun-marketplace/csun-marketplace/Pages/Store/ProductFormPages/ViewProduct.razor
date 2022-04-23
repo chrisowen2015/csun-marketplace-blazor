@@ -95,7 +95,21 @@
             _navMan.NavigateTo("/");
         } else
         {
-            Snackbar.Add("Product is already in your Cart!", Severity.Error);
+            Snackbar.Add("Product is already in your Cart!", Severity.Error, config =>
+            {
+                config.Action = "Remove";
+                config.ActionColor = Color.Error;
+                config.Onclick = snackbar =>
+            {
+                _cart.RemoveFromCart(p);
+
+                // For some reason the cart still contains p after this. not sure why yet.
+                
+                Snackbar.Clear();
+                return Task.CompletedTask;
+            };
+            });
+            _navMan.NavigateTo("/");
         }
     }
 

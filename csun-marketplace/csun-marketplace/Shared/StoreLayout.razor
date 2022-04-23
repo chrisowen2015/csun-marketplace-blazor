@@ -1,9 +1,16 @@
 ﻿@inherits LayoutComponentBase
 @layout MainLayout
 
+@using Microsoft.AspNetCore.Authentication
+@using Microsoft.AspNetCore.Components.Authorization
+@using Microsoft.AspNetCore.Identity
+
+
 @inject NavigationManager _navMan
 @inject CartService _cart
+@inject ICSUNMarketplaceService _csunMarketplaceService
 @inject IDialogService Dialog
+@inject AuthenticationStateProvider _authenticationStateProvider
 
 <MudLayout Class="layout-content">
     <MudThemeProvider @bind-IsDarkMode="@_isDarkMode" Theme="@_theme" />
@@ -22,15 +29,12 @@
             <MudSelectItem Value=@("Sports & Fitness") />
             <MudSelectItem Value=@("Furniture") />
         </MudSelect>
-        <MudTextField OnAdornmentClick="@searchFunction" FullWidth="true" AdornmentIcon="@Icons.Material.Filled.Search" Adornment="Adornment.End" Class="search-bar" Label="@searchLabel" DisableUnderLine="true" Variant="Variant.Filled" @bind-Value="@searchTerm" />
+        <MudTextField OnAdornmentClick="@searchFunction" FullWidth="true" AdornmentIcon="@Icons.Material.Filled.Search" AdornmentColor="Color.Secondary" Adornment="Adornment.End" Class="search-bar" Label="@searchLabel" DisableUnderLine="true" Variant="Variant.Filled" @bind-Value="@searchTerm" />
         <MudSwitch Class="dark-mode-toggle" T="bool" @bind-Checked="@_isDarkMode" Color="Color.Primary" Label="Toggle Dark Mode" />
-        <MudIconButton Icon="@Icons.Material.Filled.AccountCircle" />
 
         <CartIcon />
 
-        <MudIconButton Icon="@Icons.Material.Filled.Help" />
         <LoginDisplay />
-        <MudIconButton Class="right-top-button" Icon="@Icons.Material.Rounded.Settings" />
     </MudAppBar>
 
     <MudTabs Centered="true" Rounded="false" Border="true" ActivePanelIndex="@activePanel" ActivePanelIndexChanged="(int index) => SetPanelIndex(index)">
@@ -45,11 +49,26 @@
     </MudTabs>
 
     <MudMainContent>
-        @Body
-        <div class="spacer">
-        </div>
+        <MudPaper Height="100%" Width="100%" MinHeight="1000px">
+            @Body
+            <div class="spacer"/>
+        </MudPaper>
+
     </MudMainContent>
 
+    <MudAppBar Bottom="true" Dense="true" Fixed="false">
+        <MudText Color="Color.Primary">
+            Copyright © 2022 CSUN Marketplace.
+        </MudText>
+
+        <MudSpacer />
+        
+        <MudIcon Class="footer-icon" Icon="@Icons.Custom.Brands.Discord"/>
+        <MudIcon Class="footer-icon" Icon="@Icons.Custom.Brands.GitHub"/>
+        <MudIcon Class="footer-icon" Icon="@Icons.Custom.Brands.StackOverflow"/>
+
+        
+    </MudAppBar>
 </MudLayout>
 
 
@@ -60,6 +79,7 @@
     public List<string> categories = new List<String> { "Textbooks", "Electronics", "School Supplies", };
     private bool _isDarkMode = false;
     private int activePanel { get; set; }
+    public UserInformation user { get; set; }
 
     private MudTheme _theme = new MudTheme()
         {
@@ -111,7 +131,16 @@
     protected override async Task OnInitializedAsync()
     {
         GetActiveTabPanel();
+
     }
+
+    async Task<string> GetUserId()
+    {
+        var user = (await _authenticationStateProvider.GetAuthenticationStateAsync()).User;
+        var UserId = user.FindFirst(u => u.Type.Contains("nameidentifier"))?.Value;
+        return UserId;
+    }
+
     protected override void OnInitialized()
     {
         // Subscribe to the event
@@ -119,7 +148,6 @@
         GetActiveTabPanel();
 
         // Prompt First time User Dialog
-
 
         base.OnInitialized();
     }
@@ -168,6 +196,9 @@
     {
         activePanel = index;
     }
+
+
+
 }
 
 <style>
@@ -225,5 +256,9 @@
         height: 50px;
         width: 100%;
         clear: both;
+    }
+
+    .footer-icon {
+        margin: .5em;
     }
 </style>

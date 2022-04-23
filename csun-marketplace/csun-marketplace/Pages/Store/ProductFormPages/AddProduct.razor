@@ -77,7 +77,7 @@
         </div>
 
         <div class="form-row">
-            <MudSelect Label="Tags" T="string" @bind-Value="p.Tags" Variant="Variant.Filled" MultiSelection="true" @onselect="@(()=>AddTag(p.Tags))">
+            <MudSelect Label="Tags" T="string" @bind-Value="p.Tags" Variant="Variant.Filled" MultiSelection="true">
                 @foreach (string tag in tagList)
                 {
                     <MudSelectItem T="string" Value="@tag" OnClick="@(()=>AddTag(tag))" />
@@ -258,7 +258,11 @@
             if (p.Category == "Textbooks")
             {
                 showTextbookInformation = true;
+            } else
+            {
+                showTextbookInformation = false;
             }
+
         }
     }
 
