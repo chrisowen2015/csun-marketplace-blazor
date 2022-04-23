@@ -72,8 +72,6 @@ a, .btn-link {
     margin: auto;
     display: block;
     border: 1px solid dimgray;
-    border-radius: 8px;
-    box-shadow: 4px 2px 2px dimgray;
     margin-bottom: 2em !important;
     padding-bottom: 2em !important;
     margin-top: 1.5em;
@@ -250,4 +248,23 @@ a, .btn-link {
     height:300px !important;
     background: rgb(0,0,0);
     background: linear-gradient(180deg, rgba(0,0,0,1) 0%, rgba(128,128,128,1) 66%, rgba(255,255,255,1) 100%);
+}
+
+.appbar-spacer {
+    height: 64px;
+    width: 100%;
+    clear: both;
+}
+
+.page-header {
+    padding-bottom: 2em;
+    text-align: center;
+}
+
+.pagination-container {
+    padding: 2em;
+    margin-top: 1em;
+    display: flex;
+    align-content: center !important;
+    justify-content: center !important;
 }

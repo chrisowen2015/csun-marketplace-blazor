@@ -31,11 +31,11 @@
     <div class="feed-container">
         <div class="feed-content">
             <div class="products-container">
-                @if (electronicsList != null)
+                @if (electronicsToRender != null)
                 {
-                    @foreach (Product p in electronicsList)
+                    @foreach (Product p in electronicsToRender)
                     {
-                        <MudPaper class="product-tile" Elevation="2" @onclick=@(()=>ViewProduct(p.ProductId))>
+                        <MudPaper class="product-tile" Elevation="7" @onclick=@(()=>ViewProduct(p.ProductId))>
                             <div>
                                 <MudImage ObjectPosition="ObjectPosition.Center" Src="@p.ImageUrl" Height="310" Width="310" />
                             </div>
@@ -55,12 +55,21 @@
                 }
             </div>
         </div>
+
+        <div class="pagination-container">
+            <MudPagination Count="@maxNumberOfPages" Color="Color.Primary" SelectedChanged="@((int newPage)=>UpdateProductsOnPage(newPage))" Size="Size.Large" />
+        </div>
+
     </div>
 </div>
 
 @code {
-    List<Product> productList = new List<Product>();
     List<Product> electronicsList = new List<Product>();
+    List<Product> electronicsToRender = new List<Product>();
+
+    public int itemsPerPage = 6;
+    public int maxNumberOfPages = 1;
+    public int pageIndex = 1;
 
     public void ViewProduct(int productId)
     {
@@ -70,14 +79,30 @@
     protected override async Task OnInitializedAsync()
     {
         electronicsList = _csunMarketplaceService.GetElectronics();
+
+        maxNumberOfPages = electronicsList.Count() / itemsPerPage + 1;
+
+        electronicsToRender = new List<Product>();
+        for (int i = ((pageIndex - 1) * itemsPerPage); i < itemsPerPage * pageIndex && i < electronicsList.Count(); i++)
+        {
+            electronicsToRender.Add(electronicsList.ElementAt(i));
+        }
     }
 
+    public void UpdateProductsOnPage(int newPage)
+    {
+        pageIndex = newPage;
+        electronicsToRender.Clear();
+        electronicsToRender = new List<Product>();
+
+        for (int i = ((pageIndex - 1) * itemsPerPage); i < itemsPerPage * pageIndex && i < electronicsList.Count(); i++)
+        {
+            electronicsToRender.Add(electronicsList.ElementAt(i));
+        }
+        StateHasChanged();
+    }
 }
 
 <style>
-    .page-header {
-        margin-top: -1em;
-        padding-bottom: 1em;
-        text-align: center;
-    }
+
 </style>
