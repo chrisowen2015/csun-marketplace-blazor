@@ -30,7 +30,6 @@
 
         @if (_cart.Length() > 0)
         {
-            <MudGrid>
                 @foreach (Product p in _cart.GetCart())
                 {
                     <MudPaper Style="margin-bottom: 1em; padding: .5em;" Elevation="3" Width="100%">
@@ -68,18 +67,17 @@
                         </MudContainer>
                     </MudPaper>
                 }
-            </MudGrid>
         }
 
         <div class="two-buttons">
             <div class="keep-shopping">
-                <MudButton Variant="Variant.Filled" OnClick="@(()=>_navMan.NavigateTo("/"))" Color="Color.Primary">Keep Shopping</MudButton>
+                <MudButton Variant="Variant.Filled" OnClick="@(()=>_navMan.NavigateTo("/"))" Style="margin-top:1em;" Color="Color.Primary">Keep Shopping</MudButton>
             </div>
 
             @if (_cart.Length() > 0)
             {
                 <div class="billing-continue">
-                    <MudText Color="Color.Primary">
+                    <MudText Color="Color.Primary" Style="padding-bottom: 1em;">
                         <b>
                             Cart Total: @formatCurrency(_cart.GetTotal())
                         </b>
