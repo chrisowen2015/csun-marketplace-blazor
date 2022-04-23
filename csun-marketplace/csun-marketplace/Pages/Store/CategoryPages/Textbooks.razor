@@ -36,11 +36,11 @@
             <div class="products-container">
                 @if (productList != null)
                 {
-                    @foreach (TextbookInformation t in textbookInformationList)
+                    @foreach (TextbookInformation t in textbooksToRender)
                     {
-                        Product p = productList.Where((p) => p.ProductId == t.ProductId).Single();
+                        Product p = productsToRender.Where((p) => p.ProductId == t.ProductId).Single();
 
-                        <MudPaper class="product-tile" Elevation=2 @onclick=@(()=>ViewProduct(p.ProductId))>
+                        <MudPaper class="product-tile" Elevation="7"  @onclick=@(()=>ViewProduct(p.ProductId))>
                             <div>
                                 <MudImage ObjectPosition="ObjectPosition.Center" Src="@p.ImageUrl" Height="310" Width="310" />
                             </div>
@@ -85,17 +85,27 @@
                 }
             </div>
         </div>
+        <div class="pagination-container">
+            <MudPagination Count="@maxNumberOfPages" Color="Color.Primary" SelectedChanged="@((int newPage)=>UpdateProductsOnPage(newPage))" Size="Size.Large" />
+        </div>
     </div>
 </div>
 
 @code {
     TextbookInformation tinfo = new TextbookInformation();
     List<Product> productList = new List<Product>();
+    public List<Product>? productsToRender = new List<Product>();
+    public List<TextbookInformation> textbooksToRender = new List<TextbookInformation>();
     List<TextbookInformation> textbookInformationList = new List<TextbookInformation>();
 
     List<string> departmentList = new List<string> { "ART", "CHEM", "COMP", "ECE", "ENGL", "FIN", "GEOL", "HIST", "MATH", "PHYS", "PSY", "SCI" };
 
     List<string> courseList = new List<string> { "100", "108", "110", "122", "182", "222", "256", "282", "310", "322", "356", "380", "410", "424", "440" };
+
+    public int itemsPerPage = 6;
+    public int maxNumberOfPages = 1;
+    public int pageIndex = 1;
+
 
     public void ViewProduct(int productId)
     {
@@ -106,15 +116,38 @@
     {
         productList = _csunMarketplaceService.GetTextbooks();
         textbookInformationList = _csunMarketplaceService.GetTextbookInformationList();
+
+        maxNumberOfPages = productList.Count() / itemsPerPage + 1;
+
+        productsToRender = new List<Product>();
+        for (int i = ((pageIndex - 1) * itemsPerPage); i < itemsPerPage * pageIndex && i < productList.Count(); i++)
+        {
+            productsToRender.Add(productList.ElementAt(i));
+            textbooksToRender.Add(textbookInformationList.Where((t) => t.ProductId == productList.ElementAt(i).ProductId).Single());
+        }
+
+    }
+
+    public void UpdateProductsOnPage(int newPage)
+    {
+        pageIndex = newPage;
+        productsToRender.Clear();
+        textbooksToRender.Clear();
+        productsToRender = new List<Product>();
+        textbooksToRender = new List<TextbookInformation>();
+        
+        for (int i = ((pageIndex - 1) * itemsPerPage); i < itemsPerPage * pageIndex && i < productList.Count(); i++)
+        {
+            productsToRender.Add(productList.ElementAt(i));
+            textbooksToRender.Add(textbookInformationList.Where((t) => t.ProductId == productList.ElementAt(i).ProductId).Single());
+        }
+
+        StateHasChanged();
     }
 
 }
 
 <style>
-    .page-header {
-        margin-top: -1em;
-        padding-bottom: 1em;
-        text-align: center;
-    }
+
 </style>
 

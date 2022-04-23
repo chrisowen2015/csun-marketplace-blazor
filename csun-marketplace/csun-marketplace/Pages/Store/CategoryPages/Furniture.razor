@@ -29,11 +29,11 @@
     <div class="feed-container">
         <div class="feed-content">
             <div class="products-container">
-                @if (furnitureList != null)
+                @if (furnitureToRender != null)
                 {
-                    @foreach (Product p in furnitureList)
+                    @foreach (Product p in furnitureToRender)
                     {
-                        <MudPaper class="product-tile" Elevation="2" @onclick=@(()=>ViewProduct(p.ProductId))>
+                        <MudPaper class="product-tile" Elevation="7" @onclick=@(()=>ViewProduct(p.ProductId))>
                             <div>
                                 <MudImage ObjectPosition="ObjectPosition.Center" Src="@p.ImageUrl" Height="310" Width="310" />
                             </div>
@@ -53,12 +53,21 @@
                 }
             </div>
         </div>
+
+        <div class="pagination-container">
+            <MudPagination Count="@maxNumberOfPages" Color="Color.Primary" SelectedChanged="@((int newPage)=>UpdateProductsOnPage(newPage))" Size="Size.Large" />
+        </div>
+
     </div>
 </div>
 
 @code {
-    List<Product> productList = new List<Product>();
     List<Product> furnitureList = new List<Product>();
+    List<Product> furnitureToRender = new List<Product>();
+
+    public int itemsPerPage = 6;
+    public int maxNumberOfPages = 1;
+    public int pageIndex = 1;
 
     public void ViewProduct(int productId)
     {
@@ -68,14 +77,31 @@
     protected override async Task OnInitializedAsync()
     {
         furnitureList = _csunMarketplaceService.GetFurniture();
+
+        maxNumberOfPages = furnitureList.Count() / itemsPerPage + 1;
+
+        furnitureToRender = new List<Product>();
+        for (int i = ((pageIndex - 1) * itemsPerPage); i < itemsPerPage * pageIndex && i < furnitureList.Count(); i++)
+        {
+            furnitureToRender.Add(furnitureList.ElementAt(i));
+        }
+    }
+
+    public void UpdateProductsOnPage(int newPage)
+    {
+        pageIndex = newPage;
+        furnitureToRender.Clear();
+        furnitureToRender = new List<Product>();
+
+        for (int i = ((pageIndex - 1) * itemsPerPage); i < itemsPerPage * pageIndex && i < furnitureList.Count(); i++)
+        {
+            furnitureToRender.Add(furnitureList.ElementAt(i));
+        }
+        StateHasChanged();
     }
 
 }
 
 <style>
-    .page-header {
-        margin-top: -1em;
-        padding-bottom: 1em;
-        text-align: center;
-    }
+
 </style>
