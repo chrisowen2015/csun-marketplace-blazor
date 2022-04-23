@@ -11,6 +11,7 @@
 @inject IWebHostEnvironment env
 @inject ISnackbar Snackbar
 @inject AuthenticationStateProvider _authenticationStateProvider
+@inject NavigationManager _navMan
 
 <MudPaper class="page-container" Elevation="7">
     <div class="page-content">
@@ -77,7 +78,7 @@
         </div>
 
         <div class="form-row">
-            <MudSelect Label="Tags" T="string" @bind-Value="p.Tags" Variant="Variant.Filled" MultiSelection="true">
+            <MudSelect Label="Tags" T="string" @bind-Value="p.Tags" Variant="Variant.Filled" MultiSelection="true" Dense="true">
                 @foreach (string tag in tagList)
                 {
                     <MudSelectItem T="string" Value="@tag" OnClick="@(()=>AddTag(tag))" />
@@ -292,6 +293,7 @@
                 if (textbookInfoSuccess != -1)
                 {
                     Snackbar.Add("Product Listing successfully saved to the database!.", Severity.Success);
+                    _navMan.NavigateTo("/");
                 }
                 else
                 {
@@ -301,6 +303,7 @@
             else
             {
                 Snackbar.Add("Product Listing successfully saved to the database!.", Severity.Success);
+                _navMan.NavigateTo("/");
             }
         }
         else
