@@ -15,20 +15,22 @@
 <MudLayout>
     <MudThemeProvider @bind-IsDarkMode="@_isDarkMode" Theme="@_theme" />
     @*Top Bar for Search, logo*@
-    <MudAppBar Elevation="2" DisableGutters="true">
+    <MudAppBar Elevation="2">
         <MudButton Class="site-header-label-button" OnClick="@(()=>_navMan.NavigateTo("/"))">
             <MudImage Height="40" Src="https://cdn.discordapp.com/attachments/911058579073675284/951718035683672084/csun_logo.png" />
             <MudText Color="Color.Default" Class="site-header-label">
                 Marketplace
             </MudText>
         </MudButton>
-        <MudSelect Style="width:150px;" T="string" Dense="true" Variant="Variant.Outlined" @bind-Value="@filterTerm" SelectedValuesChanged="@(()=>FilterSelect())" Clearable="true" OnClearButtonClick="@(()=>ResetFilter())" Placeholder="Filter">
+
+        <MudSelect Class="filter-button" T="string" Dense="true" Variant="Variant.Outlined" AdornmentColor="Color.Secondary" @bind-Value="@filterTerm" DisableUnderLine="true" SelectedValuesChanged="@(()=>FilterSelect())" Clearable="true" OnClearButtonClick="@(()=>ResetFilter())" Placeholder="Filter">
             <MudSelectItem Value=@("Textbooks") />
             <MudSelectItem Value=@("Electronics") />
             <MudSelectItem Value=@("School Supplies") />
             <MudSelectItem Value=@("Sports & Fitness") />
             <MudSelectItem Value=@("Furniture") />
         </MudSelect>
+        
         <MudTextField OnAdornmentClick="@searchFunction" FullWidth="true" AdornmentIcon="@Icons.Material.Filled.Search" AdornmentColor="Color.Secondary" Adornment="Adornment.End" Class="search-bar" Label="@searchLabel" DisableUnderLine="true" Variant="Variant.Filled" @bind-Value="@searchTerm" />
         <MudSwitch Class="dark-mode-toggle" T="bool" @bind-Checked="@_isDarkMode" Color="Color.Primary" Label="Toggle Dark Mode" />
 
@@ -38,7 +40,7 @@
     </MudAppBar>
     <div class="navbar-spacer"/>
 
-    <MudTabs Centered="true" Rounded="false" Border="true" ActivePanelIndex="@activePanel" ActivePanelIndexChanged="(int index) => SetPanelIndex(index)">
+    <MudTabs Centered="true" Rounded="false" Border="true" ActivePanelIndex="@activePanel"  ActivePanelIndexChanged="(int index) => SetPanelIndex(index)">
         <MudTabPanel Icon="@Icons.Material.Filled.Home" Text="Store Home" OnClick="@(() => _navMan.NavigateTo("/"))" />
         <MudTabPanel Icon="@Icons.Material.Filled.Add" Text="New Listing" OnClick="@(() => _navMan.NavigateTo("/new-listing"))" />
         <MudTabPanel Icon="@Icons.Material.Filled.Bookmark" Text="Bookmarked" />
@@ -216,13 +218,11 @@
 
     .site-header-label-button {
         min-width: min-content !important;
+        padding-right: 2em;
     }
 
     .filter-button {
-        height: 54px;
-        top: 3px;
-        min-width: 80px !important;
-        margin-left: 5px;
+        width:200px;
     }
 
     .filter-button-text {
