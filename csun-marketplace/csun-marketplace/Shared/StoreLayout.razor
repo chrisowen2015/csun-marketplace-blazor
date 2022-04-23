@@ -1,12 +1,21 @@
 ﻿@inherits LayoutComponentBase
 @layout MainLayout
+
+@using Microsoft.AspNetCore.Authentication
+@using Microsoft.AspNetCore.Components.Authorization
+@using Microsoft.AspNetCore.Identity
+
+
 @inject NavigationManager _navMan
+@inject CartService _cart
+@inject ICSUNMarketplaceService _csunMarketplaceService
+@inject IDialogService Dialog
+@inject AuthenticationStateProvider _authenticationStateProvider
 
 <MudLayout Class="layout-content">
     <MudThemeProvider @bind-IsDarkMode="@_isDarkMode" Theme="@_theme" />
     @*Top Bar for Search, logo*@
     <MudAppBar Elevation="2" DisableGutters="true">
-        <MudIconButton Icon="@Icons.Material.Filled.Menu" Class="hamburger" OnClick="@ToggleDrawer" />
         <MudButton Class="site-header-label-button" OnClick="@(()=>_navMan.NavigateTo("/"))">
             <MudImage Height="40" Src="https://cdn.discordapp.com/attachments/911058579073675284/951718035683672084/csun_logo.png" />
             <MudText Color="Color.Default" Class="site-header-label">
@@ -20,13 +29,12 @@
             <MudSelectItem Value=@("Sports & Fitness") />
             <MudSelectItem Value=@("Furniture") />
         </MudSelect>
-        <MudTextField OnAdornmentClick="@searchFunction" FullWidth="true" AdornmentIcon="@Icons.Material.Filled.Search" Adornment="Adornment.End" Class="search-bar" Label="@searchLabel" DisableUnderLine="true" Variant="Variant.Filled" @bind-Value="@searchTerm" />
+        <MudTextField OnAdornmentClick="@searchFunction" FullWidth="true" AdornmentIcon="@Icons.Material.Filled.Search" AdornmentColor="Color.Secondary" Adornment="Adornment.End" Class="search-bar" Label="@searchLabel" DisableUnderLine="true" Variant="Variant.Filled" @bind-Value="@searchTerm" />
         <MudSwitch Class="dark-mode-toggle" T="bool" @bind-Checked="@_isDarkMode" Color="Color.Primary" Label="Toggle Dark Mode" />
-        <MudIconButton Icon="@Icons.Material.Filled.AccountCircle" />
-        <MudIconButton Icon="@Icons.Material.Filled.ShoppingCart" OnClick="@(() => _navMan.NavigateTo("/cart"))" />
-        <MudIconButton Icon="@Icons.Material.Filled.Help" />
+
+        <CartIcon />
+
         <LoginDisplay />
-        <MudIconButton Class="right-top-button" Icon="@Icons.Material.Rounded.Settings" />
     </MudAppBar>
 
     <MudTabs Centered="true" Rounded="false" Border="true" ActivePanelIndex="@activePanel" ActivePanelIndexChanged="(int index) => SetPanelIndex(index)">
@@ -40,44 +48,27 @@
         <MudTabPanel Icon="@Icons.Material.Filled.Chair" Text="Furniture" OnClick="@(() => _navMan.NavigateTo("/furniture"))" />
     </MudTabs>
 
-    <MudDrawer ClipMode="DrawerClipMode.Docked" @bind-Open="@drawerOpen">
-        <MudDrawerHeader Class="drawer-header">
-            <MudButton FullWidth="true" Variant=Variant.Text>
-                <MudIcon Icon="@Icons.Material.Filled.AccountCircle" />
-                <MudText Class="drawer-header">
-                    Hello, Signed In User
-                </MudText>
-            </MudButton>
-        </MudDrawerHeader>
-
-        <MudNavMenu>
-            <MudNavLink>
-                All Products
-            </MudNavLink>
-            <MudNavLink>
-                Textbooks
-            </MudNavLink>
-            <MudNavLink>
-                Electronics
-            </MudNavLink>
-            <MudNavLink>
-                School Supplies
-            </MudNavLink>
-            <MudNavLink>
-                School Supplies
-            </MudNavLink>
-            <MudNavLink Href="/furniture">
-                School Supplies
-            </MudNavLink>
-        </MudNavMenu>
-    </MudDrawer>
-
     <MudMainContent>
-        @Body
-        <div class="spacer">
-        </div>
+        <MudPaper Height="100%" Width="100%" MinHeight="1000px">
+            @Body
+            <div class="spacer"/>
+        </MudPaper>
+
     </MudMainContent>
 
+    <MudAppBar Bottom="true" Dense="true" Fixed="false">
+        <MudText Color="Color.Primary">
+            Copyright © 2022 CSUN Marketplace.
+        </MudText>
+
+        <MudSpacer />
+        
+        <MudIcon Class="footer-icon" Icon="@Icons.Custom.Brands.Discord"/>
+        <MudIcon Class="footer-icon" Icon="@Icons.Custom.Brands.GitHub"/>
+        <MudIcon Class="footer-icon" Icon="@Icons.Custom.Brands.StackOverflow"/>
+
+        
+    </MudAppBar>
 </MudLayout>
 
 
@@ -86,16 +77,16 @@
     public string searchLabel = "Search CSUN Marketplace";
     public string? filterTerm { get; set; }
     public List<string> categories = new List<String> { "Textbooks", "Electronics", "School Supplies", };
-    bool drawerOpen = false;
     private bool _isDarkMode = false;
     private int activePanel { get; set; }
+    public UserInformation user { get; set; }
 
     private MudTheme _theme = new MudTheme()
         {
             Palette = new Palette()
             {
                 Primary = "#d22030", // CSUN Red
-                Secondary = Colors.Red.Accent4,
+                Secondary = "#63666a",
                 AppbarBackground = "#efefef",
                 AppbarText = "#333333",
             },
@@ -114,11 +105,6 @@
             },
 
         };
-
-    void ToggleDrawer()
-    {
-        drawerOpen = !drawerOpen;
-    }
 
     /*
     * This is where our search function will go, consider making this function call another function to display search results in a sub menu
@@ -145,23 +131,36 @@
     protected override async Task OnInitializedAsync()
     {
         GetActiveTabPanel();
+
     }
+
+    async Task<string> GetUserId()
+    {
+        var user = (await _authenticationStateProvider.GetAuthenticationStateAsync()).User;
+        var UserId = user.FindFirst(u => u.Type.Contains("nameidentifier"))?.Value;
+        return UserId;
+    }
+
     protected override void OnInitialized()
     {
         // Subscribe to the event
         _navMan.LocationChanged += LocationChanged;
         GetActiveTabPanel();
+
+        // Prompt First time User Dialog
+
         base.OnInitialized();
     }
 
     public void GetActiveTabPanel()
     {
         string currentURL = _navMan.Uri;
-        if (currentURL.Contains("/new-listing"))
+
+        if (currentURL.Contains("new-listing"))
         {
             activePanel = 1;
         }
-        else if (currentURL.Contains("/textbooks"))
+        else if (currentURL.Contains("textbooks"))
         {
             activePanel = 3;
         }
@@ -185,6 +184,7 @@
         {
             activePanel = 0;
         }
+        StateHasChanged();
     }
 
     void LocationChanged(object sender, LocationChangedEventArgs e)
@@ -196,6 +196,9 @@
     {
         activePanel = index;
     }
+
+
+
 }
 
 <style>
@@ -253,5 +256,9 @@
         height: 50px;
         width: 100%;
         clear: both;
+    }
+
+    .footer-icon {
+        margin: .5em;
     }
 </style>

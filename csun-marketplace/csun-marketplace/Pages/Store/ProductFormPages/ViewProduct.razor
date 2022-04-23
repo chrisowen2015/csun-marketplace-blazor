@@ -49,7 +49,7 @@
 
         <div class="form-row">
             <MudButton Variant="Variant.Filled" OnClick=@(()=> _navMan.NavigateTo("edit-listing/" + p.ProductId)) Color="Color.Primary" EndIcon="@Icons.Material.Filled.AddShoppingCart"> Go to Edit Form </MudButton>
-            <MudButton Variant="Variant.Filled" OnClick=@(()=> _cart.AddToCart(p)) Color="Color.Primary" EndIcon="@Icons.Material.Filled.AddShoppingCart">Add To Cart</MudButton>
+            <MudButton Variant="Variant.Filled" OnClick=@(()=> UpdateCart()) Color="Color.Primary" EndIcon="@Icons.Material.Filled.AddShoppingCart">Add To Cart</MudButton>
         </div>
 
     </div>
@@ -88,7 +88,29 @@
 
     async Task UpdateCart()
     {
-        
+        if(!_cart.Contains(p))
+        {
+            _cart.AddToCart(p);
+            Snackbar.Add("Product successfully added to Cart.", Severity.Success);
+            _navMan.NavigateTo("/");
+        } else
+        {
+            Snackbar.Add("Product is already in your Cart!", Severity.Error, config =>
+            {
+                config.Action = "Remove";
+                config.ActionColor = Color.Error;
+                config.Onclick = snackbar =>
+            {
+                _cart.RemoveFromCart(p);
+
+                // For some reason the cart still contains p after this. not sure why yet.
+                
+                Snackbar.Clear();
+                return Task.CompletedTask;
+            };
+            });
+            _navMan.NavigateTo("/");
+        }
     }
 
 

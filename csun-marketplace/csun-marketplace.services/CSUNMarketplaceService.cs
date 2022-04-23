@@ -342,7 +342,7 @@ namespace csun_marketplace.services
                 var CSUNMarketplaceEvaluatorDB = _context.CreateDbContext();
                 try
                 {
-                    UserInformation user = CSUNMarketplaceEvaluatorDB.UserInformations.Where(p => p.UserId == uvm.UserId).Single();
+                    UserInformation user = CSUNMarketplaceEvaluatorDB.UserInformations.Where(u => u.UserId == uvm.UserId).Single();
 
                     user.FirstName = uvm.FirstName;
                     user.LastName = uvm.LastName;
