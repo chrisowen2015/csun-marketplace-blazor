@@ -316,19 +316,26 @@ namespace csun_marketplace.services
         public UserInformation GetUserInformation(string userId)
         {
             var CSUNMarketplaceEvaluatorDB = _context.CreateDbContext();
-
-            UserInformation user = CSUNMarketplaceEvaluatorDB.UserInformations.Where(u => u.UserId == userId).Select(u => new UserInformation
+            UserInformation user;
+            try
             {
-                UserId = u.UserId,
-                Email = u.Email,
-                FirstName = u.FirstName,
-                LastName = u.LastName,
-                Bio = u.Bio,
-                JoinDate = u.JoinDate,
-                Rating = u.Rating,
-                Major = u.Major,
-                Gender = u.Gender
-            }).Single();
+                user = CSUNMarketplaceEvaluatorDB.UserInformations.Where(u => u.UserId == userId).Select(u => new UserInformation
+                {
+                    UserId = u.UserId,
+                    Email = u.Email,
+                    FirstName = u.FirstName,
+                    LastName = u.LastName,
+                    Bio = u.Bio,
+                    JoinDate = u.JoinDate,
+                    Rating = u.Rating,
+                    Major = u.Major,
+                    Gender = u.Gender
+                }).Single();
+            }
+            catch (Exception ex)
+            {
+                user = new UserInformation();
+            }
 
             // If we have any complex structures stored on the UserInformation class like a list of Products or something, we will grab them below here
 
