@@ -268,3 +268,7 @@ a, .btn-link {
     align-content: center !important;
     justify-content: center !important;
 }
+
+.profile-button {
+    white-space: nowrap;
+}

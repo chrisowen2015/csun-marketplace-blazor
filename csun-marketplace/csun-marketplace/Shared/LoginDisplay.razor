@@ -4,13 +4,15 @@
 
 <AuthorizeView>
     <Authorized>
-        <MudButton StartIcon="@Icons.Material.Filled.AccountCircle" IconColor="Color.Secondary" OnClick="@(() => _navMan.NavigateTo("/profile"))" Style="min-width: min-content !important; padding-left: 15px; padding-right: 15px;">
-
+        <MudButton  OnClick="@(() => _navMan.NavigateTo("/profile"))" Style="min-width: min-content !important; padding-left: 15px; padding-right: 15px;" Class="profile-button">
+            <MudAvatar Color="Color.Primary" Style="margin-right:.5em;">
+                @context.User.Identity.Name[0]
+            </MudAvatar>
+            
             Hello, @context.User.Identity.Name!
 
-
         </MudButton>
-        
+
         <form action="/Identity/Account/Logout?returnUrl=%2F" method="post">
             <MudButton StartIcon="@Icons.Material.Filled.Logout" IconColor="Color.Secondary" Style="min-width: min-content !important;" ButtonType="ButtonType.Submit">
                 Logout
