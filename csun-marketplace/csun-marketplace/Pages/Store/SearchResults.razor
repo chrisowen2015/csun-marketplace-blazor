@@ -1,5 +1,484 @@
-﻿<h3>SearchResults</h3>
+﻿@page "/search/{filterTerm}/{searchTerm}"
+
+@using System.Text
+@using csun_marketplace.data
+
+@inject ICSUNMarketplaceService _csunMarketplaceService
+@inject NavigationManager _navMan
+
+
+<div>
+
+    <MudText Color="Color.Primary" Class="page-header">
+        <h2>
+            You searched for "@searchTerm" in @filterTerm
+        </h2>
+    </MudText>
+
+    <div class="carousel-container">
+        <MudCarousel TData="object" Style="height:300px" ShowArrows="false" ShowBullets="false">
+            @if (filterTerm == "Textbooks")
+            {
+                <MudCarouselItem onclick=@(()=>_navMan.NavigateTo("textbooks/search"))>
+                    <div class="carousel-background-gradient">
+                        <MudImage Class="carousel-background-image" Src="https://cdn.discordapp.com/attachments/959989259492790352/959989315298005033/textbooks-final.jpg" />
+                        <div class="carousel-content">
+                            <MudText Class="carousel-overlayed-text">
+                                <h1>
+                                    Didn't find the Textbook you need?
+                                </h1>
+                                <h4>
+                                    Click Here to use our <b>Textbook Search</b>.
+                                </h4>
+                            </MudText>
+                        </div>
+                    </div>
+                </MudCarouselItem>
+            }
+            else if (filterTerm == "Electronics")
+            {
+                <MudCarouselItem onclick=@(()=>_navMan.NavigateTo("electronics"))>
+                    <div class="carousel-background-gradient">
+                        <MudImage Class="carousel-background-image" Src="https://cdn.discordapp.com/attachments/754862598293553297/960264743115960330/chris-ried-bN5XdU-bap4-unsplash.png" />
+                        <div class="carousel-content">
+                            <MudText Class="carousel-overlayed-text">
+                                <h1>
+                                    Didn't find the Electronics you need?
+                                </h1>
+                                <h4>
+                                    Click Here to browse all Electronics.
+                                </h4>
+                            </MudText>
+                        </div>
+                    </div>
+                </MudCarouselItem>
+            }
+            else if (filterTerm == "School Supplies")
+            {
+                <MudCarouselItem onclick=@(()=>_navMan.NavigateTo("school-supplies"))>
+                    <div class="carousel-background-gradient">
+                        <MudImage Class="carousel-background-image" Src="https://cdn.discordapp.com/attachments/754862598293553297/960273034130882621/agitalizr-3D6-gn9tY1Y-unsplash.png" />
+                        <div class="carousel-content">
+                            <MudText Class="carousel-overlayed-text">
+                                <h1>
+                                    Didn't find the School Supplies you need?
+                                </h1>
+                                <h4>
+                                    Click Here to browse all School Supplies.
+                                </h4>
+                            </MudText>
+                        </div>
+                    </div>
+                </MudCarouselItem>
+            }
+            else if (filterTerm == "Sports & Fitness")
+            {
+                <MudCarouselItem onclick=@(()=>_navMan.NavigateTo("sports"))>
+                    <MudImage Class="carousel-background-image" Src="https://cdn.discordapp.com/attachments/754862598293553297/960267349691367444/thomas-serer-r-xKieMqL34-unsplash.png" />
+                    <div class="carousel-content">
+                        <MudText Class="carousel-overlayed-text">
+                            <h1>
+                                Didn't find the Sports Equipment you need?
+                            </h1>
+                            <h4>
+                                Click Here to browse all Sports & Fitness.
+                            </h4>
+                        </MudText>
+                    </div>
+                </MudCarouselItem>
+            }
+            else if (filterTerm == "Furniture")
+            {
+                <MudCarouselItem onclick=@(()=>_navMan.NavigateTo("furniture"))>
+                    <div class="carousel-background-gradient">
+                        <MudImage Class="carousel-background-image" Src="https://cdn.discordapp.com/attachments/959989259492790352/960266585732448336/furniture.jpg" />
+                        <div class="carousel-content">
+                            <MudText Class="carousel-overlayed-text">
+                                <h1>
+                                    Didn't find the Furniture you need?
+                                </h1>
+                                <h4>
+                                    Click Here to browse all Furniture.
+                                </h4>
+                            </MudText>
+                        </div>
+                    </div>
+                </MudCarouselItem>
+            }
+            else
+            {
+                <MudCarouselItem>
+                    <MudImage Src="https://cdn.discordapp.com/attachments/959989259492790352/960000500412059669/carousel-placeholder.png" />
+                </MudCarouselItem>
+            }
+
+
+        </MudCarousel>
+    </div>
+
+    <div class="page-header-container">
+        <MudText Color="Color.Primary" Class="page-header" Style="margin-top: 1em;">
+            <h2>
+                @searchProductsToRender.Count() Search Results
+            </h2>
+        </MudText>
+    </div>
+
+    <div class="feed-container">
+        <div class="feed-content">
+
+            <div class="products-container">
+                @if (searchProductsToRender != null)
+                {
+                    @foreach (Product p in searchProductsToRender)
+                    {
+                        <MudPaper class="product-tile" Elevation="7" @onclick=@(()=>ViewProduct(p.ProductId))>
+                            <div>
+                                <MudImage ObjectPosition="ObjectPosition.Center" Src="@p.ImageUrl" Height="310" Width="310" />
+                            </div>
+                            <div class="product-tile-header-container">
+                                <MudText Class="product-tile-header">
+                                    @p.Title
+                                </MudText>
+                            </div>
+                            <div>
+                                <MudText Class="product-tile-price">
+                                    $@p.Price
+                                </MudText>
+                            </div>
+                            <MudTextField Value="p.Description" ReadOnly="true" Lines="4" Variant="Variant.Outlined" DisableUnderLine="true" Margin="Margin.Dense" Class="product-tile-description-container" />
+
+                            @*<div class="product-tile-description-container">
+                                <MudText Class="product-tile-description">
+                                @p.Description
+                                </MudText>
+                                </div>*@
+
+                        </MudPaper>
+                    }
+                }
+
+            </div>
+
+        </div>
+    </div>
+</div>
+
 
 @code {
+    [Parameter]
+    public string? filterTerm { get; set; }
+    [Parameter]
+    public string? searchTerm { get; set; }
+
+    public bool textbookSearch = false;
+
+    public List<Product> searchProductsToRender = new List<Product>();
+    public List<TextbookInformation> textbookInformationsToRender = new List<TextbookInformation>();
+
+    public List<Product> productList = new List<Product>();
+    public List<TextbookInformation> textbookInformationList = new List<TextbookInformation>();
+
+    List<string> tokenizedSearchTerms = new List<string>();
+
+    protected override void OnInitialized()
+    {
+        TokenizeSearchTerm();
+
+        if (filterTerm == "Textbooks")
+        {
+            productList = _csunMarketplaceService.GetTextbooks();
+            textbookInformationList = _csunMarketplaceService.GetTextbookInformationList();
+            textbookSearch = true;
+
+            if ((searchTerm != "All"))
+            {
+                TextbookSearch();
+            }
+            else
+            {
+                searchProductsToRender = productList;
+            }
+        }
+        else if (filterTerm == "Electronics")
+        {
+            productList = _csunMarketplaceService.GetElectronics();
+
+            if ((searchTerm != "All"))
+            {
+                ElectronicsSearch();
+            }
+            else
+            {
+                searchProductsToRender = productList;
+            }
+        }
+        else if (filterTerm == "School Supplies")
+        {
+            productList = _csunMarketplaceService.GetSchoolSupplies();
+
+            if ((searchTerm != "All"))
+            {
+                SchoolSuppliesSearch();
+            }
+            else
+            {
+                searchProductsToRender = productList;
+
+                try
+                {
+                    Product shaq = searchProductsToRender.Where((p) => p.Title.Contains("Shaq")).Single();
+                    searchProductsToRender.Remove(shaq);
+                    Console.WriteLine("Shaq found! Attempting to remove Shaq");
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine("Shaq not found " + e);
+                }
+            }
+        }
+        else if (filterTerm == "Sports & Fitness")
+        {
+            productList = _csunMarketplaceService.GetSportsAndFitness();
+
+            if ((searchTerm != "All"))
+            {
+                SportsAndFitnessSearch();
+            }
+            else
+            {
+                searchProductsToRender = productList;
+            }
+        }
+        else if (filterTerm == "Furniture")
+        {
+            productList = _csunMarketplaceService.GetFurniture();
+
+            if ((searchTerm != "All"))
+            {
+                FurnitureSearch();
+            }
+            else
+            {
+                searchProductsToRender = productList;
+            }
+        }
+        else
+        {
+            productList = _csunMarketplaceService.GetProductList();
+            FullSearch();
+        }
+        // Should catch re-searching
+        StateHasChanged();
+    }
+
+    public void TextbookSearch()
+    {
+        foreach (Product p in productList)
+        {
+            TextbookInformation t = textbookInformationList.Where((t) => t.ProductId == p.ProductId).Single();
+
+            foreach (string searchToken in tokenizedSearchTerms)
+            {
+                if (t.Isbn != null && t.Isbn == searchToken)
+                {
+                    searchProductsToRender.Add(p);
+                    textbookInformationsToRender.Add(t);
+                    break;
+                }
+                else if (t.Authors != null && t.Authors.Contains(searchToken))
+                {
+                    searchProductsToRender.Add(p);
+                    textbookInformationsToRender.Add(t);
+                    break;
+                }
+                else if (t.Department != null && t.Department.Contains(searchToken))
+                {
+                    searchProductsToRender.Add(p);
+                    textbookInformationsToRender.Add(t);
+                    break;
+                }
+                else if (t.Course.Contains(searchToken))
+                {
+                    searchProductsToRender.Add(p);
+                    textbookInformationsToRender.Add(t);
+                    break;
+                }
+                else if (t.Title != null && t.Title.Contains(searchToken))
+                {
+                    searchProductsToRender.Add(p);
+                    textbookInformationsToRender.Add(t);
+                    break;
+                }
+                else if (p.Title != null && p.Title.Contains(searchToken))
+                {
+                    searchProductsToRender.Add(p);
+                    textbookInformationsToRender.Add(t);
+                    break;
+                }
+                else if (p.Description != null && p.Description.Contains(searchToken))
+                {
+                    searchProductsToRender.Add(p);
+                    textbookInformationsToRender.Add(t);
+                    break;
+                }
+            }
+
+        }
+
+
+        //searchProductsToRender.Add();
+
+
+    }
+
+    public void ElectronicsSearch()
+    {
+        foreach (Product p in productList)
+        {
+            foreach (string searchToken in tokenizedSearchTerms)
+            {
+                if (p.Title != null && p.Title.Contains(searchToken))
+                {
+                    searchProductsToRender.Add(p);
+                    break;
+                }
+                else if (p.Description != null && p.Description.Contains(searchToken))
+                {
+                    searchProductsToRender.Add(p);
+                    break;
+                }
+            }
+        }
+    }
+
+    public void SchoolSuppliesSearch()
+    {
+        foreach (Product p in productList)
+        {
+            foreach (string searchToken in tokenizedSearchTerms)
+            {
+                if (p.Title != null && p.Title.Contains(searchToken))
+                {
+                    searchProductsToRender.Add(p);
+                    break;
+                }
+                else if (p.Description != null && p.Description.Contains(searchToken))
+                {
+                    searchProductsToRender.Add(p);
+                    break;
+                }
+            }
+        }
+
+        try
+        {
+            Product shaq = searchProductsToRender.Where((p) => p.Title.Contains("Shaq")).Single();
+            searchProductsToRender.Remove(shaq);
+            Console.WriteLine("Shaq found! Attempting to remove Shaq");
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine("Shaq not found " + e);
+        }
+    }
+
+    public void SportsAndFitnessSearch()
+    {
+        foreach (Product p in productList)
+        {
+            foreach (string searchToken in tokenizedSearchTerms)
+            {
+                if (p.Title != null && p.Title.Contains(searchToken))
+                {
+                    searchProductsToRender.Add(p);
+                    break;
+                }
+                else if (p.Description != null && p.Description.Contains(searchToken))
+                {
+                    searchProductsToRender.Add(p);
+                    break;
+                }
+            }
+        }
+    }
+
+    public void FurnitureSearch()
+    {
+        foreach (Product p in productList)
+        {
+            foreach (string searchToken in tokenizedSearchTerms)
+            {
+                if (p.Title != null && p.Title.Contains(searchToken))
+                {
+                    searchProductsToRender.Add(p);
+                    break;
+                }
+                else if (p.Description != null && p.Description.Contains(searchToken))
+                {
+                    searchProductsToRender.Add(p);
+                    break;
+                }
+            }
+        }
+    }
+
+    public void FullSearch()
+    {
+        foreach (Product p in productList)
+        {
+            foreach (string searchToken in tokenizedSearchTerms)
+            {
+                if (p.Title != null && p.Title.Contains(searchToken))
+                {
+                    searchProductsToRender.Add(p);
+                    break;
+                }
+                else if (p.Description != null && p.Description.Contains(searchToken))
+                {
+                    searchProductsToRender.Add(p);
+                    break;
+                }
+            }
+        }
+
+        try
+        {
+            Product shaq = searchProductsToRender.Where((p) => p.Title.Contains("Shaq")).Single();
+            searchProductsToRender.Remove(shaq);
+            Console.WriteLine("Shaq found! Attempting to remove Shaq");
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine("Shaq not found " + e);
+        }
+    }
+
+    public void TokenizeSearchTerm()
+    {
+        StringBuilder sb = new StringBuilder();
+        string[] tokenizerTemp = searchTerm.Split(' ');
+
+        foreach (string token in tokenizerTemp)
+        {
+            if (!String.IsNullOrWhiteSpace(token))
+            {
+                sb.Clear();
+                foreach (char c in token)
+                {
+                    if ((c >= '0' && c <= '9') || (c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z') || c == '.' || c == '_')
+                    {
+                        sb.Append(c);
+                    }
+                }
+                tokenizedSearchTerms.Add(sb.ToString());
+            }
+        }
+    }
+
+    public void ViewProduct(int productId)
+    {
+        _navMan.NavigateTo("/view-listing/" + productId);
+    }
 
 }

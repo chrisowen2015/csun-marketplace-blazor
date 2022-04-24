@@ -116,7 +116,25 @@
 
     async Task searchFunction()
     {
-
+        if (!String.IsNullOrEmpty(searchTerm))
+        {
+            if (!String.IsNullOrEmpty(filterTerm))
+            {
+                _navMan.NavigateTo("/search/" + filterTerm + "/" + searchTerm);
+            } else
+            {
+                _navMan.NavigateTo("/search/" + "All/" + searchTerm);
+            }
+        } else
+        {
+            if (!String.IsNullOrEmpty(filterTerm))
+            {
+                _navMan.NavigateTo("/search/" + filterTerm + "/All");
+            } else
+            {
+                // Prompt angy message for no search terms
+            }
+        } 
     }
 
     public void FilterSelect()
@@ -239,7 +257,6 @@
 
     .search-bar {
         //min-width: max-content !important;
-        margin-left: 1px;
     }
 
     .second-top-bar {
