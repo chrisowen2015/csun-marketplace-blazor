@@ -13,34 +13,38 @@
         <MudPaper Elevation="5" class="page-container">
             <div class="page-content">
                 <div>
-                    <MudTextField Label="First Name" T="string" @bind-Value="@User.FirstName" Variant="Variant.Filled" ReadOnly=readOnly />
+                    <MudAvatar Color="Color.Primary" Class="profile-image">
+                        @context.User.Identity.Name.ToUpper()[0]
+                    </MudAvatar>
                 </div>
-                <div>
-                    <MudTextField Label="Last Name" T="string" @bind-Value="@User.LastName" Variant="Variant.Filled" ReadOnly=readOnly />
+
+                <div class="grid-two">
+                    <MudTextField class="elem-half" Label="First Name" T="string" @bind-Value="@User.FirstName" Variant="Variant.Filled" ReadOnly=readOnly />
+                    <MudTextField class="elem-half" Label="Last Name" T="string" @bind-Value="@User.LastName" Variant="Variant.Filled" ReadOnly=readOnly />
                 </div>
-                <div>
+                <div class="profile-rows">
                     <MudTextField Label="Email" T="string" @bind-Value="@User.Email" Variant="Variant.Filled" ReadOnly="true" />
                 </div>
-                <div>
+                <div class="profile-rows">
                     <MudTextField Label="Bio" T="string" @bind-Value="@User.Bio" Variant="Variant.Filled" Lines="5" ReadOnly=readOnly />
                 </div>
-                <div>
+                <div class="profile-rows">
                     <MudTextField Label="Join Date" T="DateTime" @bind-Value="@User.JoinDate" Variant="Variant.Filled" ReadOnly="true" />
                 </div>
-                <div>
+                <div class="profile-rows">
                     <MudTextField Label="Rating" T="byte" @bind-Value="@User.Rating" Variant="Variant.Filled" ReadOnly="true" />
                 </div>
-                <div>
+                <div class="profile-rows">
                     <MudTextField Label="Major" T="string" @bind-Value="@User.Major" Variant="Variant.Filled" ReadOnly=readOnly />
                 </div>
-                <div>
+                <div class="profile-rows">
                     <MudSelect Label="Gender" @bind-Value="@User.Gender" T="string">
                         <MudSelectItem T="string" Value="@("Male")" />
                         <MudSelectItem T="string" Value="@("Female")" />
                         <MudSelectItem T="string" Value="@("Other")" />
                     </MudSelect>
                 </div>
-                <div>
+                <div class="two-buttons">
                     <MudButton Variant="Variant.Filled" OnClick=@(() => EnableEdit()) Color="Color.Primary">Edit Profile</MudButton>
                     <MudButton Variant="Variant.Filled" OnClick=@(() => UpdateUserInformation()) Color="Color.Primary">Save Profile</MudButton>
                 </div>
@@ -108,3 +112,72 @@
         }
     }
 }
+
+<style>
+
+    .upload-image-label {
+        margin-left: 1em;
+    }
+
+    .img-input-div {
+        margin-top: 1em;
+    }
+
+    .two-buttons {
+        width: 100%;
+        display: flex !important;
+        flex-direction: row !important;
+        justify-content: space-between;
+        padding-top: .5em;
+        padding-bottom: .5em;
+    }
+
+    .grid-two {
+        width: 100%;
+        display: flex !important;
+        flex-direction: row !important;
+        justify-content: space-between !important;
+        align-content: space-between !important;
+        padding-top: .5em;
+        padding-bottom: .5em;
+    }
+
+    .elem-half {
+        max-width: 48%;
+    }
+
+    .products-container {
+        display: flex !important;
+        flex-direction: row !important;
+        flex-flow: row wrap;
+        justify-content: space-evenly;
+        gap: 16px;
+        padding-top: .5em;
+        padding-bottom: .5em;
+        padding-left: 1em;
+        padding-right: 1em;
+    }
+
+    .stupid-select {
+        max-width: 411.84px;
+        min-width: 48%;
+        position: absolute;
+        right: 0px;
+    }
+
+    .flex-it-up {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+    }
+
+    .profile-image {
+        margin-top: 1em;
+    }
+
+    .profile-rows {
+        margin-top: 1em;
+        margin-bottom: 1.5em;
+    }
+
+</style>
