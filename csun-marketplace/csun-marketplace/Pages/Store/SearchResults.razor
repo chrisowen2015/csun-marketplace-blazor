@@ -183,6 +183,13 @@
 
     protected override void OnInitialized()
     {
+
+    }
+
+    protected override void OnParametersSet()
+    {
+        searchProductsToRender.Clear();
+
         TokenizeSearchTerm();
 
         if (filterTerm == "Textbooks")

@@ -2,14 +2,18 @@
 @inject NavigationManager _navMan
 @inject TokenProvider TokenProvider
 
+@inject AuthenticationStateProvider _authenticationStateProvider
+@inject ICSUNMarketplaceService _csunMarketplaceService
+@inject IDialogService _dialog
+
 <AuthorizeView>
     <Authorized>
-        <MudButton  OnClick="@(() => _navMan.NavigateTo("/profile"))" Style="min-width: min-content !important; padding-left: 15px; padding-right: 15px;" Class="profile-button">
+        <MudButton OnClick="@(() => _navMan.NavigateTo("/profile"))" Style="min-width: min-content !important; padding-left: 15px; padding-right: 15px;" Class="profile-button">
             <MudAvatar Color="Color.Primary" Style="margin-right:.5em;">
-                @context.User.Identity.Name[0]
+                @nameToPrint[0]
             </MudAvatar>
-            
-            Hello, @context.User.Identity.Name!
+
+            Hello, @nameToPrint!
 
         </MudButton>
 
@@ -31,3 +35,42 @@
         </MudButton>
     </NotAuthorized>
 </AuthorizeView>
+
+
+@code {
+    public string email { get; set; }
+    public string userid { get; set; }
+    public string nameToPrint = "name";
+
+    public UserInformation user { get; set; }
+
+    protected override void OnInitialized()
+    {
+        userid = GetUserId().Result;
+        if (!String.IsNullOrWhiteSpace(userid))
+        {
+            user = _csunMarketplaceService.GetUserInformation(userid);
+            if (!String.IsNullOrWhiteSpace(user.UserId) && !String.IsNullOrWhiteSpace(user.FirstName) && !String.IsNullOrWhiteSpace(user.LastName))
+            {
+                nameToPrint = user.FirstName + " " + user.LastName;
+            } else
+            {
+                nameToPrint = email;
+                // Hewwo
+            }
+        } else
+        {
+            nameToPrint = email;
+            // Hewwo
+        }
+    }
+
+    async Task<string> GetUserId()
+    {
+        var user = (await _authenticationStateProvider.GetAuthenticationStateAsync()).User;
+        var UserId = user.FindFirst(u => u.Type.Contains("nameidentifier"))?.Value;
+        email = user.FindFirst(u => u.Type.Contains("email"))?.Value;
+        return UserId;
+    }
+
+}

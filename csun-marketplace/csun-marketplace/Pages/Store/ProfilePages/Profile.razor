@@ -38,15 +38,21 @@
                     <MudTextField Label="Major" T="string" @bind-Value="@User.Major" Variant="Variant.Filled" ReadOnly=readOnly />
                 </div>
                 <div class="profile-rows">
-                    <MudSelect Label="Gender" @bind-Value="@User.Gender" T="string">
+                    <MudSelect Label="Gender" @bind-Value="@User.Gender" T="string" Variant="Variant.Filled" ReadOnly=readOnly>
                         <MudSelectItem T="string" Value="@("Male")" />
                         <MudSelectItem T="string" Value="@("Female")" />
-                        <MudSelectItem T="string" Value="@("Other")" />
+                        <MudSelectItem T="string" Value="@("Other/Nonbinary")" />
                     </MudSelect>
                 </div>
-                <div class="two-buttons">
-                    <MudButton Variant="Variant.Filled" OnClick=@(() => EnableEdit()) Color="Color.Primary">Edit Profile</MudButton>
-                    <MudButton Variant="Variant.Filled" OnClick=@(() => UpdateUserInformation()) Color="Color.Primary">Save Profile</MudButton>
+                <div class="button-single">
+                    @if (readOnly)
+                    {
+                        <MudButton Variant="Variant.Filled" OnClick=@(() => EnableEdit()) Color="Color.Primary">Edit Profile</MudButton>
+                    }
+                    else
+                    {
+                        <MudButton Variant="Variant.Filled" OnClick=@(() => UpdateUserInformation()) Color="Color.Primary">Save Changes</MudButton>
+                    }
                 </div>
             </div>
         </MudPaper>
@@ -66,19 +72,21 @@
     protected override async Task OnInitializedAsync()
     {
         userID = await GetUserId();
-        try
-        {
-            User = _csunMarketplaceService.GetUserInformation(userID);
 
-        }
-        catch (Exception e)
+        User = _csunMarketplaceService.GetUserInformation(userID);
+
+
+        if (String.IsNullOrWhiteSpace(User.UserId))
         {
-            User = new UserInformation();
+            // User did not already exist
+
+            readOnly = false;
+
             User.UserId = userID;
             User.Email = email;
             User.JoinDate = System.DateTime.Now;
         }
-        // Load User's profile information
+
     }
 
 
@@ -104,6 +112,7 @@
         if (!String.IsNullOrWhiteSpace(success))
         {
             Snackbar.Add("Sucessfully Updated User Information!", Severity.Success);
+            StateHasChanged();
         }
         else
         {
