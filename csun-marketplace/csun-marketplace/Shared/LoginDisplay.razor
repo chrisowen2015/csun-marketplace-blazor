@@ -1,4 +1,9 @@
 ﻿@using Microsoft.AspNetCore.Components.Authorization
+
+@*Dialogue needs a using statement*@
+
+@using csun_marketplace.Pages.Store.ProfilePages
+
 @inject NavigationManager _navMan
 @inject TokenProvider TokenProvider
 
@@ -42,6 +47,8 @@
     public string userid { get; set; }
     public string nameToPrint = "name";
 
+    public int timesRendered = 0;
+
     public UserInformation user { get; set; }
 
     protected override void OnInitialized()
@@ -53,15 +60,17 @@
             if (!String.IsNullOrWhiteSpace(user.UserId) && !String.IsNullOrWhiteSpace(user.FirstName) && !String.IsNullOrWhiteSpace(user.LastName))
             {
                 nameToPrint = user.FirstName + " " + user.LastName;
-            } else
+            }
+            else
             {
                 nameToPrint = email;
                 // Hewwo
+                if (timesRendered == 0)
+                {
+                    _dialog.Show<NewUserDialog>("Welcome New User!");
+                    timesRendered++;
+                }
             }
-        } else
-        {
-            nameToPrint = email;
-            // Hewwo
         }
     }
 

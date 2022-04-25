@@ -16,6 +16,7 @@ namespace csun_marketplace.services
         int UpdateProduct(Product pvm);
         int UpdateTextbookInformation(TextbookInformation tvm);
         UserInformation GetUserInformation(string userId);
+        List<UserInformation> GetUserInformationList();
         string UpdateUserInformation(UserInformation uvm);
     }
 }
