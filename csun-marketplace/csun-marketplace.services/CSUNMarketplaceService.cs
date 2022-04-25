@@ -61,7 +61,7 @@ namespace csun_marketplace.services
                 ImageUrl = p.ImageUrl,
                 Description = p.Description,
                 ImageSource = p.ImageSource,
-
+                Category = p.Category,
                 Price = p.Price,
                 Available = p.Available,
 
@@ -89,6 +89,27 @@ namespace csun_marketplace.services
 
             return textbookInformationList;
         }
+
+        public List<UserInformation> GetUserInformationList()
+        {
+            var CSUNMarketplaceEvaluatorDB = _context.CreateDbContext();
+
+            List<UserInformation> userInformationList = CSUNMarketplaceEvaluatorDB.UserInformations.Select(u => new UserInformation
+            {
+                UserId = u.UserId,
+                Email = u.Email,
+                FirstName = u.FirstName,
+                LastName = u.LastName,
+                Bio = u.Bio,
+                JoinDate = u.JoinDate,
+                Rating = u.Rating,
+                Major = u.Major,
+                Gender = u.Gender
+            }).ToList();
+
+            return userInformationList;
+        }
+
 
         /*
          * Function to get all textbooks, as determined by their textbook category. Will need to update to pull a Textbook Information as well once DB has been populated correctly

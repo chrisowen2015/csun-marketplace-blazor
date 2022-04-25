@@ -1,18 +1,25 @@
-﻿<MudDialog>
+﻿@inject NavigationManager _navMan
+
+<MudDialog>
+    <TitleContent>
+         <MudText Color="Color.Primary">
+            <h4>
+                Welcome to CSUN Marketplace!
+            </h4>
+        </MudText>
+    </TitleContent>
     <DialogContent>
-        <MudText></MudText>
+        <MudText Color="Color.Secondary">
+            Head over to your CSUN Marketplace profile to tell us more about yourself.
+        </MudText>
 
-
-
-        Dialog Content
-    
-    
-    
+        <div class="spacer"/>
+        
     
     </DialogContent>
     <DialogActions>
-        <MudButton OnClick="Cancel">Cancel</MudButton>
-        <MudButton Color="Color.Primary" OnClick="Submit">Ok</MudButton>
+        <MudButton OnClick="SkipUserCreation" Variant="Variant.Filled">Maybe Later</MudButton>
+        <MudButton Color="Color.Primary" OnClick="CreateUserInformation" Variant="Variant.Filled">Take me there!</MudButton>
     </DialogActions>
 </MudDialog>
 
@@ -20,6 +27,14 @@
 @code {
     [CascadingParameter] MudDialogInstance MudDialog { get; set; }
 
-    void Submit() => MudDialog.Close(DialogResult.Ok(true));
-    void Cancel() => MudDialog.Cancel();
+    public void SkipUserCreation()
+    {
+        MudDialog.Cancel();
+    }
+
+    public void CreateUserInformation()
+    {
+        _navMan.NavigateTo("profile");
+        MudDialog.Close(DialogResult.Ok(true));
+    }
 }
