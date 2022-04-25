@@ -47,8 +47,9 @@
             <MudTextField Label="Category" T="string" @bind-Value=p.Category Variant="Variant.Filled" ReadOnly="true"/>
         </div>
 
-        <div class="form-row">
+        <div class="two-buttons form-row">
             <MudButton Variant="Variant.Filled" OnClick=@(()=> UpdateCart()) Color="Color.Primary" EndIcon="@Icons.Material.Filled.AddShoppingCart">Add To Cart</MudButton>
+            <MudButton Variant="Variant.Filled" OnClick=@(()=> ViewProfile(p.OwnerId)) Color="Color.Primary" EndIcon="@Icons.Material.Filled.AccountCircle">View Seller Profile</MudButton>
         </div>
 
     </div>
@@ -113,6 +114,12 @@
     }
 
 
+    public void ViewProfile(string ownerId)
+    {
+        _navMan.NavigateTo("/view-profile/" + ownerId);
+    }
+
+
 }
 
 <style>
@@ -137,4 +144,14 @@
     .elem-half {
         max-width: 48%;
     }
+
+    .two-buttons {
+        width: 100%;
+        display: flex !important;
+        flex-direction: row !important;
+        justify-content: space-between;
+        padding-top: .5em;
+        padding-bottom: .5em;
+    }
+
 </style>

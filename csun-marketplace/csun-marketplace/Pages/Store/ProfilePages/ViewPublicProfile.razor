@@ -1,0 +1,206 @@
+﻿@page "/view-profile/{userId}"
+@using Microsoft.AspNetCore.Authentication
+@using Microsoft.AspNetCore.Components.Authorization
+@using Microsoft.AspNetCore.Identity
+@layout StoreLayout
+
+@inject AuthenticationStateProvider _authenticationStateProvider
+@inject ICSUNMarketplaceService _csunMarketplaceService
+@inject ISnackbar Snackbar
+
+<AuthorizeView>
+    <Authorized>
+        <MudPaper Elevation="5" class="page-container">
+            <div class="page-content">
+                <div>
+                    @if (User.FirstName != "")
+                    {
+                        <MudAvatar Color="Color.Primary" Class="profile-image">
+                            @*@context.User.Identity.Name.ToUpper()[0]*@
+                            @User.FirstName.ToUpper()[0]
+                        </MudAvatar>
+                    }
+                    else
+                    {
+                        <MudAvatar Color="Color.Primary" Class="profile-image">
+                            @*@context.User.Identity.Name.ToUpper()[0]*@
+                            @User.Email.ToUpper()[0]
+                        </MudAvatar>
+                    }
+                </div>
+
+                <div class="grid-two">
+                    <MudTextField class="elem-half" Label="First Name" T="string" @bind-Value="@User.FirstName" Variant="Variant.Filled" ReadOnly=readOnly />
+                    <MudTextField class="elem-half" Label="Last Name" T="string" @bind-Value="@User.LastName" Variant="Variant.Filled" ReadOnly=readOnly />
+                </div>
+                <div class="profile-rows">
+                    <MudTextField Label="Email" T="string" @bind-Value="@User.Email" Variant="Variant.Filled" ReadOnly="true" />
+                </div>
+                <div class="profile-rows">
+                    <MudTextField Label="Bio" T="string" @bind-Value="@User.Bio" Variant="Variant.Filled" Lines="5" ReadOnly=readOnly />
+                </div>
+                <div class="profile-rows">
+                    <MudTextField Label="Join Date" T="DateTime" @bind-Value="@User.JoinDate" Variant="Variant.Filled" ReadOnly="true" />
+                </div>
+                <div class="profile-rows">
+                    <MudTextField Label="Rating" T="byte" @bind-Value="@User.Rating" Variant="Variant.Filled" ReadOnly="true" />
+                </div>
+                <div class="profile-rows">
+                    <MudTextField Label="Major" T="string" @bind-Value="@User.Major" Variant="Variant.Filled" ReadOnly=readOnly />
+                </div>
+                <div class="profile-rows">
+                    <MudSelect Label="Gender" @bind-Value="@User.Gender" T="string" Variant="Variant.Filled" ReadOnly=readOnly>
+                        <MudSelectItem T="string" Value="@("Male")" />
+                        <MudSelectItem T="string" Value="@("Female")" />
+                        <MudSelectItem T="string" Value="@("Other/Nonbinary")" />
+                    </MudSelect>
+                </div>
+                @*<div class="button-single">
+                    @if (readOnly)
+                    {
+                    <MudButton Variant="Variant.Filled" OnClick=@(() => EnableEdit()) Color="Color.Primary">Edit Profile</MudButton>
+                    }
+                    else
+                    {
+                    <MudButton Variant="Variant.Filled" OnClick=@(() => UpdateUserInformation()) Color="Color.Primary">Save Changes</MudButton>
+                    }
+                    </div>*@
+            </div>
+        </MudPaper>
+    </Authorized>
+    <NotAuthorized>
+        Pls sign in!
+    </NotAuthorized>
+</AuthorizeView>
+
+@code {
+
+    [Parameter]
+    public string? userID { get; set; }
+
+    public string? email { get; set; }
+    public UserInformation User { get; set; }
+    public bool readOnly = true;
+    public string success { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        //userID = await GetUserId();
+
+        User = _csunMarketplaceService.GetUserInformation(userID);
+
+
+        if (String.IsNullOrWhiteSpace(User.UserId))
+        {
+            // User did not already exist
+
+            readOnly = false;
+
+            User.UserId = userID;
+            User.Email = email;
+            User.JoinDate = System.DateTime.Now;
+        }
+
+    }
+
+
+    async Task<string> GetUserId()
+    {
+        var user = (await _authenticationStateProvider.GetAuthenticationStateAsync()).User;
+        var UserId = user.FindFirst(u => u.Type.Contains("nameidentifier"))?.Value;
+        email = user.FindFirst(u => u.Type.Contains("email"))?.Value;
+        return UserId;
+    }
+
+    public void EnableEdit()
+    {
+        readOnly = false;
+    }
+
+    async Task UpdateUserInformation()
+    {
+
+        readOnly = true;
+
+        success = _csunMarketplaceService.UpdateUserInformation(User);
+        if (!String.IsNullOrWhiteSpace(success))
+        {
+            Snackbar.Add("Sucessfully Updated User Information!", Severity.Success);
+            StateHasChanged();
+        }
+        else
+        {
+            // Error pop up, DB error
+            Snackbar.Add("There was a problem saving your user information.", Severity.Error);
+        }
+    }
+}
+
+<style>
+
+    .upload-image-label {
+        margin-left: 1em;
+    }
+
+    .img-input-div {
+        margin-top: 1em;
+    }
+
+    .two-buttons {
+        width: 100%;
+        display: flex !important;
+        flex-direction: row !important;
+        justify-content: space-between;
+        padding-top: .5em;
+        padding-bottom: .5em;
+    }
+
+    .grid-two {
+        width: 100%;
+        display: flex !important;
+        flex-direction: row !important;
+        justify-content: space-between !important;
+        align-content: space-between !important;
+        padding-top: .5em;
+        padding-bottom: .5em;
+    }
+
+    .elem-half {
+        max-width: 48%;
+    }
+
+    .products-container {
+        display: flex !important;
+        flex-direction: row !important;
+        flex-flow: row wrap;
+        justify-content: space-evenly;
+        gap: 16px;
+        padding-top: .5em;
+        padding-bottom: .5em;
+        padding-left: 1em;
+        padding-right: 1em;
+    }
+
+    .stupid-select {
+        max-width: 411.84px;
+        min-width: 48%;
+        position: absolute;
+        right: 0px;
+    }
+
+    .flex-it-up {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+    }
+
+    .profile-image {
+        margin-top: 1em;
+    }
+
+    .profile-rows {
+        margin-top: 1em;
+        margin-bottom: 1.5em;
+    }
+
+</style>
