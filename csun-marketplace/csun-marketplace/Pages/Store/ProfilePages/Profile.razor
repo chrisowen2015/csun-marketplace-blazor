@@ -13,9 +13,14 @@
         <MudPaper Elevation="5" class="page-container">
             <div class="page-content">
                 <div>
-                    <MudAvatar Color="Color.Primary" Class="profile-image">
+                    @*<MudAvatar Color="Color.Primary" Class="profile-image">
                         @context.User.Identity.Name.ToUpper()[0]
-                    </MudAvatar>
+                    </MudAvatar>*@
+                    <MudText Style="margin-top: 2.5em">
+                        <h1>
+                            Edit Profile
+                        </h1>
+                    </MudText>
                 </div>
 
                 <div class="grid-two">
@@ -33,7 +38,7 @@
                 </div>
                 <div class="profile-rows">
                     @*<MudTextField Label="Rating" T="byte" @bind-Value="@User.Rating" Variant="Variant.Filled" ReadOnly="true" />*@
-                    <MudRating ReadOnly="true" SelectedValue=@User.Rating @bind-Value="@User.Rating" />
+                    @*<MudRating ReadOnly="true" SelectedValue=@User.Rating @bind-Value="@User.Rating" />*@
                 </div>
                 <div class="profile-rows">
                     <MudTextField Label="Major" T="string" @bind-Value="@User.Major" Variant="Variant.Filled" ReadOnly=readOnly />
@@ -48,7 +53,7 @@
                 <div class="button-single">
                     @if (readOnly)
                     {
-                        <MudButton Variant="Variant.Filled" OnClick=@(() => EnableEdit()) Color="Color.Primary">Edit Profile</MudButton>
+                        <MudButton Variant="Variant.Filled" OnClick=@(() => EnableEdit()) Color="Color.Primary">Start Editing</MudButton>
                     }
                     else
                     {

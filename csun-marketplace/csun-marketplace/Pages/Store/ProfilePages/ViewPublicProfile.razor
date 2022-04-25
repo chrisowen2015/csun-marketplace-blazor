@@ -1,4 +1,5 @@
 ﻿@page "/view-profile/{userId}"
+@using System.Globalization
 @using Microsoft.AspNetCore.Authentication
 @using Microsoft.AspNetCore.Components.Authorization
 @using Microsoft.AspNetCore.Identity
@@ -7,12 +8,13 @@
 @inject AuthenticationStateProvider _authenticationStateProvider
 @inject ICSUNMarketplaceService _csunMarketplaceService
 @inject ISnackbar Snackbar
+@inject NavigationManager _navMan
 
 <AuthorizeView>
     <Authorized>
         <MudPaper Elevation="5" class="page-container">
             <div class="page-content">
-                <div>
+                <div class="flex-it-up">
                     @if (User.FirstName != "")
                     {
                         <MudAvatar Color="Color.Primary" Class="profile-image">
@@ -27,34 +29,156 @@
                             @User.Email.ToUpper()[0]
                         </MudAvatar>
                     }
+                    <MudText>
+                        <h1>
+                            <MudElement @bind-Value="@User.FirstName"> @User.FirstName </MudElement>
+                            <MudElement @bind-Value="@User.LastName"> @User.LastName </MudElement>
+                        </h1>
+                    </MudText>
+                    <MudText @bind-Value="@User.Email" Style="align-self:center">
+                        <h6>
+                            (@User.Email)
+                        </h6>
+                    </MudText>
                 </div>
 
-                <div class="grid-two">
-                    <MudTextField class="elem-half" Label="First Name" T="string" @bind-Value="@User.FirstName" Variant="Variant.Filled" ReadOnly=readOnly />
-                    <MudTextField class="elem-half" Label="Last Name" T="string" @bind-Value="@User.LastName" Variant="Variant.Filled" ReadOnly=readOnly />
-                </div>
-                <div class="profile-rows">
+                @*<div>
+                    <MudText Label="First Name" T="string" @bind-Value="@User.FirstName" Variant="Variant.Filled" ReadOnly=readOnly>
+                    <h1>
+                    @User.FirstName
+                    </h1>
+                    </MudText>
+
+                    <MudText Label="Last Name" T="string" @bind-Value="@User.LastName" Variant="Variant.Filled" ReadOnly=readOnly>
+                    <h1>
+                    @User.LastName
+                    </h1>
+                    </MudText>
+                    </div>*@
+                @*<div class="profile-rows">
                     <MudTextField Label="Email" T="string" @bind-Value="@User.Email" Variant="Variant.Filled" ReadOnly="true" />
+                    </div>*@
+                <div class="flex-it-up">
+                    @*<MudTextField Label="Join Date" T="DateTime" @bind-Value="@User.JoinDate" Variant="Variant.Filled" ReadOnly="true" />*@
+                    <MudText @bind-Value="@User.JoinDate">
+                        <h5>
+                            Join Date
+                        </h5>
+                        <p> @User.JoinDate.ToShortDateString() </p>
+                    </MudText>
+                    <div></div>
+                    <div>
+                        <MudText Color="Color.Surface">
+                            <h5>
+                                Seller Rating
+                            </h5>
+                        </MudText>
+                        <MudRating ReadOnly="true" SelectedValue=@User.Rating @bind-Value="@User.Rating" />
+                    </div>
+                </div>
+                @*<div class="profile-rows">
+                    <MudTextField Label="Rating" T="byte" @bind-Value="@User.Rating" Variant="Variant.Filled" ReadOnly="true" />
+                    </div>*@
+                <div class="profile-rows">
+                    @*<MudTextField Label="Bio" T="string" @bind-Value="@User.Bio" Variant="Variant.Filled" Lines="5" ReadOnly=readOnly />*@
+                    @if (@User.Bio != null)
+                    {
+                        <MudText @bind-Value="@User.Bio">
+                            <h5>
+                                Bio
+                            </h5>
+                            @User.Bio
+                        </MudText>
+                    }
+                    else
+                    {
+                        <MudText>
+                            <h5>
+                                Bio
+                            </h5>
+                            <p>This user has not written a bio.</p>
+                        </MudText>
+                    }
                 </div>
                 <div class="profile-rows">
-                    <MudTextField Label="Bio" T="string" @bind-Value="@User.Bio" Variant="Variant.Filled" Lines="5" ReadOnly=readOnly />
+                    @*<MudTextField Label="Major" T="string" @bind-Value="@User.Major" Variant="Variant.Filled" ReadOnly=readOnly />*@
+                    @if (@User.Major != null)
+                    {
+                        <MudText @bind-Value="@User.Major">
+                            <h5>
+                                Major
+                            </h5>
+                            @User.Major
+                        </MudText>
+                    }
+                    else
+                    {
+                        <MudText>
+                            <h5>
+                                Major
+                            </h5>
+                            <p>This user has not indicated their major.</p>
+                        </MudText>
+                    }
                 </div>
                 <div class="profile-rows">
-                    <MudTextField Label="Join Date" T="DateTime" @bind-Value="@User.JoinDate" Variant="Variant.Filled" ReadOnly="true" />
-                </div>
-                <div class="profile-rows">
-                    @*<MudTextField Label="Rating" T="byte" @bind-Value="@User.Rating" Variant="Variant.Filled" ReadOnly="true" />*@
-                    <MudRating ReadOnly="true" SelectedValue=@User.Rating @bind-Value="@User.Rating" />
-                </div>
-                <div class="profile-rows">
-                    <MudTextField Label="Major" T="string" @bind-Value="@User.Major" Variant="Variant.Filled" ReadOnly=readOnly />
-                </div>
-                <div class="profile-rows">
-                    <MudSelect Label="Gender" @bind-Value="@User.Gender" T="string" Variant="Variant.Filled" ReadOnly=readOnly>
+                    @*<MudSelect Label="Gender" @bind-Value="@User.Gender" T="string" Variant="Variant.Filled" ReadOnly=readOnly>
                         <MudSelectItem T="string" Value="@("Male")" />
                         <MudSelectItem T="string" Value="@("Female")" />
                         <MudSelectItem T="string" Value="@("Other/Nonbinary")" />
-                    </MudSelect>
+                        </MudSelect>*@
+                    @if (@User.Gender != null)
+                    {
+                        <MudText @bind-Value="@User.Gender">
+                            <h5>
+                                Gender
+                            </h5>
+                            @User.Gender
+                        </MudText>
+                    }
+                    else
+                    {
+                        <MudText>
+                            <h5>
+                                Gender
+                            </h5>
+                            <p>This user has not indicated their gender.</p>
+                        </MudText>
+                    }
+                </div>
+                <div>
+                    <MudText>
+                        <h2>
+                            Other products from this user
+                        </h2>
+                    </MudText>
+                    <div class="products-container">
+                        @if (Prod != null)
+                        {
+                            @foreach (Product p in Prod)
+                            {
+                                <MudPaper Style="margin-bottom: 1em; padding: .5em;" Elevation="3" Width="100%" @onclick=@(()=>ViewProduct(p.ProductId))>
+                                    <MudContainer Fixed="true" Style="padding: .5em !important;">
+                                        <MudGrid>
+                                            <MudItem lg="2" xl="2">
+                                                <MudImage Src="@p.ImageUrl" Height="120" Width="120" />
+                                            </MudItem>
+
+                                            <MudItem lg="9" xl="9" Style="display: flex; flex-direction:column; justify-content:space-between !important;">
+                                                <MudText Color="Color.Primary">
+                                                    <h5> @p.Title </h5>
+                                                </MudText>
+                                            </MudItem>
+
+                                            <MudItem lg="1" xl="1">
+                                                <b class="product-price-text"> @formatCurrency(p.Price) </b>
+                                            </MudItem>
+                                        </MudGrid>
+                                    </MudContainer>
+                                </MudPaper>
+                            }
+                        }
+                    </div>
                 </div>
                 @*<div class="button-single">
                     @if (readOnly)
@@ -76,6 +200,8 @@
 
 @code {
 
+    CultureInfo USD = new CultureInfo("en-US");
+
     [Parameter]
     public string? userID { get; set; }
 
@@ -83,6 +209,7 @@
     public UserInformation User { get; set; }
     public bool readOnly = true;
     public string success { get; set; }
+    public List<Product> Prod { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
@@ -102,8 +229,20 @@
             User.JoinDate = System.DateTime.Now;
         }
 
+        Prod = _csunMarketplaceService.GetUsersProducts(userID);
+
     }
 
+    public void ViewProduct(int productId)
+    {
+        _navMan.NavigateTo("/view-listing/" + productId);
+    }
+
+    public string formatCurrency(decimal? amount)
+    {
+        float subtotal = (float)amount;
+        return subtotal.ToString("C2", USD);
+    }
 
     async Task<string> GetUserId()
     {
@@ -192,11 +331,13 @@
     .flex-it-up {
         display: flex;
         flex-direction: row;
-        justify-content: space-between;
+        justify-content: flex-start;
+        margin-top: 2.5em;
+        gap: 16px;
     }
 
     .profile-image {
-        margin-top: 1em;
+        margin-top: 3px;
     }
 
     .profile-rows {
