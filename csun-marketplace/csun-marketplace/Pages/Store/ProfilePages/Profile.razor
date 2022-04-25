@@ -32,7 +32,8 @@
                     <MudTextField Label="Join Date" T="DateTime" @bind-Value="@User.JoinDate" Variant="Variant.Filled" ReadOnly="true" />
                 </div>
                 <div class="profile-rows">
-                    <MudTextField Label="Rating" T="byte" @bind-Value="@User.Rating" Variant="Variant.Filled" ReadOnly="true" />
+                    @*<MudTextField Label="Rating" T="byte" @bind-Value="@User.Rating" Variant="Variant.Filled" ReadOnly="true" />*@
+                    <MudRating ReadOnly="true" SelectedValue=@User.Rating @bind-Value="@User.Rating" />
                 </div>
                 <div class="profile-rows">
                     <MudTextField Label="Major" T="string" @bind-Value="@User.Major" Variant="Variant.Filled" ReadOnly=readOnly />
