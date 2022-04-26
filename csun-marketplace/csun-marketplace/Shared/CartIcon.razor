@@ -29,7 +29,7 @@
 
                         @foreach (Product p in _cart.GetCart())
                         {
-                            <MudPaper Style="margin-left: 1em; margin-right: 1em; margin-bottom: 1em; padding: .5em;" Elevation="3">
+                            <MudPaper Style="margin-left: 1em; margin-right: 1em; margin-bottom: 1em; padding: .5em;" Elevation="3" @onclick=@(()=>ViewProduct(p.ProductId))>
                                 <MudContainer Class="cart-product-flex-row" Fixed="true">
                                     <div class="cart-product-img-small">
                                         <MudImage Src="@p.ImageUrl" Height="70" Width="70"  />
@@ -71,6 +71,11 @@
                 return Task.CompletedTask;
             };
         });
+    }
+
+    public void ViewProduct(int productId)
+    {
+        _navMan.NavigateTo("/view-listing/" + productId);
     }
 
 }
