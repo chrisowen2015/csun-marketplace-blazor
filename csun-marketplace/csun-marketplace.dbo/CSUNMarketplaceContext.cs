@@ -18,6 +18,7 @@ namespace csun_marketplace.dbo
         }
 
         public virtual DbSet<Product> Products { get; set; } = null!;
+        public virtual DbSet<SavedForLater> SavedForLaters { get; set; } = null!;
         public virtual DbSet<UserInformation> UserInformations { get; set; } = null!;
         public virtual DbSet<TextbookInformation> TextbookInformations { get; set; } = null!;
 
@@ -53,6 +54,15 @@ namespace csun_marketplace.dbo
                 entity.Property(e => e.Tags).IsUnicode(false);
 
                 entity.Property(e => e.Title).IsUnicode(false);
+            });
+
+            modelBuilder.Entity<SavedForLater>(entity =>
+            {
+                entity.ToTable("SavedForLater");
+
+                entity.Property(e => e.SavedForLaterId).HasColumnName("SavedForLaterID");
+
+                entity.Property(e => e.UserId).HasMaxLength(450);
             });
 
             modelBuilder.Entity<TextbookInformation>(entity =>

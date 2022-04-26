@@ -6,6 +6,9 @@ namespace csun_marketplace.services
     {
         Product GetProduct(int productId);
         List<Product> GetProductList();
+        public List<SavedForLaterVM> GetSavedForLater(string userId);
+        public int SaveForLater(SavedForLaterVM svm);
+        public int RemoveSavedForLater(SavedForLaterVM svm);
         List<TextbookInformation> GetTextbookInformationList();
         List<Product> GetTextbooks();
         public List<Product> GetElectronics();
