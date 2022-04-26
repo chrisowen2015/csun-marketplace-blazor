@@ -83,7 +83,7 @@
     public List<SavedForLaterVM> savedForLaterVMs { get; set; }
 
     CultureInfo USD = new CultureInfo("en-US");
-    HashSet<UserInformation> sellerInfos = new HashSet<UserInformation>();
+    List<UserInformation> sellerInfos = new List<UserInformation>();
 
     public string formatCurrency(decimal? amount)
     {
@@ -95,6 +95,15 @@
     {
         string userId = GetUserId().Result;
         savedForLaterVMs = _csunMarketplaceService.GetSavedForLater(userId);
+
+        foreach (SavedForLaterVM svm in savedForLaterVMs)
+        {
+            UserInformation user = _csunMarketplaceService.GetUserInformation(svm.UserId);
+            sellerInfos.Add(user);
+        }
+
+
+
     }
 
     public string GetSellerName(Product p)
@@ -146,12 +155,13 @@
     {
         _cart.AddToCart(svm.product);
         int success = _csunMarketplaceService.RemoveSavedForLater(svm);
-        if(success != -1)
+        if (success != -1)
         {
             savedForLaterVMs.Remove(svm);
             Snackbar.Add("Item added to your Cart.", Severity.Success);
-            StateHasChanged();    
-        } else
+            StateHasChanged();
+        }
+        else
         {
             Snackbar.Add("Error adding item to your Cart!");
         }

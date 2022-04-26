@@ -228,7 +228,7 @@
 
                 try
                 {
-                    Product shaq = searchProductsToRender.Where((p) => p.Title.Contains("Shaq")).Single();
+                    Product shaq = searchProductsToRender.Where((p) => p.Title.ToLower().Contains("shaq")).Single();
                     searchProductsToRender.Remove(shaq);
                     Console.WriteLine("Shaq found! Attempting to remove Shaq");
                 }
@@ -287,37 +287,37 @@
                     textbookInformationsToRender.Add(t);
                     break;
                 }
-                else if (t.Authors != null && t.Authors.Contains(searchToken))
+                else if (t.Authors != null && t.Authors.ToLower().Contains(searchToken.ToLower()))
                 {
                     searchProductsToRender.Add(p);
                     textbookInformationsToRender.Add(t);
                     break;
                 }
-                else if (t.Department != null && t.Department.Contains(searchToken))
+                else if (t.Department != null && t.Department.ToLower().Contains(searchToken.ToLower()))
                 {
                     searchProductsToRender.Add(p);
                     textbookInformationsToRender.Add(t);
                     break;
                 }
-                else if (t.Course.Contains(searchToken))
+                else if (t.Course != null && t.Course.ToLower().Contains(searchToken.ToLower()))
                 {
                     searchProductsToRender.Add(p);
                     textbookInformationsToRender.Add(t);
                     break;
                 }
-                else if (t.Title != null && t.Title.Contains(searchToken))
+                else if (t.Title != null && t.Title.ToLower().Contains(searchToken.ToLower()))
                 {
                     searchProductsToRender.Add(p);
                     textbookInformationsToRender.Add(t);
                     break;
                 }
-                else if (p.Title != null && p.Title.Contains(searchToken))
+                else if (p.Title != null && p.Title.ToLower().Contains(searchToken.ToLower()))
                 {
                     searchProductsToRender.Add(p);
                     textbookInformationsToRender.Add(t);
                     break;
                 }
-                else if (p.Description != null && p.Description.Contains(searchToken))
+                else if (p.Description != null && p.Description.ToLower().Contains(searchToken.ToLower()))
                 {
                     searchProductsToRender.Add(p);
                     textbookInformationsToRender.Add(t);
@@ -339,12 +339,12 @@
         {
             foreach (string searchToken in tokenizedSearchTerms)
             {
-                if (p.Title != null && p.Title.Contains(searchToken))
+                if (p.Title != null && p.Title.ToLower().Contains(searchToken.ToLower()))
                 {
                     searchProductsToRender.Add(p);
                     break;
                 }
-                else if (p.Description != null && p.Description.Contains(searchToken))
+                else if (p.Description != null && p.Description.ToLower().Contains(searchToken.ToLower()))
                 {
                     searchProductsToRender.Add(p);
                     break;
@@ -359,12 +359,12 @@
         {
             foreach (string searchToken in tokenizedSearchTerms)
             {
-                if (p.Title != null && p.Title.Contains(searchToken))
+                if (p.Title != null && p.Title.ToLower().Contains(searchToken.ToLower()))
                 {
                     searchProductsToRender.Add(p);
                     break;
                 }
-                else if (p.Description != null && p.Description.Contains(searchToken))
+                else if (p.Description != null && p.Description.ToLower().Contains(searchToken.ToLower()))
                 {
                     searchProductsToRender.Add(p);
                     break;
@@ -374,7 +374,7 @@
 
         try
         {
-            Product shaq = searchProductsToRender.Where((p) => p.Title.Contains("Shaq")).Single();
+            Product shaq = searchProductsToRender.Where((p) => p.Title.ToLower().Contains("shaq")).Single();
             searchProductsToRender.Remove(shaq);
             Console.WriteLine("Shaq found! Attempting to remove Shaq");
         }
@@ -390,12 +390,12 @@
         {
             foreach (string searchToken in tokenizedSearchTerms)
             {
-                if (p.Title != null && p.Title.Contains(searchToken))
+                if (p.Title != null && p.Title.ToLower().Contains(searchToken.ToLower()))
                 {
                     searchProductsToRender.Add(p);
                     break;
                 }
-                else if (p.Description != null && p.Description.Contains(searchToken))
+                else if (p.Description != null && p.Description.ToLower().Contains(searchToken.ToLower()))
                 {
                     searchProductsToRender.Add(p);
                     break;
@@ -410,12 +410,12 @@
         {
             foreach (string searchToken in tokenizedSearchTerms)
             {
-                if (p.Title != null && p.Title.Contains(searchToken))
+                if (p.Title != null && p.Title.ToLower().Contains(searchToken.ToLower()))
                 {
                     searchProductsToRender.Add(p);
                     break;
                 }
-                else if (p.Description != null && p.Description.Contains(searchToken))
+                else if (p.Description != null && p.Description.ToLower().Contains(searchToken.ToLower()))
                 {
                     searchProductsToRender.Add(p);
                     break;
@@ -430,12 +430,12 @@
         {
             foreach (string searchToken in tokenizedSearchTerms)
             {
-                if (p.Title != null && p.Title.Contains(searchToken))
+                if (p.Title != null && p.Title.ToLower().Contains(searchToken.ToLower()))
                 {
                     searchProductsToRender.Add(p);
                     break;
                 }
-                else if (p.Description != null && p.Description.Contains(searchToken))
+                else if (p.Description != null && p.Description.ToLower().Contains(searchToken.ToLower()))
                 {
                     searchProductsToRender.Add(p);
                     break;
@@ -445,7 +445,7 @@
 
         try
         {
-            Product shaq = searchProductsToRender.Where((p) => p.Title.Contains("Shaq")).Single();
+            Product shaq = searchProductsToRender.Where((p) => p.Title.ToLower().Contains("shaq")).Single();
             searchProductsToRender.Remove(shaq);
             Console.WriteLine("Shaq found! Attempting to remove Shaq");
         }
