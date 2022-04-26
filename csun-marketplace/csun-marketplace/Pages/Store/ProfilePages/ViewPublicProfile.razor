@@ -42,22 +42,6 @@
                     </MudText>
                 </div>
 
-                @*<div>
-                    <MudText Label="First Name" T="string" @bind-Value="@User.FirstName" Variant="Variant.Filled" ReadOnly=readOnly>
-                    <h1>
-                    @User.FirstName
-                    </h1>
-                    </MudText>
-
-                    <MudText Label="Last Name" T="string" @bind-Value="@User.LastName" Variant="Variant.Filled" ReadOnly=readOnly>
-                    <h1>
-                    @User.LastName
-                    </h1>
-                    </MudText>
-                    </div>*@
-                @*<div class="profile-rows">
-                    <MudTextField Label="Email" T="string" @bind-Value="@User.Email" Variant="Variant.Filled" ReadOnly="true" />
-                    </div>*@
                 <div class="flex-it-up">
                     @*<MudTextField Label="Join Date" T="DateTime" @bind-Value="@User.JoinDate" Variant="Variant.Filled" ReadOnly="true" />*@
                     <MudText>
@@ -122,11 +106,6 @@
                     }
                 </div>
                 <div class="profile-rows">
-                    @*<MudSelect Label="Gender" @bind-Value="@User.Gender" T="string" Variant="Variant.Filled" ReadOnly=readOnly>
-                        <MudSelectItem T="string" Value="@("Male")" />
-                        <MudSelectItem T="string" Value="@("Female")" />
-                        <MudSelectItem T="string" Value="@("Other/Nonbinary")" />
-                        </MudSelect>*@
                     @if (@User.Gender != null)
                     {
                         <MudText @bind-Value="@User.Gender">
@@ -180,16 +159,16 @@
                         }
                     </div>
                 </div>
-                @*<div class="button-single">
-                    @if (readOnly)
-                    {
-                    <MudButton Variant="Variant.Filled" OnClick=@(() => EnableEdit()) Color="Color.Primary">Edit Profile</MudButton>
-                    }
-                    else
-                    {
-                    <MudButton Variant="Variant.Filled" OnClick=@(() => UpdateUserInformation()) Color="Color.Primary">Save Changes</MudButton>
-                    }
-                    </div>*@
+
+
+
+                @if (itsMe)
+                {
+                    <div class="button-single">
+                        <MudButton Variant="Variant.Filled" OnClick="@(()=> ReturnToEdit())" Color="Color.Primary">Edit Profile</MudButton>
+                    </div>
+                }
+
             </div>
         </MudPaper>
     </Authorized>
@@ -199,11 +178,10 @@
 </AuthorizeView>
 
 @code {
-
-    CultureInfo USD = new CultureInfo("en-US");
-
     [Parameter]
     public string? userID { get; set; }
+
+    public bool itsMe = false;
 
     public string? email { get; set; }
     public UserInformation User { get; set; }
@@ -211,6 +189,8 @@
     public string success { get; set; }
     public List<Product> Prod { get; set; }
 
+    CultureInfo USD = new CultureInfo("en-US");
+    
     protected override void OnParametersSet()
     {
         User = _csunMarketplaceService.GetUserInformation(userID);
@@ -229,12 +209,23 @@
 
         Prod = _csunMarketplaceService.GetUsersProducts(userID);
 
+        string myUserId = GetUserId().Result;
+
+        if(userID == myUserId)
+        {
+            itsMe = true;
+        }
+
         base.OnParametersSet();
     }
 
     public void ViewProduct(int productId)
     {
         _navMan.NavigateTo("/view-listing/" + productId);
+    }
+
+    public void ReturnToEdit(){
+        _navMan.NavigateTo("/profile");
     }
 
     public string formatCurrency(decimal? amount)
@@ -248,22 +239,11 @@
         readOnly = false;
     }
 
-    async Task UpdateUserInformation()
+    async Task<string> GetUserId()
     {
-
-        readOnly = true;
-
-        success = _csunMarketplaceService.UpdateUserInformation(User);
-        if (!String.IsNullOrWhiteSpace(success))
-        {
-            Snackbar.Add("Sucessfully Updated User Information!", Severity.Success);
-            StateHasChanged();
-        }
-        else
-        {
-            // Error pop up, DB error
-            Snackbar.Add("There was a problem saving your user information.", Severity.Error);
-        }
+        var user = (await _authenticationStateProvider.GetAuthenticationStateAsync()).User;
+        var UserId = user.FindFirst(u => u.Type.Contains("nameidentifier"))?.Value;
+        return UserId;
     }
 }
 
