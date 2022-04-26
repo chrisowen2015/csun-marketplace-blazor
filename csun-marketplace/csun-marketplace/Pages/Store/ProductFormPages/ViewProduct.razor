@@ -32,19 +32,19 @@
         <div class="form-row">
             <MudImage Src="@p.ImageUrl" />
         </div>
-        
+
         <div class="form-row">
             <MudTextField Label="Description" T="string" @bind-Value=p.Description Variant="Variant.Filled" Lines="8" ReadOnly="true" />
         </div>
 
         <div class="grid-two">
-            <MudNumericField Class="elem-half" Label="Price" T="decimal?" @bind-Value=p.Price Variant="Variant.Filled" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.AttachMoney" ReadOnly="true"/>
+            <MudNumericField Class="elem-half" Label="Price" T="decimal?" @bind-Value=p.Price Variant="Variant.Filled" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.AttachMoney" ReadOnly="true" />
             <MudTextField Class="elem-half" Label="Date Created" T="DateTime" ReadOnly="true" @bind-Value=p.DateCreated Variant="Variant.Filled" Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Filled.CalendarMonth" />
         </div>
 
 
         <div class="form-row">
-            <MudTextField Label="Category" T="string" @bind-Value=p.Category Variant="Variant.Filled" ReadOnly="true"/>
+            <MudTextField Label="Category" T="string" @bind-Value=p.Category Variant="Variant.Filled" ReadOnly="true" />
         </div>
 
         <div class="form-row">
@@ -87,31 +87,42 @@
 
     async Task UpdateCart()
     {
-        if(!_cart.Contains(p))
+        if (!_cart.Contains(p))
         {
             _cart.AddToCart(p);
-            Snackbar.Add("Product successfully added to Cart.", Severity.Success);
-            _navMan.NavigateTo("/");
-        } else
+            Snackbar.Add("Item successfully added to Cart.", Severity.Success, config =>
+            {
+                _navMan.NavigateTo("/");
+            });
+        }
+        else
         {
-            Snackbar.Add("Product is already in your Cart!", Severity.Error, config =>
+            Snackbar.Add("Item is already in your Cart!", Severity.Error, config =>
             {
                 config.Action = "Remove";
                 config.ActionColor = Color.Error;
                 config.Onclick = snackbar =>
             {
-                _cart.RemoveFromCart(p);
-
+                RemoveFromCart(p);
                 // For some reason the cart still contains p after this. not sure why yet.
-                
-                Snackbar.Clear();
                 return Task.CompletedTask;
             };
             });
-            _navMan.NavigateTo("/");
         }
     }
 
+    public void RemoveFromCart(Product p)
+    {
+        _cart.RemoveFromCart(p);
+        if (!_cart.Contains(p))
+        {
+            Snackbar.Add("Item Successfully removed from your Cart.", Severity.Success);
+        }
+        else
+        {
+            Snackbar.Add("Failed to remove item from your cart.", Severity.Error);
+        }
+    }
 
 }
 

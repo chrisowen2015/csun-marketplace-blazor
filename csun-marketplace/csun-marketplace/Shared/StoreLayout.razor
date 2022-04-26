@@ -43,7 +43,7 @@
     <MudTabs Centered="true" Rounded="false" Border="true" ActivePanelIndex="@activePanel"  ActivePanelIndexChanged="(int index) => SetPanelIndex(index)">
         <MudTabPanel Icon="@Icons.Material.Filled.Home" Text="Store Home" OnClick="@(() => _navMan.NavigateTo("/"))" />
         <MudTabPanel Icon="@Icons.Material.Filled.Add" Text="New Listing" OnClick="@(() => _navMan.NavigateTo("/new-listing"))" />
-        <MudTabPanel Icon="@Icons.Material.Filled.Bookmark" Text="Bookmarked" />
+        <MudTabPanel Icon="@Icons.Material.Filled.Bookmark" Text="Bookmarked" OnClick="@(() => _navMan.NavigateTo("/bookmarked"))" />
         <MudTabPanel Icon="@Icons.Material.Filled.LibraryBooks" Text="Textbooks" OnClick="@(() => _navMan.NavigateTo("/textbooks"))" />
         <MudTabPanel Icon="@Icons.Material.Filled.Monitor" Text="Electronics" OnClick="@(() => _navMan.NavigateTo("/electronics"))" />
         <MudTabPanel Icon="@Icons.Material.Filled.Create" Text="School Supplies" OnClick="@(() => _navMan.NavigateTo("/school-supplies"))" />
@@ -80,10 +80,8 @@
     public string? searchTerm { get; set; }
     public string searchLabel = "Search CSUN Marketplace";
     public string? filterTerm { get; set; }
-    public List<string> categories = new List<String> { "Textbooks", "Electronics", "School Supplies", };
     private bool _isDarkMode = false;
     private int activePanel { get; set; }
-    public UserInformation user { get; set; }
 
     private MudTheme _theme = new MudTheme()
         {
@@ -102,7 +100,8 @@
                 Background = "#32343d",
                 AppbarBackground = "#27272fff",
                 BackgroundGrey = "#27282f",
-                Surface = "#373840",
+                //Surface = "#373840",
+                Surface = "rgba(26,26,27,0.8)",
                 TextPrimary = "#ffffffb2",
                 TextSecondary = "rgba(255,255,255, 0.50)",
                 DrawerBackground = "#27272fff",
@@ -181,6 +180,10 @@
         if (currentURL.Contains("new-listing"))
         {
             activePanel = 1;
+        }
+        else if(currentURL.Contains("bookmarked"))
+        {
+            activePanel = 2;
         }
         else if (currentURL.Contains("textbooks"))
         {
