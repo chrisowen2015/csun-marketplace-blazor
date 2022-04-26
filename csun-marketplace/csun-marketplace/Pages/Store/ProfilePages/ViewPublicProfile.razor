@@ -60,7 +60,7 @@
                     </div>*@
                 <div class="flex-it-up">
                     @*<MudTextField Label="Join Date" T="DateTime" @bind-Value="@User.JoinDate" Variant="Variant.Filled" ReadOnly="true" />*@
-                    <MudText @bind-Value="@User.JoinDate">
+                    <MudText>
                         <h5>
                             Join Date
                         </h5>
@@ -81,9 +81,9 @@
                     </div>*@
                 <div class="profile-rows">
                     @*<MudTextField Label="Bio" T="string" @bind-Value="@User.Bio" Variant="Variant.Filled" Lines="5" ReadOnly=readOnly />*@
-                    @if (@User.Bio != null)
+                    @if (!String.IsNullOrWhiteSpace(User.Bio))
                     {
-                        <MudText @bind-Value="@User.Bio">
+                        <MudText>
                             <h5>
                                 Bio
                             </h5>
@@ -102,7 +102,7 @@
                 </div>
                 <div class="profile-rows">
                     @*<MudTextField Label="Major" T="string" @bind-Value="@User.Major" Variant="Variant.Filled" ReadOnly=readOnly />*@
-                    @if (@User.Major != null)
+                    @if (!String.IsNullOrWhiteSpace(User.Major))
                     {
                         <MudText @bind-Value="@User.Major">
                             <h5>
@@ -211,10 +211,8 @@
     public string success { get; set; }
     public List<Product> Prod { get; set; }
 
-    protected override async Task OnInitializedAsync()
+    protected override void OnParametersSet()
     {
-        //userID = await GetUserId();
-
         User = _csunMarketplaceService.GetUserInformation(userID);
 
 
@@ -231,6 +229,7 @@
 
         Prod = _csunMarketplaceService.GetUsersProducts(userID);
 
+        base.OnParametersSet();
     }
 
     public void ViewProduct(int productId)
@@ -242,14 +241,6 @@
     {
         float subtotal = (float)amount;
         return subtotal.ToString("C2", USD);
-    }
-
-    async Task<string> GetUserId()
-    {
-        var user = (await _authenticationStateProvider.GetAuthenticationStateAsync()).User;
-        var UserId = user.FindFirst(u => u.Type.Contains("nameidentifier"))?.Value;
-        email = user.FindFirst(u => u.Type.Contains("email"))?.Value;
-        return UserId;
     }
 
     public void EnableEdit()
