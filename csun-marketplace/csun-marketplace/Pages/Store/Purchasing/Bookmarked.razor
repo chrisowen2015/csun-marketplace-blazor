@@ -1,0 +1,217 @@
+﻿@page "/bookmarked"
+@using System.Globalization
+@using csun_marketplace.data;
+@using csun_marketplace.services;
+@using System;
+@using Microsoft.AspNetCore.Authentication
+@using Microsoft.AspNetCore.Components.Authorization
+@using Microsoft.AspNetCore.Identity
+
+@inject ICSUNMarketplaceService _csunMarketplaceService
+@inject IWebHostEnvironment env
+@inject ISnackbar Snackbar
+@inject NavigationManager _navMan
+@inject AuthenticationStateProvider _authenticationStateProvider
+@inject CartService _cart
+
+<MudPaper Class="page-container" Elevation="7">
+    <div class="page-content">
+
+        <div class="page-header-container" style="padding-left: 0em !important;">
+            <MudText Class="form-header" Color="Color.Default">
+                <h1>
+                    Saved For Later
+                </h1>
+                <h6>
+                    Your items:
+                </h6>
+            </MudText>
+        </div>
+
+        @if (savedForLaterVMs != null && savedForLaterVMs.Count > 0)
+        {
+            @foreach (SavedForLaterVM saved in savedForLaterVMs)
+            {
+                <MudPaper Style="margin-bottom: 1em; padding: .5em;" Elevation="3" Width="100%">
+                    <MudContainer Fixed="true" Style="padding: .5em !important;">
+                        <MudGrid>
+                            <MudItem lg="2" xl="2">
+                                <MudImage Src="@saved.product.ImageUrl" Height="120" Width="120" />
+                            </MudItem>
+
+                            <MudItem lg="9" xl="9" Style="display: flex; flex-direction:column; justify-content:space-between !important;">
+                                <MudText Color="Color.Primary">
+                                    <h5> @saved.product.Title </h5>
+                                </MudText>
+
+                                <MudText Color="Color.Secondary">
+                                    Sold by @GetSellerName(saved.product)
+                                </MudText>
+
+
+                                <div>
+                                    <MudButton Variant="Variant.Filled" Color="Color.Default" OnClick="@(()=> RemoveFromSavedItems(saved))">
+                                        Remove
+                                    </MudButton>
+
+                                    <MudButton Variant="Variant.Filled" Color="Color.Default" Style="margin-left: 1em;" OnClick="@(()=> AddToCart(saved))">
+                                        Add to Cart
+                                    </MudButton>
+                                </div>
+                            </MudItem>
+
+                            <MudItem lg="1" xl="1">
+                                <b class="product-price-text"> @formatCurrency(saved.product.Price) </b>
+                            </MudItem>
+                        </MudGrid>
+                    </MudContainer>
+                </MudPaper>
+            }
+        }
+
+        <div class="two-buttons">
+            <MudButton Variant="Variant.Filled" OnClick="@(()=>_navMan.NavigateTo("/"))" Style="margin-top:1em;" Color="Color.Primary">Return to Home</MudButton>
+
+        </div>
+
+    </div>
+</MudPaper>
+
+
+
+@code {
+    public List<SavedForLaterVM> savedForLaterVMs { get; set; }
+
+    CultureInfo USD = new CultureInfo("en-US");
+    HashSet<UserInformation> sellerInfos = new HashSet<UserInformation>();
+
+    public string formatCurrency(decimal? amount)
+    {
+        float subtotal = (float)amount;
+        return subtotal.ToString("C2", USD);
+    }
+
+    protected override void OnInitialized()
+    {
+        string userId = GetUserId().Result;
+        savedForLaterVMs = _csunMarketplaceService.GetSavedForLater(userId);
+    }
+
+    public string GetSellerName(Product p)
+    {
+        UserInformation? user = null;
+        try
+        {
+            user = sellerInfos.Where((u) => u.UserId == p.OwnerId).First();
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine("Exception " + e);
+        }
+
+        if (user != null)
+        {
+            return user.FirstName + " " + user.LastName;
+        }
+        else
+        {
+            return "New Seller";
+        }
+    }
+
+    async Task<string> GetUserId()
+    {
+        var user = (await _authenticationStateProvider.GetAuthenticationStateAsync()).User;
+        var UserId = user.FindFirst(u => u.Type.Contains("nameidentifier"))?.Value;
+        return UserId;
+    }
+
+    public void RemoveFromSavedItems(SavedForLaterVM svm)
+    {
+        int result = _csunMarketplaceService.RemoveSavedForLater(svm);
+
+        if (result != -1)
+        {
+            Snackbar.Add("Item successfully removed from Saved for Later.", Severity.Normal);
+            savedForLaterVMs.Remove(svm);
+            StateHasChanged();
+        }
+        else
+        {
+            Snackbar.Add("Error Removing Item from Saved for Later.", Severity.Error);
+        }
+    }
+
+    public void AddToCart(SavedForLaterVM svm)
+    {
+        _cart.AddToCart(svm.product);
+        int success = _csunMarketplaceService.RemoveSavedForLater(svm);
+        if(success != -1)
+        {
+            savedForLaterVMs.Remove(svm);
+            Snackbar.Add("Item added to your Cart.", Severity.Success);
+            StateHasChanged();    
+        } else
+        {
+            Snackbar.Add("Error adding item to your Cart!");
+        }
+
+    }
+}
+
+<style>
+    .upload-image-label {
+        margin-left: 1em;
+    }
+
+    .img-input-div {
+        margin-top: 1em;
+    }
+
+    .two-buttons {
+        width: 100%;
+        display: flex !important;
+        flex-direction: row !important;
+        justify-content: space-between;
+        padding-top: .5em;
+        padding-bottom: .5em;
+    }
+
+    .elem-half {
+        max-width: 48%;
+    }
+
+
+    .products-container {
+        display: flex !important;
+        flex-direction: row !important;
+        flex-flow: row wrap;
+        justify-content: space-evenly;
+        gap: 16px;
+        padding-top: .5em;
+        padding-bottom: .5em;
+        padding-left: 1em;
+        padding-right: 1em;
+    }
+
+    .grid-two {
+        display: flex !important;
+        flex-direction: row !important;
+        justify-content: space-between;
+        padding-top: .5em;
+        padding-bottom: .5em;
+        padding-left: 1em;
+        padding-right: 1em;
+    }
+
+    .keep-shopping {
+        float: left;
+        padding-top: 24px;
+    }
+
+    .billing-continue {
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end !important;
+    }
+</style>

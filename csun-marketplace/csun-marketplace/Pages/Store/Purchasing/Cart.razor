@@ -50,11 +50,11 @@
 
                                     
                                     <div>
-                                        <MudButton OnClick="@(()=> RemoveFromCart(p))" Variant="Variant.Filled" Color="Color.Default" >
+                                        <MudButton OnClick="@(()=> RemoveFromCart(p))" Variant="Variant.Filled" Color="Color.Surface" >
                                             Remove
                                         </MudButton>
 
-                                        <MudButton Variant="Variant.Filled" Color="Color.Default" Style="margin-left: 1em;">
+                                        <MudButton OnClick="@(()=> SaveForLater(p))" Variant="Variant.Filled" Color="Color.Surface" Style="margin-left: 1em;">
                                             Save For Later
                                         </MudButton>
                                     </div>
@@ -118,10 +118,12 @@
     public void RemoveFromCart(Product p)
     {
         _cart.RemoveFromCart(p);
-        Snackbar.Add("Product successfully removed from Cart.", Severity.Success, config =>
+        Snackbar.Add("Product successfully removed from Cart.", Severity.Normal, config =>
         {
             config.Action = "Undo";
-            config.ActionColor = Color.Secondary;
+            config.ActionColor = Color.Default;
+            config.ActionVariant = Variant.Filled;
+            config.CloseAfterNavigation = true;
             config.Onclick = snackbar =>
             {
                 _cart.UndoRemoveFromCart();
@@ -151,6 +153,38 @@
         else
         {
             return "New Seller";
+        }
+    }
+
+    async Task<string> GetUserId()
+    {
+        var user = (await _authenticationStateProvider.GetAuthenticationStateAsync()).User;
+        var UserId = user.FindFirst(u => u.Type.Contains("nameidentifier"))?.Value;
+        return UserId;
+    }
+
+    public void SaveForLater(Product p)
+    {
+        string userId = GetUserId().Result;
+
+        SavedForLaterVM savedForLaterVM = new SavedForLaterVM
+            {
+                SavedForLaterId = 0,
+                UserId = userId,
+                ProductId = p.ProductId,
+            };
+
+        int success = _csunMarketplaceService.SaveForLater(savedForLaterVM);
+
+        if (success != -1)
+        {
+            Snackbar.Add("Product successfully Saved for Later.", Severity.Normal);
+            _cart.RemoveFromCart(p);
+            StateHasChanged();
+        }
+        else
+        {
+            Snackbar.Add("Error saving product for later.", Severity.Error);
         }
     }
 

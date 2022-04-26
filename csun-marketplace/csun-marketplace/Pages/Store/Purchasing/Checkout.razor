@@ -11,6 +11,8 @@
 @inject ICSUNMarketplaceService _csunMarketplaceService
 @inject IWebHostEnvironment env
 @inject ISnackbar Snackbar
+
+@inject AuthenticationStateProvider _authenticationStateProvider
 @inject NavigationManager _navMan
 @inject CartService _cart
 
@@ -95,9 +97,9 @@
 
         <div class="form-row">
             <MudText Color="Color.Primary">
-                <h6>
+                <h4>
                     Review Order
-                </h6>
+                </h4>
             </MudText>
         </div>
 
@@ -128,7 +130,7 @@
                                         Remove
                                     </MudButton>
 
-                                    <MudButton Variant="Variant.Filled" Color="Color.Default" Style="margin-left: 1em;">
+                                    <MudButton Variant="Variant.Filled" Color="Color.Default" Style="margin-left: 1em;" OnClick="@(()=> SaveForLater(p))">
                                         Save For Later
                                     </MudButton>
                                 </div>
@@ -217,10 +219,10 @@
     public void RemoveFromCart(Product p)
     {
         _cart.RemoveFromCart(p);
-        Snackbar.Add("Product successfully removed from Cart.", Severity.Success, config =>
+        Snackbar.Add("Item successfully removed from Cart.", Severity.Success, config =>
         {
             config.Action = "Undo";
-            config.ActionColor = Color.Secondary;
+            config.ActionColor = Color.Default;
             config.Onclick = snackbar =>
             {
                 _cart.UndoRemoveFromCart();
@@ -275,6 +277,41 @@
         }
     }
 
+    async Task<string> GetUserId()
+    {
+        var user = (await _authenticationStateProvider.GetAuthenticationStateAsync()).User;
+        var UserId = user.FindFirst(u => u.Type.Contains("nameidentifier"))?.Value;
+        return UserId;
+    }
+
+    public void SaveForLater(Product p)
+    {
+        string userId = GetUserId().Result;
+
+        SavedForLaterVM savedForLaterVM = new SavedForLaterVM
+            {
+                SavedForLaterId = 0,
+                UserId = userId,
+                ProductId = p.ProductId,
+            };
+
+        int success = _csunMarketplaceService.SaveForLater(savedForLaterVM);
+
+        if (success != -1)
+        {
+            _cart.RemoveFromCart(p);
+            Snackbar.Add("Item successfully Saved For Later.", Severity.Success);
+            
+            StateHasChanged();
+        }
+        else
+        {
+            Snackbar.Add("Error saving item For later.", Severity.Error);
+        }
+    }
+
+
+
     public class CheckoutModel
     {
         [Required]
@@ -326,6 +363,7 @@
         public string? securityCode;
 
     }
+
 
 }
 

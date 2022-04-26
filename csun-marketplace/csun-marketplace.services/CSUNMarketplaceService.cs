@@ -70,6 +70,32 @@ namespace csun_marketplace.services
             return productList;
         }
 
+        public List<SavedForLaterVM> GetSavedForLater(string userId)
+        {
+            var CSUNMarketplaceEvaluatorDB = _context.CreateDbContext();
+
+            List<SavedForLaterVM> savedForLater = CSUNMarketplaceEvaluatorDB.SavedForLaters.Where((s) => s.UserId == userId).Select(s => new SavedForLaterVM
+            {
+                SavedForLaterId = s.SavedForLaterId,
+                ProductId = s.ProductId,
+                UserId = s.UserId,
+                product = CSUNMarketplaceEvaluatorDB.Products.Where((p) => p.ProductId == s.ProductId).Select(p => new Product
+                {
+                    ProductId = p.ProductId,
+                    OwnerId = p.OwnerId,
+                    Title = p.Title,
+                    ImageUrl = p.ImageUrl,
+                    Description = p.Description,
+                    ImageSource = p.ImageSource,
+                    Category = p.Category,
+                    Price = p.Price,
+                    Available = p.Available,
+                }).Single()
+            }).ToList();
+
+            return savedForLater;
+        }
+
         public List<TextbookInformation> GetTextbookInformationList()
         {
             var CSUNMarketplaceEvaluatorDB = _context.CreateDbContext();
@@ -280,6 +306,48 @@ namespace csun_marketplace.services
                     CSUNMarketplaceEvaluatorDB.SaveChanges();
                     return p.ProductId;
                 }
+            }
+            catch (Exception ex)
+            {
+                return -1;
+            }
+        }
+
+        public int SaveForLater(SavedForLaterVM svm)
+        {
+            try
+            {
+                var CSUNMarketplaceEvaluatorDB = _context.CreateDbContext();
+
+                SavedForLater s = new SavedForLater
+                {
+                    SavedForLaterId = svm.SavedForLaterId,
+                    ProductId = svm.ProductId,
+                    UserId = svm.UserId,
+                };
+                CSUNMarketplaceEvaluatorDB.SavedForLaters.Add(s);
+                CSUNMarketplaceEvaluatorDB.SaveChanges();
+                return s.ProductId;
+            }
+            catch (Exception ex)
+            {
+                return -1;
+            }
+        }
+
+        public int RemoveSavedForLater(SavedForLaterVM svm)
+        {
+            try
+            {
+                var CSUNMarketplaceEvaluatorDB = _context.CreateDbContext();
+
+                SavedForLater s = CSUNMarketplaceEvaluatorDB.SavedForLaters.Where((s) => s.SavedForLaterId == svm.SavedForLaterId).Single();
+
+                CSUNMarketplaceEvaluatorDB.SavedForLaters.Remove(s);
+
+                CSUNMarketplaceEvaluatorDB.SaveChanges();
+
+                return s.ProductId;
             }
             catch (Exception ex)
             {
