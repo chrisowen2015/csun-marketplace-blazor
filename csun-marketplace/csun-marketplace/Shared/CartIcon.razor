@@ -6,44 +6,49 @@
 
 <MudMenu ActivationEvent="@MouseEvent.MouseOver" AnchorOrigin="Origin.BottomCenter" TransformOrigin="Origin.TopCenter" Class="cart-icon">
     <ActivatorContent>
-        <MudIconButton Icon="@Icons.Material.Filled.ShoppingCart" Color="Color.Secondary" OnClick="@(() => _navMan.NavigateTo("/cart"))"  />
+        <MudButton OnClick="@(() => _navMan.NavigateTo("/cart"))" Style="width: min-content;">
+            <MudIcon Icon="@Icons.Material.Filled.ShoppingCart" Size="Size.Large" Color="Color.Secondary"></MudIcon>
+            <div style="margin-top: 2.5em;">
+                <p>
+                    Cart
+                </p>
+            </div>
+        </MudButton>
     </ActivatorContent>
     <ChildContent>
         @if (_cart.Length() > 0)
-            {
-                <div class="cart-popover-flex-col">
-
-
-                    <div class="cart-popover-flex-row-padding">
-                        <MudText Class="cart-total" Align="Align.Center">
-                            Cart Total: <b class="cart-subtotal-text"> @formatCurrency(_cart.GetTotal()) </b>
-                        </MudText>
-                    </div>
-                    <div class="cart-popover-flex-row-padding">
-                        <MudButton Class="cart-popover-checkout-button" Variant="Variant.Filled" Color="Color.Primary" OnClick="@(() => _navMan.NavigateTo("/checkout"))">
-                            Proceed to Checkout
-                        </MudButton>
-                    </div>
-                     <div class="cart-popover-items-container">
-
-
-                        @foreach (Product p in _cart.GetCart())
-                        {
-                            <MudPaper Style="margin-left: 1em; margin-right: 1em; margin-bottom: 1em; padding: .5em;" Elevation="3">
-                                <MudContainer Class="cart-product-flex-row" Fixed="true">
-                                    <div class="cart-product-img-small">
-                                        <MudImage Src="@p.ImageUrl" Height="70" Width="70"  />
-                                    </div>
-                                    <div class="cart-popover-title-price-flex-col">
-                                        <p> @p.Title </p>
-                                        <b class="product-price-text"> @formatCurrency(p.Price) </b>
-                                    </div>
-                                    <MudIconButton Class="cart-remove-icon" Icon="@Icons.Material.Filled.Delete" OnClick="@(()=> RemoveFromCart(p))" />
-                                </MudContainer>
-                            </MudPaper>
-                        }
-                    </div>
+        {
+            <div class="cart-popover-flex-col">
+                <div class="cart-popover-flex-row-padding">
+                    <MudText Class="cart-total" Align="Align.Center">
+                        Cart Total: <b class="cart-subtotal-text"> @formatCurrency(_cart.GetTotal()) </b>
+                    </MudText>
                 </div>
+                <div class="cart-popover-flex-row-padding">
+                    <MudButton Class="cart-popover-checkout-button" Variant="Variant.Filled" Color="Color.Primary" OnClick="@(() => _navMan.NavigateTo("/checkout"))">
+                        Proceed to Checkout
+                    </MudButton>
+                </div>
+                <div class="cart-popover-items-container">
+
+
+                    @foreach (Product p in _cart.GetCart())
+                    {
+                        <MudPaper Style="margin-left: 1em; margin-right: 1em; margin-bottom: 1em; padding: .5em;" Elevation="3" @onclick=@(()=>ViewProduct(p.ProductId))>
+                            <MudContainer Class="cart-product-flex-row" Fixed="true">
+                                <div class="cart-product-img-small">
+                                    <MudImage Src="@p.ImageUrl" Height="70" Width="70" />
+                                </div>
+                                <div class="cart-popover-title-price-flex-col">
+                                    <p> @p.Title </p>
+                                    <b class="product-price-text"> @formatCurrency(p.Price) </b>
+                                </div>
+                                <MudIconButton Class="cart-remove-icon" Icon="@Icons.Material.Filled.Delete" OnClick="@(()=> RemoveFromCart(p))" />
+                            </MudContainer>
+                        </MudPaper>
+                    }
+                </div>
+            </div>
         }
     </ChildContent>
 </MudMenu>
@@ -53,7 +58,7 @@
 
     public string formatCurrency(decimal? amount)
     {
-        float subtotal = (float) amount;
+        float subtotal = (float)amount;
         return subtotal.ToString("C2", USD);
     }
 
@@ -71,6 +76,11 @@
                 return Task.CompletedTask;
             };
         });
+    }
+
+    public void ViewProduct(int productId)
+    {
+        _navMan.NavigateTo("/view-listing/" + productId);
     }
 
 }
@@ -109,7 +119,7 @@
         flex-direction: column !important;
         justify-content: flex-start !important;
         align-items: center;
-        text-align:center;
+        text-align: center;
         margin-left: 1em;
     }
 
@@ -123,7 +133,7 @@
         padding-bottom: .5em;
     }
 
-    .cart-product-img-small{
+    .cart-product-img-small {
         margin-left: -1.25em;
         margin-right: 1em;
     }
@@ -138,7 +148,7 @@
         margin-right: -25px;
     }
 
-    .cart-icon{
+    .cart-icon {
         margin-right: .5em;
     }
 </style>

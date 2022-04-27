@@ -32,7 +32,7 @@
         {
                 @foreach (Product p in _cart.GetCart())
                 {
-                    <MudPaper Style="margin-bottom: 1em; padding: .5em;" Elevation="3" Width="100%">
+                    <MudPaper Style="margin-bottom: 1em; padding: .5em;" Elevation="3" Width="100%" @onclick=@(()=>ViewProduct(p.ProductId))>
                         <MudContainer Fixed="true" Style="padding: .5em !important;">
                             <MudGrid>
                                 <MudItem lg="2" xl="2">
@@ -186,6 +186,11 @@
         {
             Snackbar.Add("Error saving product for later.", Severity.Error);
         }
+    }
+
+    public void ViewProduct(int productId)
+    {
+        _navMan.NavigateTo("/view-listing/" + productId);
     }
 
 }

@@ -1,22 +1,68 @@
-﻿<div>
-    <MudSelect T="string">
-        @foreach(string category in categories)
-        {
-            <MudSelectItem Value="category"/>
-        }
+﻿@inject NavigationManager _navMan
 
-        <MudSelectItem T="string"/>
-    </MudSelect>
-    <MudTextField AdornmentIcon="@Icons.Material.Filled.Search" Adornment="Adornment.End" Class="search-bar" Label="Search CSUN Marketplace" Variant="Variant.Filled"  @bind-Value="searchTerm">
-        <MudIconButton Size="MudBlazor.Size.Medium" Class="search-icon" Icon="@Icons.Material.Filled.Search"/>
-    </MudTextField>
-</div>
+<MudSelect Class="filter-button" T="string" Dense="true" Variant="Variant.Outlined" AdornmentColor="Color.Secondary" @bind-Value="@filterTerm" DisableUnderLine="true" SelectedValuesChanged="@(()=>FilterSelect())" Clearable="true" OnClearButtonClick="@(()=>ResetFilter())" Placeholder="Filter">
+    <MudSelectItem Value=@("Textbooks") />
+    <MudSelectItem Value=@("Electronics") />
+    <MudSelectItem Value=@("School Supplies") />
+    <MudSelectItem Value=@("Sports & Fitness") />
+    <MudSelectItem Value=@("Furniture") />
+</MudSelect>
+
+<MudTextField Clearable="true" OnAdornmentClick="@searchFunction" FullWidth="true" AdornmentIcon="@Icons.Material.Filled.Search" AdornmentColor="Color.Secondary" Adornment="Adornment.End" Class="search-bar" Label="@searchLabel" DisableUnderLine="true" Variant="Variant.Filled" @bind-Value="@searchTerm" />
 
 @code {
     [Parameter]
     public string? searchTerm { get; set; }
+    public string? filterTerm { get; set; }
+
+    public string searchLabel = "Search CSUN Marketplace";
 
     public List<string> categories = new List<String> { "Textbooks", "Electronics", "School Supplies", };
+
+
+
+    public void FilterSelect()
+    {
+        if (!String.IsNullOrWhiteSpace(filterTerm))
+        {
+            searchLabel = "Search " + filterTerm + " in CSUN Marketplace";
+        }
+    }
+
+    public void ResetFilter()
+    {
+        searchLabel = "Search CSUN Marketplace";
+    }
+
+    async Task searchFunction()
+    {
+        if (!String.IsNullOrEmpty(searchTerm))
+        {
+            if (!String.IsNullOrEmpty(filterTerm))
+            {
+                _navMan.NavigateTo("/search/" + filterTerm + "/" + searchTerm);
+            }
+            else
+            {
+                _navMan.NavigateTo("/search/" + "All/" + searchTerm);
+            }
+        }
+        else
+        {
+            if (!String.IsNullOrEmpty(filterTerm))
+            {
+                _navMan.NavigateTo("/search/" + filterTerm + "/All");
+            }
+            else
+            {
+                // Prompt angy message for no search terms
+            }
+        }
+    }
+
+
+
+
 }
 <style>
 </style>

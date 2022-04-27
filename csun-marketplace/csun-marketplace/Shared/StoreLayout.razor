@@ -23,7 +23,7 @@
             </MudText>
         </MudButton>
 
-        <MudSelect Class="filter-button" T="string" Dense="true" Variant="Variant.Outlined" AdornmentColor="Color.Secondary" @bind-Value="@filterTerm" DisableUnderLine="true" SelectedValuesChanged="@(()=>FilterSelect())" Clearable="true" OnClearButtonClick="@(()=>ResetFilter())" Placeholder="Filter">
+        @*<MudSelect Class="filter-button" T="string" Dense="true" Variant="Variant.Outlined" AdornmentColor="Color.Secondary" @bind-Value="@filterTerm" DisableUnderLine="true" SelectedValuesChanged="@(()=>FilterSelect())" Clearable="true" OnClearButtonClick="@(()=>ResetFilter())" Placeholder="Filter">
             <MudSelectItem Value=@("Textbooks") />
             <MudSelectItem Value=@("Electronics") />
             <MudSelectItem Value=@("School Supplies") />
@@ -32,6 +32,10 @@
         </MudSelect>
         
         <MudTextField OnAdornmentClick="@searchFunction" FullWidth="true" AdornmentIcon="@Icons.Material.Filled.Search" AdornmentColor="Color.Secondary" Adornment="Adornment.End" Class="search-bar" Label="@searchLabel" DisableUnderLine="true" Variant="Variant.Filled" @bind-Value="@searchTerm" />
+        *@
+
+        <SearchBar />
+        
         <MudSwitch Class="dark-mode-toggle" T="bool" @bind-Checked="@_isDarkMode" Color="Color.Primary" Label="Toggle Dark Mode" />
 
         <CartIcon />
@@ -77,9 +81,6 @@
 
 
 @code {
-    public string? searchTerm { get; set; }
-    public string searchLabel = "Search CSUN Marketplace";
-    public string? filterTerm { get; set; }
     private bool _isDarkMode = false;
     private int activePanel { get; set; }
 
@@ -107,46 +108,6 @@
             },
 
         };
-
-    /*
-    * This is where our search function will go, consider making this function call another function to display search results in a sub menu
-     */
-
-    async Task searchFunction()
-    {
-        if (!String.IsNullOrEmpty(searchTerm))
-        {
-            if (!String.IsNullOrEmpty(filterTerm))
-            {
-                _navMan.NavigateTo("/search/" + filterTerm + "/" + searchTerm);
-            } else
-            {
-                _navMan.NavigateTo("/search/" + "All/" + searchTerm);
-            }
-        } else
-        {
-            if (!String.IsNullOrEmpty(filterTerm))
-            {
-                _navMan.NavigateTo("/search/" + filterTerm + "/All");
-            } else
-            {
-                // Prompt angy message for no search terms
-            }
-        } 
-    }
-
-    public void FilterSelect()
-    {
-        if (!String.IsNullOrWhiteSpace(filterTerm))
-        {
-            searchLabel = "Search " + filterTerm + " in CSUN Marketplace";
-        }
-    }
-
-    public void ResetFilter()
-    {
-        searchLabel = "Search CSUN Marketplace";
-    }
 
     protected override async Task OnInitializedAsync()
     {

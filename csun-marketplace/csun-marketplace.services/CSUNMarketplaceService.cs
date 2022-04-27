@@ -116,6 +116,26 @@ namespace csun_marketplace.services
             return textbookInformationList;
         }
 
+        public TextbookInformation GetTextbookInformation(int productId)
+        {
+            var CSUNMarketplaceEvaluatorDB = _context.CreateDbContext();
+
+            TextbookInformation textbookInformation = CSUNMarketplaceEvaluatorDB.TextbookInformations.Where((t) => t.ProductId == productId).Select(t => new TextbookInformation
+            {
+                TextbookInformationId = t.TextbookInformationId,
+                ProductId = t.ProductId,
+                Title = t.Title,
+                Authors = t.Authors,
+                Edition = t.Edition,
+                Isbn = t.Isbn,
+                Course = t.Course,
+                Department = t.Department,
+                Condition = t.Condition,
+            }).Single();
+
+            return textbookInformation;
+        }
+
         public List<UserInformation> GetUserInformationList()
         {
             var CSUNMarketplaceEvaluatorDB = _context.CreateDbContext();

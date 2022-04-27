@@ -13,22 +13,24 @@
 
 <AuthorizeView>
     <Authorized>
-        <MudButton OnClick="@(() => _navMan.NavigateTo("/profile"))" Style="min-width: min-content !important; padding-left: 15px; padding-right: 15px;" Class="profile-button">
-            <MudAvatar Color="Color.Primary" Style="margin-right:.5em;">
-                @nameToPrint[0]
-            </MudAvatar>
+        <MudTooltip Text="Profile">
+            <MudButton OnClick="@(() => _navMan.NavigateTo("/profile"))" Style="min-width: min-content !important; padding-left: 15px; padding-right: 15px;" Class="profile-button">
+                <MudAvatar Color="Color.Primary" Style="margin-right:.5em;">
+                    @nameToPrint[0]
+                </MudAvatar>
 
-            Hello, @nameToPrint!
+                Hello, @nameToPrint!
 
-        </MudButton>
-
-        <form action="/Identity/Account/Logout?returnUrl=%2F" method="post">
-            <MudButton StartIcon="@Icons.Material.Filled.Logout" IconColor="Color.Secondary" Style="min-width: min-content !important;" ButtonType="ButtonType.Submit">
-                Logout
             </MudButton>
-            <input name="__RequestVerificationToken" type="hidden" value="@TokenProvider.XsrfToken" />
-        </form>
-
+        </MudTooltip>
+        <MudTooltip Text="Logout">
+            <form action="/Identity/Account/Logout?returnUrl=%2F" method="post">
+                <MudButton StartIcon="@Icons.Material.Filled.Logout" IconColor="Color.Secondary" Style="min-width: min-content !important; padding:1em;" ButtonType="ButtonType.Submit">
+                    Logout
+                </MudButton>
+                <input name="__RequestVerificationToken" type="hidden" value="@TokenProvider.XsrfToken" />
+            </form>
+        </MudTooltip>
     </Authorized>
     <NotAuthorized>
         <MudButton StartIcon="@Icons.Material.Filled.AccountCircle" Style="min-width: min-content !important;" IconColor="Color.Secondary" OnClick="@(()=>_navMan.NavigateTo("Identity/Account/Register"))">

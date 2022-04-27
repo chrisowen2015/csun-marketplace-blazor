@@ -11,6 +11,7 @@ namespace csun_marketplace.services
         public int RemoveSavedForLater(SavedForLaterVM svm);
         List<TextbookInformation> GetTextbookInformationList();
         List<Product> GetTextbooks();
+        public TextbookInformation GetTextbookInformation(int productId);
         public List<Product> GetElectronics();
         public List<Product> GetSchoolSupplies();
         public List<Product> GetSportsAndFitness();

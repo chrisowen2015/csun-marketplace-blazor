@@ -31,8 +31,7 @@
                     }
                     <MudText>
                         <h1>
-                            <MudElement @bind-Value="@User.FirstName"> @User.FirstName </MudElement>
-                            <MudElement @bind-Value="@User.LastName"> @User.LastName </MudElement>
+                            @(User.FirstName + " " + User.LastName)
                         </h1>
                     </MudText>
                     <MudText @bind-Value="@User.Email" Style="align-self:center">
@@ -60,11 +59,8 @@
                         <MudRating ReadOnly="true" SelectedValue=@User.Rating @bind-Value="@User.Rating" />
                     </div>
                 </div>
-                @*<div class="profile-rows">
-                    <MudTextField Label="Rating" T="byte" @bind-Value="@User.Rating" Variant="Variant.Filled" ReadOnly="true" />
-                    </div>*@
+
                 <div class="profile-rows">
-                    @*<MudTextField Label="Bio" T="string" @bind-Value="@User.Bio" Variant="Variant.Filled" Lines="5" ReadOnly=readOnly />*@
                     @if (!String.IsNullOrWhiteSpace(User.Bio))
                     {
                         <MudText>
