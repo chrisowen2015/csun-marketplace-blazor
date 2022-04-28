@@ -1,0 +1,28 @@
+﻿@using Microsoft.JSInterop
+@inject IJSRuntime js
+
+
+<body>
+    <div @ref="paypalButtonContainer"></div>
+</body>
+
+
+@code {
+    string[] temp = {"this", "is", "dumb"};
+
+    private ElementReference paypalButtonContainer;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if(firstRender)
+        {
+            await displayButton();
+        }
+    }
+
+    public async Task displayButton()
+    {
+        
+        await js.InvokeVoidAsync("displayButtons", paypalButtonContainer);
+    }
+}
