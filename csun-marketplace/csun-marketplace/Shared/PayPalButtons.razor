@@ -2,19 +2,25 @@
 @inject IJSRuntime js
 
 
-<body>
-    <div @ref="paypalButtonContainer"></div>
-</body>
+<div class="paypal-button-container">
+    <div class="paypal-buttons" @ref="paypalButtonContainer"></div>
+</div>
 
 
 @code {
-    string[] temp = {"this", "is", "dumb"};
+    [Parameter]
+    public ElementReference ButtonDiv { get; set; }
+
+    [Parameter]
+    public bool cardCheckout { get; set; }
+
+    string[] temp = { "this", "is", "dumb" };
 
     private ElementReference paypalButtonContainer;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        if(firstRender)
+        if (firstRender)
         {
             await displayButton();
         }
@@ -22,7 +28,28 @@
 
     public async Task displayButton()
     {
-        
+
         await js.InvokeVoidAsync("displayButtons", paypalButtonContainer);
     }
+
+    public void MakeDaStateChange()
+    {
+        cardCheckout = true;
+        StateHasChanged();
+    }
 }
+
+<style>
+
+    .paypal-button-container {
+        display: flex;
+        align-content: center;
+        justify-content: center;
+        margin-top: 3em;
+    }
+
+    .paypal-buttons {
+        width: 50%;
+        margin: 0 !important;
+    }
+</style>
