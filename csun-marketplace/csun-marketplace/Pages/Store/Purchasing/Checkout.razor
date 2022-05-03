@@ -27,74 +27,6 @@
             </MudText>
         </div>
 
-        <MudExpansionPanel Text="Shipping Information">
-            <div class="grid-two">
-                <MudTextField Class="elem-half" Label="First Name" T="string" Variant="Variant.Filled" @bind-Value="@checkoutViewModel.shippingFirstName" />
-                <MudTextField Class="elem-half" Label="Last Name" T="string" Variant="Variant.Filled" @bind-Value="@checkoutViewModel.shippingLastName" />
-            </div>
-
-            <div class="grid-two">
-                <MudTextField Class="elem-half" Label="Shipping Address" T="string" Variant="Variant.Filled" @bind-Value="@checkoutViewModel.shippingAddress" />
-                <MudTextField Class="elem-half" Label="City" T="string" Variant="Variant.Filled" @bind-Value="@checkoutViewModel.shippingCity" />
-            </div>
-
-            <div class="grid-two">
-                <MudSelect Style="margin-right:.35em" Label="State" T="string" Variant="Variant.Filled" Dense="true" @bind-Value="@checkoutViewModel.shippingState">
-                    @foreach (string state in states)
-                    {
-                        <MudSelectItem T="string" Value="state" />
-                    }
-                </MudSelect>
-                <MudTextField Style="margin-left: .35em; margin-right: .35em;" Label="Zip" T="string" Variant="Variant.Filled" Mask="@(new PatternMask("00000"))" @bind-Value="@checkoutViewModel.shippingZip" />
-                <MudTextField Style="margin-left: .35em;" Label="Country" T="string" Variant="Variant.Filled" ReadOnly="true" @bind-Value="@checkoutViewModel.country" />
-            </div>
-        </MudExpansionPanel>
-
-        <div class="page-header-container">
-            <MudText Class="form-header" Color="Color.Primary">
-                <h1>
-                    Billing
-                </h1>
-            </MudText>
-        </div>
-
-        <MudExpansionPanel Text="Billing Information">
-            <MudCheckBox T="bool" Label="Billing same as Shipping?" CheckedChanged="@((value) => CheckBoxChanged(value))" />
-
-
-            <div class="grid-two">
-                <MudTextField Class="elem-half" Label="First Name" T="string" Variant="Variant.Filled" @bind-Value="@checkoutViewModel.billingFirstName" />
-                <MudTextField Class="elem-half" Label="Last Name" T="string" Variant="Variant.Filled" @bind-Value="@checkoutViewModel.billingLastName" />
-            </div>
-
-
-            <div class="grid-two">
-                <MudTextField Class="elem-half" Label="Billing Address" T="string" Variant="Variant.Filled" @bind-Value="@checkoutViewModel.billingAddress" />
-                <MudTextField Class="elem-half" Label="City" T="string" Variant="Variant.Filled" @bind-Value="@checkoutViewModel.billingCity" />
-            </div>
-
-            <div class="grid-two">
-                <MudSelect Style="margin-right:.35em" Label="State" T="string" Variant="Variant.Filled" Dense="true" @bind-Value="@checkoutViewModel.billingState">
-                    @foreach (string state in states)
-                    {
-                        <MudSelectItem T="string" Value="state" />
-                    }
-                </MudSelect>
-                <MudTextField Style="margin-left: .35em; margin-right: .35em;" Label="Zip" T="string" Variant="Variant.Filled" Mask="@(new PatternMask("00000"))" @bind-Value="@checkoutViewModel.billingZip" />
-                <MudTextField Style="margin-left: .35em" Label="Country" T="string" Variant="Variant.Filled" ReadOnly="true" @bind-Value="@checkoutViewModel.country" />
-            </div>
-
-            <div class="form-row">
-                <MudTextField Label="Card number" T="string" Variant="Variant.Filled" Mask="@(new PatternMask("0000 0000 0000 0000"))" @bind-Value="@checkoutViewModel.cardNumber" />
-            </div>
-
-            <div class="grid-two">
-                <MudTextField Class="elem-half" Label="Expiration date" T="string" Variant="Variant.Filled" Mask="@(new PatternMask("00/00"))" @bind-Value="@checkoutViewModel.expirationDate" />
-                <MudTextField Class="elem-half" Label="Security code" T="string" Variant="Variant.Filled" Mask="@(new PatternMask("000"))" @bind-Value="@checkoutViewModel.securityCode" />
-            </div>
-        </MudExpansionPanel>
-
-
         <div class="form-row">
             <MudText Color="Color.Primary" Style="margin-top: 1em; margin-bottom: 1em;">
                 <h4>
@@ -102,7 +34,6 @@
                 </h4>
             </MudText>
         </div>
-
 
         @if (_cart.Length() > 0)
         {
@@ -145,22 +76,119 @@
             }
         }
 
-        <div class="two-buttons">
+        <div class="cart-total-div">
+            <MudText Color="Color.Primary" Style="padding-bottom: 1em;">
+                <b>
+                    Cart Total: @formatCurrency(_cart.GetTotal())
+                </b>
+            </MudText>
+        </div>
+
+        <div class="page-header-container">
+            <MudText Class="form-header" Color="Color.Primary">
+                <h4>
+                    Select Payment Method
+                </h4>
+            </MudText>
+        </div>
+
+
+        <PayPalButtons ButtonDiv="@paypalButtonDiv" cardCheckout="@cardCheckout" />
+        <div class="custom-checkout-container">
+            <MudButton Color="Color.Primary" Variant="Variant.Filled" Style="max-width: 467px; min-width:184px; width:100%; height:45px;  align-self:center !important" OnClick="@(()=> cardCheckout = true)"> <MudIcon Icon="@Icons.Material.Filled.CreditCard" Size="Size.Large" Style="margin-right: 3px" /> Debit or Credit Card </MudButton>
+        </div>
+
+        @if (cardCheckout)
+        {
+            <div class="page-header-container">
+                <MudText Class="form-header" Color="Color.Primary">
+                    <h3>
+                        Shipping
+                    </h3>
+                </MudText>
+            </div>
+
+
+            <MudExpansionPanel Text="Shipping Information" IsExpanded="cardCheckout" >
+                <div class="grid-two">
+                    <MudTextField Class="elem-half" Label="First Name" T="string" Variant="Variant.Filled" @bind-Value="@checkoutViewModel.shippingFirstName" />
+                    <MudTextField Class="elem-half" Label="Last Name" T="string" Variant="Variant.Filled" @bind-Value="@checkoutViewModel.shippingLastName" />
+                </div>
+
+                <div class="grid-two">
+                    <MudTextField Class="elem-half" Label="Shipping Address" T="string" Variant="Variant.Filled" @bind-Value="@checkoutViewModel.shippingAddress" />
+                    <MudTextField Class="elem-half" Label="City" T="string" Variant="Variant.Filled" @bind-Value="@checkoutViewModel.shippingCity" />
+                </div>
+
+                <div class="grid-two">
+                    <MudSelect Style="margin-right:.35em" Label="State" T="string" Variant="Variant.Filled" Dense="true" @bind-Value="@checkoutViewModel.shippingState">
+                        @foreach (string state in states)
+                        {
+                            <MudSelectItem T="string" Value="state" />
+                        }
+                    </MudSelect>
+                    <MudTextField Style="margin-left: .35em; margin-right: .35em;" Label="Zip" T="string" Variant="Variant.Filled" Mask="@(new PatternMask("00000"))" @bind-Value="@checkoutViewModel.shippingZip" />
+                    <MudTextField Style="margin-left: .35em;" Label="Country" T="string" Variant="Variant.Filled" ReadOnly="true" @bind-Value="@checkoutViewModel.country" />
+                </div>
+            </MudExpansionPanel>
+
+
+            <div class="page-header-container">
+                <MudText Class="form-header" Color="Color.Primary">
+                    <h3>
+                        Billing
+                    </h3>
+                </MudText>
+            </div>
+
+
+            <MudExpansionPanel Text="Billing Information" IsExpanded="@(!String.IsNullOrWhiteSpace(checkoutViewModel.shippingFirstName) &&!String.IsNullOrWhiteSpace(checkoutViewModel.shippingLastName) &&!String.IsNullOrWhiteSpace(checkoutViewModel.shippingAddress) &&!String.IsNullOrWhiteSpace(checkoutViewModel.shippingCity) &&!String.IsNullOrWhiteSpace(checkoutViewModel.shippingState) &&!String.IsNullOrWhiteSpace(checkoutViewModel.shippingZip) &&!String.IsNullOrWhiteSpace(checkoutViewModel.country))">
+                <MudCheckBox T="bool" Label="Billing same as Shipping?" CheckedChanged="@((value) => CheckBoxChanged(value))" />
+
+
+                <div class="grid-two">
+                    <MudTextField Class="elem-half" Label="First Name" T="string" Variant="Variant.Filled" @bind-Value="@checkoutViewModel.billingFirstName" />
+                    <MudTextField Class="elem-half" Label="Last Name" T="string" Variant="Variant.Filled" @bind-Value="@checkoutViewModel.billingLastName" />
+                </div>
+
+
+                <div class="grid-two">
+                    <MudTextField Class="elem-half" Label="Billing Address" T="string" Variant="Variant.Filled" @bind-Value="@checkoutViewModel.billingAddress" />
+                    <MudTextField Class="elem-half" Label="City" T="string" Variant="Variant.Filled" @bind-Value="@checkoutViewModel.billingCity" />
+                </div>
+
+                <div class="grid-two">
+                    <MudSelect Style="margin-right:.35em" Label="State" T="string" Variant="Variant.Filled" Dense="true" @bind-Value="@checkoutViewModel.billingState">
+                        @foreach (string state in states)
+                        {
+                            <MudSelectItem T="string" Value="state" />
+                        }
+                    </MudSelect>
+                    <MudTextField Style="margin-left: .35em; margin-right: .35em;" Label="Zip" T="string" Variant="Variant.Filled" Mask="@(new PatternMask("00000"))" @bind-Value="@checkoutViewModel.billingZip" />
+                    <MudTextField Style="margin-left: .35em" Label="Country" T="string" Variant="Variant.Filled" ReadOnly="true" @bind-Value="@checkoutViewModel.country" />
+                </div>
+
+                <div class="form-row">
+                    <MudTextField Label="Card number" T="string" Variant="Variant.Filled" Mask="@(new PatternMask("0000 0000 0000 0000"))" @bind-Value="@checkoutViewModel.cardNumber" />
+                </div>
+
+                <div class="grid-two">
+                    <MudTextField Class="elem-half" Label="Expiration date" T="string" Variant="Variant.Filled" Mask="@(new PatternMask("00/00"))" @bind-Value="@checkoutViewModel.expirationDate" />
+                    <MudTextField Class="elem-half" Label="Security code" T="string" Variant="Variant.Filled" Mask="@(new PatternMask("000"))" @bind-Value="@checkoutViewModel.securityCode" />
+                </div>
+            </MudExpansionPanel>
+        }
+
+
+
+        <div class="checkout-button">
             <div class="go-back">
                 <MudButton Variant="Variant.Filled" OnClick="@(()=>_navMan.NavigateTo("/cart"))" Style="margin-top:1em;" Color="Color.Primary">Back</MudButton>
             </div>
 
             @if (@_cart.GetTotal() > 0)
             {
-                <div class="billing-continue">
-                    <MudText Color="Color.Primary" Style="padding-bottom: 1em;">
-                        <b>
-                            Cart Total: @formatCurrency(_cart.GetTotal())
-                        </b>
-                    </MudText>
-                    <MudButton Variant="Variant.Filled" OnClick="@(()=> OrderComplete())" Color="Color.Primary">Place Order</MudButton>
-                    @*<MudButton Variant="Variant.Filled" OnClick="@(()=>_navMan.NavigateTo("/billing"))" Color="Color.Primary">Continue</MudButton>*@
-                </div>
+
             }
             else
             {
@@ -175,10 +203,12 @@
 
 
 @code {
+    public ElementReference paypalButtonDiv { get; set; }
 
     HashSet<UserInformation> sellerInfos = new HashSet<UserInformation>();
 
     CheckoutModel checkoutViewModel = new CheckoutModel();
+    public bool cardCheckout = false;
 
     protected override void OnInitialized()
     {
@@ -301,7 +331,7 @@
         {
             _cart.RemoveFromCart(p);
             Snackbar.Add("Item successfully Saved For Later.", Severity.Success);
-            
+
             StateHasChanged();
         }
         else
@@ -443,5 +473,18 @@
         display: flex;
         flex-direction: row;
         justify-content: space-between;
+    }
+
+    .cart-total-div {
+        text-align: right;
+        margin-right: 1.5em;
+    }
+
+    .custom-checkout-container {
+        margin-top: 10px;
+        display: flex;
+        flex-direction: row;
+        align-items: center !important;
+        justify-content: center;
     }
 </style>
