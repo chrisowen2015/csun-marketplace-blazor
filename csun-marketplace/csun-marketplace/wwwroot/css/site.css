@@ -279,9 +279,9 @@ a, .btn-link {
     width: 80px;
     height: 80px;
     animation: spin 700ms linear infinite;
-    top: 40%;
-    left: 55%;
-    position: absolute;
+    top: 45%;
+    left: 50%;
+    position: fixed;
 }
 
 @keyframes spin {
@@ -292,14 +292,4 @@ a, .btn-link {
     100% {
         transform: rotate(360deg)
     }
-}
-
-.spinner-container {
-    display: flex;
-    min-width: 3526px;
-    min-height: 2040px;
-    align-items: center !important;
-    justify-content: center !important;
-    justify-items: center !important;
-    align-content: center !important;
 }
