@@ -267,3 +267,39 @@ a, .btn-link {
 .profile-button {
     white-space: nowrap;
 }
+
+/*
+    Loading spinner
+*/
+
+.spinner {
+    border: 16px solid silver;
+    border-top: 16px solid #d22030;
+    border-radius: 50%;
+    width: 80px;
+    height: 80px;
+    animation: spin 700ms linear infinite;
+    top: 40%;
+    left: 55%;
+    position: absolute;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg)
+    }
+
+    100% {
+        transform: rotate(360deg)
+    }
+}
+
+.spinner-container {
+    display: flex;
+    min-width: 3526px;
+    min-height: 2040px;
+    align-items: center !important;
+    justify-content: center !important;
+    justify-items: center !important;
+    align-content: center !important;
+}

@@ -12,77 +12,78 @@
 @inject IDialogService Dialog
 @inject AuthenticationStateProvider _authenticationStateProvider
 
-<MudLayout>
-    <MudThemeProvider @bind-IsDarkMode="@_isDarkMode" Theme="@_theme" />
-    @*Top Bar for Search, logo*@
-    <MudAppBar Elevation="2">
-        <MudButton Class="site-header-label-button" OnClick="@(()=>_navMan.NavigateTo("/"))">
-            <MudImage Height="40" Src="https://cdn.discordapp.com/attachments/911058579073675284/951718035683672084/csun_logo.png" />
-            <MudText Color="Color.Default" Class="site-header-label">
-                Marketplace
+@if (firstRender)
+{
+    <div class="spinner-container">
+        <div class="spinner"></div>
+    </div>
+    
+}
+else
+{
+    <MudLayout>
+        <MudThemeProvider @bind-IsDarkMode="@_isDarkMode" Theme="@_theme" />
+        @*Top Bar for Search, logo*@
+        <MudAppBar Elevation="2">
+            <MudButton Class="site-header-label-button" OnClick="@(()=>_navMan.NavigateTo("/"))">
+                <MudImage Height="40" Src="https://cdn.discordapp.com/attachments/911058579073675284/951718035683672084/csun_logo.png" />
+                <MudText Color="Color.Default" Class="site-header-label">
+                    Marketplace
+                </MudText>
+            </MudButton>
+
+            <SearchBar />
+
+            <MudSwitch Class="dark-mode-toggle" T="bool" @bind-Checked="@_isDarkMode" Color="Color.Primary" Label="Toggle Dark Mode" />
+
+            <CartIcon />
+
+            <LoginDisplay />
+        </MudAppBar>
+        <div class="navbar-spacer" />
+
+        <MudTabs Centered="true" Rounded="false" Border="true" ActivePanelIndex="@activePanel" ActivePanelIndexChanged="(int index) => SetPanelIndex(index)">
+            <MudTabPanel Icon="@Icons.Material.Filled.Home" Text="Store Home" OnClick="@(() => _navMan.NavigateTo("/"))" />
+            <MudTabPanel Icon="@Icons.Material.Filled.Add" Text="New Listing" OnClick="@(() => _navMan.NavigateTo("/new-listing"))" />
+            <MudTabPanel Icon="@Icons.Material.Filled.Bookmark" Text="Bookmarked" OnClick="@(() => _navMan.NavigateTo("/bookmarked"))" />
+            <MudTabPanel Icon="@Icons.Material.Filled.LibraryBooks" Text="Textbooks" OnClick="@(() => _navMan.NavigateTo("/textbooks"))" />
+            <MudTabPanel Icon="@Icons.Material.Filled.Monitor" Text="Electronics" OnClick="@(() => _navMan.NavigateTo("/electronics"))" />
+            <MudTabPanel Icon="@Icons.Material.Filled.Create" Text="School Supplies" OnClick="@(() => _navMan.NavigateTo("/school-supplies"))" />
+            <MudTabPanel Icon="@Icons.Material.Filled.FitnessCenter" Text="Sports & Fitness" OnClick="@(() => _navMan.NavigateTo("/sports"))" />
+            <MudTabPanel Icon="@Icons.Material.Filled.Chair" Text="Furniture" OnClick="@(() => _navMan.NavigateTo("/furniture"))" />
+        </MudTabs>
+
+        <MudMainContent>
+            <MudPaper Height="100%" Width="100%" MinHeight="1000px" Style="justify-content:center !important;">
+                <div class="spacer" />
+                @Body
+                <div class="spacer" />
+            </MudPaper>
+
+        </MudMainContent>
+
+        <MudAppBar Bottom="true" Dense="true" Fixed="false">
+            <MudText Color="Color.Primary">
+                Copyright © 2022 CSUN Marketplace.
             </MudText>
-        </MudButton>
 
-        @*<MudSelect Class="filter-button" T="string" Dense="true" Variant="Variant.Outlined" AdornmentColor="Color.Secondary" @bind-Value="@filterTerm" DisableUnderLine="true" SelectedValuesChanged="@(()=>FilterSelect())" Clearable="true" OnClearButtonClick="@(()=>ResetFilter())" Placeholder="Filter">
-            <MudSelectItem Value=@("Textbooks") />
-            <MudSelectItem Value=@("Electronics") />
-            <MudSelectItem Value=@("School Supplies") />
-            <MudSelectItem Value=@("Sports & Fitness") />
-            <MudSelectItem Value=@("Furniture") />
-        </MudSelect>
-        
-        <MudTextField OnAdornmentClick="@searchFunction" FullWidth="true" AdornmentIcon="@Icons.Material.Filled.Search" AdornmentColor="Color.Secondary" Adornment="Adornment.End" Class="search-bar" Label="@searchLabel" DisableUnderLine="true" Variant="Variant.Filled" @bind-Value="@searchTerm" />
-        *@
+            <MudSpacer />
 
-        <SearchBar />
-        
-        <MudSwitch Class="dark-mode-toggle" T="bool" @bind-Checked="@_isDarkMode" Color="Color.Primary" Label="Toggle Dark Mode" />
+            <MudIcon Class="footer-icon" Icon="@Icons.Custom.Brands.Discord" />
+            <MudIcon Class="footer-icon" Icon="@Icons.Custom.Brands.GitHub" />
+            <MudIcon Class="footer-icon" Icon="@Icons.Custom.Brands.StackOverflow" />
 
-        <CartIcon />
 
-        <LoginDisplay />
-    </MudAppBar>
-    <div class="navbar-spacer"/>
-
-    <MudTabs Centered="true" Rounded="false" Border="true" ActivePanelIndex="@activePanel"  ActivePanelIndexChanged="(int index) => SetPanelIndex(index)">
-        <MudTabPanel Icon="@Icons.Material.Filled.Home" Text="Store Home" OnClick="@(() => _navMan.NavigateTo("/"))" />
-        <MudTabPanel Icon="@Icons.Material.Filled.Add" Text="New Listing" OnClick="@(() => _navMan.NavigateTo("/new-listing"))" />
-        <MudTabPanel Icon="@Icons.Material.Filled.Bookmark" Text="Bookmarked" OnClick="@(() => _navMan.NavigateTo("/bookmarked"))" />
-        <MudTabPanel Icon="@Icons.Material.Filled.LibraryBooks" Text="Textbooks" OnClick="@(() => _navMan.NavigateTo("/textbooks"))" />
-        <MudTabPanel Icon="@Icons.Material.Filled.Monitor" Text="Electronics" OnClick="@(() => _navMan.NavigateTo("/electronics"))" />
-        <MudTabPanel Icon="@Icons.Material.Filled.Create" Text="School Supplies" OnClick="@(() => _navMan.NavigateTo("/school-supplies"))" />
-        <MudTabPanel Icon="@Icons.Material.Filled.FitnessCenter" Text="Sports & Fitness" OnClick="@(() => _navMan.NavigateTo("/sports"))" />
-        <MudTabPanel Icon="@Icons.Material.Filled.Chair" Text="Furniture" OnClick="@(() => _navMan.NavigateTo("/furniture"))" />
-    </MudTabs>
-
-    <MudMainContent>
-        <MudPaper Height="100%" Width="100%" MinHeight="1000px" Style="justify-content:center !important;">
-            <div class="spacer"/>
-            @Body
-            <div class="spacer"/>
-        </MudPaper>
-
-    </MudMainContent>
-
-    <MudAppBar Bottom="true" Dense="true" Fixed="false">
-        <MudText Color="Color.Primary">
-            Copyright © 2022 CSUN Marketplace.
-        </MudText>
-
-        <MudSpacer />
-        
-        <MudIcon Class="footer-icon" Icon="@Icons.Custom.Brands.Discord"/>
-        <MudIcon Class="footer-icon" Icon="@Icons.Custom.Brands.GitHub"/>
-        <MudIcon Class="footer-icon" Icon="@Icons.Custom.Brands.StackOverflow"/>
-
-        
-    </MudAppBar>
-</MudLayout>
+        </MudAppBar>
+    </MudLayout>
+}
 
 
 @code {
     private bool _isDarkMode = false;
     private int activePanel { get; set; }
+
+    private bool firstRender = true;
 
     private MudTheme _theme = new MudTheme()
         {
@@ -111,6 +112,11 @@
 
     protected override async Task OnInitializedAsync()
     {
+        if (firstRender)
+        {
+            await Task.Delay(2000);
+            firstRender = false;
+        }
         GetActiveTabPanel();
 
     }
@@ -141,7 +147,7 @@
         {
             activePanel = 1;
         }
-        else if(currentURL.Contains("bookmarked"))
+        else if (currentURL.Contains("bookmarked"))
         {
             activePanel = 2;
         }
@@ -203,7 +209,7 @@
     }
 
     .filter-button {
-        width:200px;
+        width: 200px;
     }
 
     .filter-button-text {
