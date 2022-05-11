@@ -109,7 +109,7 @@
             </div>
 
 
-            <MudExpansionPanel Text="Shipping Information" IsExpanded="cardCheckout" >
+            <MudExpansionPanel Text="Shipping Information" IsExpanded="cardCheckout">
                 <div class="grid-two">
                     <MudTextField Class="elem-half" Label="First Name" T="string" Variant="Variant.Filled" @bind-Value="@checkoutViewModel.shippingFirstName" />
                     <MudTextField Class="elem-half" Label="Last Name" T="string" Variant="Variant.Filled" @bind-Value="@checkoutViewModel.shippingLastName" />
@@ -181,14 +181,14 @@
 
 
 
-        <div class="checkout-button">
-            <div class="go-back">
-                <MudButton Variant="Variant.Filled" OnClick="@(()=>_navMan.NavigateTo("/cart"))" Style="margin-top:1em;" Color="Color.Primary">Back</MudButton>
-            </div>
+        <div class="two-buttons" style="margin-top: 2em;">
+
+            <MudButton Variant="Variant.Filled" OnClick="@(()=>_navMan.NavigateTo("/cart"))" Color="Color.Primary">Back</MudButton>
+
 
             @if (@_cart.GetTotal() > 0)
             {
-
+                <MudButton Variant="Variant.Filled" OnClick="@(()=> OrderComplete())" Color="Color.Primary">Place Order</MudButton>
             }
             else
             {
@@ -420,6 +420,7 @@
         padding-bottom: .5em;
     }
 
+
     .grid-two {
         width: 100%;
         display: flex !important;
@@ -450,16 +451,6 @@
 
     .billing-continue {
         float: right;
-    }
-
-    .go-back {
-        float: left;
-        padding-top: 24px;
-    }
-
-    .keep-shopping {
-        float: right;
-        padding-top: 24px;
     }
 
     .stupid-select {
