@@ -83,7 +83,7 @@
     public List<SavedForLaterVM> savedForLaterVMs { get; set; }
 
     CultureInfo USD = new CultureInfo("en-US");
-    List<UserInformation> sellerInfos = new List<UserInformation>();
+    HashSet<UserInformation> sellerInfos = new HashSet<UserInformation>();
 
     public string formatCurrency(decimal? amount)
     {
@@ -99,7 +99,7 @@
         foreach (SavedForLaterVM svm in savedForLaterVMs)
         {
             UserInformation user = _csunMarketplaceService.GetUserInformation(svm.UserId);
-            sellerInfos.Add(user);
+            sellerInfos.Add(_csunMarketplaceService.GetUserInformation(svm.product.OwnerId));
         }
 
 
