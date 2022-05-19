@@ -1,6 +1,6 @@
 # CSUN Marketplace
 
-Blazor Version <br/>
+### Blazor Version
 A marketplace application created using Blazor and .NET 6, created for university senior project.
 
 # Link to React version
