@@ -9,6 +9,6 @@ https://github.com/arthursulian/csun-marketplace-react
 
 # About the App
 
-CSUN Marketplace is an app where CSUN members can buy and sell used or new products to and from other CSUN community members.
-Each user can make a profile and view other user profiles.
-Buyers can add to their cart, save items for later, and when ready to checkout can proceed with Paypal or credit.
+CSUN Marketplace is an app where CSUN members can buy and sell used or new products to and from other CSUN community members. <br/>
+Each user can make a profile and view other user profiles. <br/>
+Buyers can add to their cart, save items for later, and when ready to checkout can proceed with Paypal or credit. <br/>
