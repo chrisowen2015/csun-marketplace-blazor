@@ -3,7 +3,7 @@
 ### Blazor Server Side Version
 A marketplace application created using Blazor and .NET 6, created for university senior project.
 
-# Link to React version
+# Link to React Native version
 
 https://github.com/arthursulian/csun-marketplace-react
 
